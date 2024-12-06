@@ -1,0 +1,48 @@
+import { TeamMember } from '../types/team';
+
+export const initialTeamMembers: TeamMember[] = [
+  {
+    id: '1',
+    name: 'Abhishek Rath',
+    initial: 'A',
+    role: 'Multiple roles',
+    position: 'General Manager',
+    projects: 120,
+    accessExpires: 'In 12 months',
+    roles: ['Administrator', 'Manager'],
+    expiration: '21.11.2025',
+  },
+  {
+    id: '2',
+    name: 'Abhijith Sharma',
+    initial: 'A',
+    role: 'Administrator',
+    position: 'Administrator',
+    projects: 15,
+    accessExpires: 'In 12 months',
+    roles: ['Administrator'],
+    expiration: 'Expiration date',
+  },
+  {
+    id: '3',
+    name: 'Abhishek Rath',
+    initial: 'A',
+    role: 'Administrator',
+    position: 'General Manager',
+    projects: 25,
+    accessExpires: 'In 12 months',
+    roles: ['Administrator'],
+    expiration: '21.11.2025',
+  },
+  {
+    id: '4',
+    name: 'Abhishek Rath',
+    initial: 'A',
+    role: 'Multiple roles',
+    position: 'General Manager',
+    projects: 6,
+    accessExpires: 'In 12 months',
+    roles: ['Administrator', 'Manager'],
+    expiration: '21.11.2025',
+  },
+];
