@@ -8,9 +8,14 @@ const Layout = () => {
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div
+      className="min-h-screen flex flex-col overflow-x-hidden"
+      // style={{ width: '86vw' }}
+    >
       {!isLoginPage && <Header />}
-      <main className={`flex-grow ${!isLoginPage ? 'max-w-7xl mx-auto py-6 sm:px-6 lg:px-8' : ''}`}>
+      <main
+        className={`flex-grow w-full ${!isLoginPage ? 'container mx-auto px-4 py-6' : ''}`}
+      >
         <Outlet />
       </main>
       {!isLoginPage && <Footer />}

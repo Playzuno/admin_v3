@@ -4,8 +4,8 @@
 
 // Custom variables
 :root {
-  --primary-color: #FF6E01;
-  --secondary-color: #400C7A;
+  --primary-color: #ff6e01;
+  --secondary-color: #400c7a;
 }
 
 // Global styles
@@ -17,11 +17,11 @@ body {
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-md transition-colors duration-200;
-    
+
     &-primary {
       @apply bg-primary text-white hover:bg-primary-600;
     }
-    
+
     &-secondary {
       @apply bg-secondary text-white hover:bg-secondary-600;
     }
@@ -29,18 +29,33 @@ body {
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 @keyframes float-reverse {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(20px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
 }
 
 .animate-twinkle {
@@ -53,4 +68,35 @@ body {
 
 .animate-float-reverse {
   animation: float-reverse 5s ease-in-out infinite;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 120px; /* Adjust width as needed */
+  background-color: rgba(0, 0, 0, 0.8); /* Dark background with opacity */
+  color: #fff;
+  text-align: center;
+  border-radius: 8px; /* Rounded corners */
+  padding: 8px 12px; /* Padding for better spacing */
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  margin-left: -60px; /* Center the tooltip */
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    transform 0.3s; /* Smooth transition */
+  transform: translateY(10px); /* Initial position for animation */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  top: 50px; /* Position above the item */
+  font-size: 12px;
+}
+
+.nav-item-tooltip {
+  position: relative; /* Ensure the tooltip is positioned relative to the nav item */
+}
+.nav-item-tooltip:hover .tooltip {
+  visibility: visible;
+  opacity: 1; /* Show tooltip on hover */
+  transform: translateY(0); /* Move to final position */
 }
