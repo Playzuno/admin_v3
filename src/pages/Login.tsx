@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
-
+import Carousel from '../components/ui/Carousel.jsx';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -121,13 +121,24 @@ const Login = () => {
       </div>
 
       {/* Right Section */}
-      <div className="w-1/2 bg-secondary p-12 flex flex-col justify-between text-white">
+      <div
+        className="w-1/2 bg-secondary p-12 flex flex-col justify-between text-white"
+        style={{ background: 'linear-gradient(to right, #9003DE, #400C7A)' }}
+      >
         <div className="flex-1 flex items-center justify-center">
-          <img
-            src="/assets/images/login-carousel-1.png"
+          <Carousel
+            images={[
+              '/assets/images/login-carousel-1.svg',
+              '/assets/images/logo.svg',
+            ]}
+          />
+          {/* <img
+            src="/assets/images/login-carousel-1.svg"
             alt="Dashboard Preview"
             className="max-w-2xl"
-          />
+            width={400}
+            height={400}
+          /> */}
         </div>
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-4">Connect with Zuno.</h2>
