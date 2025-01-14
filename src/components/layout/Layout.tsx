@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-import PlainContainer from '../containers/PlainContainer';
+import Container from './Container';
 
 const Layout = () => {
   const location = useLocation();
@@ -16,9 +16,9 @@ const Layout = () => {
         className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 py-6' : ''}`}
       >
         {!isPublicPage ? (
-          <PlainContainer>
+          <Container>
             <Outlet />
-          </PlainContainer>
+          </Container>
         ) : (
           <Outlet />
         )}
