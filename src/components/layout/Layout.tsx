@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-
+import Container from './Container'
 const Layout = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
@@ -16,7 +16,9 @@ const Layout = () => {
       <main
         className={`flex-grow w-full ${!isLoginPage ? 'container mx-auto px-4 py-6' : ''}`}
       >
-        <Outlet />
+        <Container>
+          <Outlet />
+        </Container>
       </main>
       {!isLoginPage && <Footer />}
     </div>
