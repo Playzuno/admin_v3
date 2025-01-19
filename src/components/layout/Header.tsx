@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Package, 
-  Users, 
+import {
+  Home,
+  Package,
+  Users,
   Receipt,
   CreditCard,
   ScrollText,
-  Settings
+  Settings,
 } from 'lucide-react';
 
 const Header = () => {
@@ -24,14 +24,16 @@ const Header = () => {
   ]);
 
   // Find the active index
-  const activeIndex = navItems.findIndex(item => item.path === location.pathname);
-  
+  const activeIndex = navItems.findIndex(
+    item => item.path === location.pathname
+  );
+
   // Calculate positions based on active index
   const getItemStyle = (index: number) => {
     const totalItems = navItems.length;
     const centerOffset = Math.floor(totalItems / 2);
     let relativePosition = index - activeIndex;
-    
+
     // Normalize the position to be within [-centerOffset, centerOffset]
     if (relativePosition > centerOffset) {
       relativePosition -= totalItems;
@@ -43,28 +45,34 @@ const Header = () => {
     const translateX = relativePosition * 60; // Base spacing
     // change 1 to 0 for applying reduced opacity from center to end
     const opacity = Math.max(1, 1 - Math.abs(relativePosition) * 0.3);
-    const scale = 1 - Math.abs(relativePosition) * 0.1;
-    
+    const scale = 1.2 - Math.abs(relativePosition) * 0.1;
+
     return {
       transform: `translateX(${translateX}px) scale(${scale})`,
       opacity,
       transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-      zIndex: 10 - Math.abs(relativePosition)
+      zIndex: 10 - Math.abs(relativePosition),
     };
   };
 
   return (
     <header className="bg-white border-b w-full">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-[4.5rem] items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <span className="text-2xl font-bold text-primary">ZUNO</span>
           </Link>
 
-          {/* Navigation Icons */}
-          <div className="flex-1 flex justify-center relative overflow-hidden">
-            <div className="flex items-center relative" style={{ minHeight: '48px' }}>
+          {/* Navigation Icons
+            removed overflow-hidden for now
+          */}
+
+          <div className="flex-1 flex justify-center relative">
+            <div
+              className="flex items-center relative"
+              style={{ minHeight: '48px' }}
+            >
               {navItems.map(({ path, icon: Icon, label }, index) => (
                 <Link
                   key={path}
