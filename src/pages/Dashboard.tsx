@@ -1,4 +1,3 @@
-import React from 'react';
 import { MessageSquare, Gift, Store, Coins, Users } from 'lucide-react';
 import StatsCard from '../components/dashboard/StatsCard';
 import FeedbackChart from '../components/dashboard/FeedbackChart';
@@ -60,12 +59,12 @@ const Dashboard = () => {
       {/* Feedback Section */}
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-bold mb-6">Feedback Reports</h2>
+          <h2 className="container-title mb-6">Feedback Reports</h2>
           <FeedbackChart />
         </div>
 
         <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-bold mb-6">Feedback Summary Stats</h2>
+          <h2 className="container-title mb-6">Feedback Summary Stats</h2>
           <FeedbackStats />
         </div>
       </div>

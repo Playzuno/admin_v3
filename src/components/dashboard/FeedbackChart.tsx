@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronDown, Star } from 'lucide-react';
 import {
   BarChart,
@@ -10,6 +10,7 @@ import {
   Cell,
   Tooltip,
 } from 'recharts';
+import Button from '../ui/Button';
 
 const chartData = {
   daily: {
@@ -102,13 +103,14 @@ const CustomTooltip = ({ active, payload, chartData }: any) => {
 
     return (
       <div className="relative">
-        <div 
+        <div
           className={`absolute top-1/2 -translate-y-1/2 w-0 h-0 
                      border-t-[8px] border-t-transparent 
                      border-b-[8px] border-b-transparent
-                     ${isRightSide 
-                       ? '-right-2 border-l-[8px] border-l-secondary' 
-                       : '-left-2 border-r-[8px] border-r-secondary'
+                     ${
+                       isRightSide
+                         ? '-right-2 border-l-[8px] border-l-secondary'
+                         : '-left-2 border-r-[8px] border-r-secondary'
                      }`}
         />
         <div className="bg-secondary text-white px-4 py-3 rounded-lg">
@@ -125,9 +127,13 @@ const CustomTooltip = ({ active, payload, chartData }: any) => {
 };
 
 const FeedbackChart = () => {
-  const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('weekly');
+  const [period, setPeriod] = useState<
+    'daily' | 'weekly' | 'monthly' | 'yearly'
+  >('weekly');
   const [showPeriodDropdown, setShowPeriodDropdown] = useState(false);
-  const [chartType, setChartType] = useState<'topRated' | 'lowestRated'>('topRated');
+  const [chartType, setChartType] = useState<'topRated' | 'lowestRated'>(
+    'topRated'
+  );
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
 
   const currentData = chartData[period][chartType];
@@ -135,7 +141,8 @@ const FeedbackChart = () => {
   return (
     <div className="space-y-6">
       <div className="flex space-x-4">
-        <button
+        <Button
+          variant={chartType === 'topRated' ? 'zuno-light' : 'light'}
           onClick={() => setChartType('topRated')}
           className={`px-4 py-2 rounded-full transition-colors ${
             chartType === 'topRated'
@@ -144,8 +151,9 @@ const FeedbackChart = () => {
           }`}
         >
           Top-rated Food Items
-        </button>
-        <button
+        </Button>
+        <Button
+          variant={chartType === 'lowestRated' ? 'zuno-light' : 'light'}
           onClick={() => setChartType('lowestRated')}
           className={`px-4 py-2 rounded-full transition-colors ${
             chartType === 'lowestRated'
@@ -154,7 +162,7 @@ const FeedbackChart = () => {
           }`}
         >
           Lowest-rated Food
-        </button>
+        </Button>
         <div className="relative ml-auto">
           <button
             onClick={() => setShowPeriodDropdown(!showPeriodDropdown)}
@@ -163,10 +171,10 @@ const FeedbackChart = () => {
             <span className="capitalize">{period}</span>
             <ChevronDown className="w-4 h-4" />
           </button>
-          
+
           {showPeriodDropdown && (
             <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border py-1 z-10">
-              {(['daily', 'weekly', 'monthly', 'yearly'] as const).map((p) => (
+              {(['daily', 'weekly', 'monthly', 'yearly'] as const).map(p => (
                 <button
                   key={p}
                   className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
@@ -187,8 +195,8 @@ const FeedbackChart = () => {
 
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart 
-            data={currentData} 
+          <BarChart
+            data={currentData}
             barSize={40}
             onMouseMove={(state: any) => {
               if (state.isTooltipActive) {
@@ -216,13 +224,14 @@ const FeedbackChart = () => {
               tickLine={false}
               tick={{ fill: '#6B7280', fontSize: 12 }}
               domain={chartType === 'topRated' ? [4.0, 4.8] : [3.0, 3.8]}
-              ticks={chartType === 'topRated' 
-                ? [4.0, 4.2, 4.4, 4.6, 4.8]
-                : [3.0, 3.2, 3.4, 3.6, 3.8]
+              ticks={
+                chartType === 'topRated'
+                  ? [4.0, 4.2, 4.4, 4.6, 4.8]
+                  : [3.0, 3.2, 3.4, 3.6, 3.8]
               }
               dx={-10}
             />
-            <Tooltip 
+            <Tooltip
               content={<CustomTooltip chartData={currentData} />}
               cursor={false}
             />

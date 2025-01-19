@@ -14,6 +14,7 @@ const ButtonsShowcase = () => {
           <Button variant="ghost">Ghost Button</Button>
           <Button variant="danger">Danger Button</Button>
           <Button variant="light">Light Button</Button>
+          <Button variant="zuno-light">Zuno Light Button</Button>
         </div>
       </section>
 
@@ -29,10 +30,18 @@ const ButtonsShowcase = () => {
       <section>
         <h2 className="text-xl font-semibold mb-6">Buttons with Icons</h2>
         <div className="flex flex-wrap gap-4">
-          <Button variant="primary" icon={Edit}>Edit</Button>
-          <Button variant="secondary" icon={Save}>Save</Button>
-          <Button variant="danger" icon={Trash2}>Delete</Button>
-          <Button variant="light" icon={Plus} iconPosition="right">Add New</Button>
+          <Button variant="primary" icon={Edit}>
+            Edit
+          </Button>
+          <Button variant="secondary" icon={Save}>
+            Save
+          </Button>
+          <Button variant="danger" icon={Trash2}>
+            Delete
+          </Button>
+          <Button variant="light" icon={Plus} iconPosition="right">
+            Add New
+          </Button>
         </div>
       </section>
 
@@ -41,7 +50,9 @@ const ButtonsShowcase = () => {
         <div className="flex flex-wrap gap-4">
           <Button disabled>Disabled Button</Button>
           <Button loading>Loading Button</Button>
-          <Button variant="primary" fullWidth>Full Width Button</Button>
+          <Button variant="primary" fullWidth>
+            Full Width Button
+          </Button>
         </div>
       </section>
     </div>

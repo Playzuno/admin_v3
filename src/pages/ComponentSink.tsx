@@ -1,21 +1,12 @@
-import React, { useState } from 'react';
-import { Edit, Save, Trash2, Plus, Search, Filter, MoreHorizontal, Eye, EyeOff } from 'lucide-react';
-import Button from '../components/ui/Button';
-import Toggle from '../components/ui/Toggle';
-import Checkbox from '../components/ui/Checkbox';
-import Calendar from '../components/ui/Calendar';
-import ConfirmDialog from '../components/ui/ConfirmDialog';
-import EditDialog from '../components/ui/EditDialog';
-import { TabContainer, HeaderContainer, ActionContainer } from '../components/containers';
+import { useState } from 'react';
+import { TabContainer } from '../components/containers';
+import ButtonsShowcase from './ComponentSink/ButtonsShowcase';
+import InputsShowcase from './ComponentSink/InputsShowcase';
+import ContainersShowcase from './ComponentSink/ContainersShowcase';
+import DialogsShowcase from './ComponentSink/DialogsShowcase';
 
 const ComponentSink = () => {
   const [activeTab, setActiveTab] = useState('design');
-  const [toggleState, setToggleState] = useState(false);
-  const [checkboxState, setCheckboxState] = useState(false);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [showCalendar, setShowCalendar] = useState(false);
 
   const tabs = [
     { key: 'design', label: 'Design Tokens' },
@@ -25,7 +16,15 @@ const ComponentSink = () => {
     { key: 'dialogs', label: 'Dialogs' },
   ];
 
-  const ColorSwatch = ({ color, name, hex }: { color: string; name: string; hex: string }) => (
+  const ColorSwatch = ({
+    color,
+    name,
+    hex,
+  }: {
+    color: string;
+    name: string;
+    hex: string;
+  }) => (
     <div className="space-y-2">
       <div className={`w-24 h-24 rounded-lg ${color}`} />
       <div className="space-y-1">
@@ -35,24 +34,37 @@ const ComponentSink = () => {
     </div>
   );
 
-  const GradientSwatch = ({ gradient, name }: { gradient: string; name: string }) => (
+  const GradientSwatch = ({
+    gradient,
+    name,
+  }: {
+    gradient: string;
+    name: string;
+  }) => (
     <div className="space-y-2">
       <div className={`w-24 h-24 rounded-lg ${gradient}`} />
       <p className="text-sm font-medium">{name}</p>
     </div>
   );
 
+  const handleTabChange = (key: string) => {
+    console.log('key', key);
+    setActiveTab(key);
+  };
+
   return (
     <div className="space-y-12 max-w-6xl mx-auto py-8">
       <div>
         <h1 className="text-3xl font-bold mb-2">Component Sink</h1>
-        <p className="text-gray-600">A showcase of all reusable components with their variants.</p>
+        <p className="text-gray-600">
+          A showcase of all reusable components with their variants.
+        </p>
       </div>
 
       <TabContainer
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
       >
         {activeTab === 'design' && (
           <div className="space-y-12">
@@ -60,10 +72,26 @@ const ComponentSink = () => {
             <section>
               <h2 className="text-xl font-semibold mb-6">Brand Colors</h2>
               <div className="grid grid-cols-5 gap-8">
-                <ColorSwatch color="bg-brand-purple" name="Purple" hex="#9003DE" />
-                <ColorSwatch color="bg-brand-purple-light" name="Purple Light" hex="#E7D1FF" />
-                <ColorSwatch color="bg-brand-purple-dark" name="Purple Dark" hex="#400C7A" />
-                <ColorSwatch color="bg-brand-orange" name="Orange" hex="#FF6E01" />
+                <ColorSwatch
+                  color="bg-brand-purple"
+                  name="Purple"
+                  hex="#9003DE"
+                />
+                <ColorSwatch
+                  color="bg-brand-purple-light"
+                  name="Purple Light"
+                  hex="#E7D1FF"
+                />
+                <ColorSwatch
+                  color="bg-brand-purple-dark"
+                  name="Purple Dark"
+                  hex="#400C7A"
+                />
+                <ColorSwatch
+                  color="bg-brand-orange"
+                  name="Orange"
+                  hex="#FF6E01"
+                />
               </div>
             </section>
 
@@ -71,9 +99,21 @@ const ComponentSink = () => {
             <section>
               <h2 className="text-xl font-semibold mb-6">Neutral Colors</h2>
               <div className="grid grid-cols-5 gap-8">
-                <ColorSwatch color="bg-neutral-100" name="Neutral 100" hex="#F6F6F6" />
-                <ColorSwatch color="bg-neutral-200" name="Neutral 200" hex="#FFFFFF" />
-                <ColorSwatch color="bg-neutral-300" name="Neutral 300" hex="#E5E5E5" />
+                <ColorSwatch
+                  color="bg-neutral-100"
+                  name="Neutral 100"
+                  hex="#F6F6F6"
+                />
+                <ColorSwatch
+                  color="bg-neutral-200"
+                  name="Neutral 200"
+                  hex="#FFFFFF"
+                />
+                <ColorSwatch
+                  color="bg-neutral-300"
+                  name="Neutral 300"
+                  hex="#E5E5E5"
+                />
               </div>
             </section>
 
@@ -82,9 +122,17 @@ const ComponentSink = () => {
               <h2 className="text-xl font-semibold mb-6">Stroke Colors</h2>
               <div className="grid grid-cols-5 gap-8">
                 <div className="p-4 bg-gray-100">
-                  <ColorSwatch color="bg-stroke-light" name="Stroke Light" hex="#FFFFFF" />
+                  <ColorSwatch
+                    color="bg-stroke-light"
+                    name="Stroke Light"
+                    hex="#FFFFFF"
+                  />
                 </div>
-                <ColorSwatch color="bg-stroke-dark" name="Stroke Dark" hex="#400C7A" />
+                <ColorSwatch
+                  color="bg-stroke-dark"
+                  name="Stroke Dark"
+                  hex="#400C7A"
+                />
               </div>
             </section>
 
@@ -92,13 +140,13 @@ const ComponentSink = () => {
             <section>
               <h2 className="text-xl font-semibold mb-6">Gradients</h2>
               <div className="grid grid-cols-5 gap-8">
-                <GradientSwatch 
-                  gradient="bg-gradient-purple" 
-                  name="Purple Gradient" 
+                <GradientSwatch
+                  gradient="bg-gradient-purple"
+                  name="Purple Gradient"
                 />
-                <GradientSwatch 
-                  gradient="bg-gradient-purple-dark" 
-                  name="Purple Dark Gradient" 
+                <GradientSwatch
+                  gradient="bg-gradient-purple-dark"
+                  name="Purple Dark Gradient"
                 />
               </div>
             </section>
@@ -108,11 +156,15 @@ const ComponentSink = () => {
               <h2 className="text-xl font-semibold mb-6">Typography</h2>
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-3">Font Family</h3>
+                  <h3 className="text-sm font-medium text-gray-500 mb-3">
+                    Font Family
+                  </h3>
                   <p className="font-sans text-lg">Inter (Primary Font)</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-3">Font Sizes</h3>
+                  <h3 className="text-sm font-medium text-gray-500 mb-3">
+                    Font Sizes
+                  </h3>
                   <div className="space-y-4">
                     <p className="text-4xl">Text 4XL - 36px</p>
                     <p className="text-3xl">Text 3XL - 30px</p>
@@ -125,7 +177,9 @@ const ComponentSink = () => {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-3">Font Weights</h3>
+                  <h3 className="text-sm font-medium text-gray-500 mb-3">
+                    Font Weights
+                  </h3>
                   <div className="space-y-2">
                     <p className="font-normal">Normal - 400</p>
                     <p className="font-medium">Medium - 500</p>
@@ -172,9 +226,10 @@ const ComponentSink = () => {
             </section>
           </div>
         )}
-
-        {/* Rest of the tabs remain unchanged */}
-        {/* ... existing tab content ... */}
+        {activeTab === 'buttons' && <ButtonsShowcase />}
+        {activeTab === 'inputs' && <InputsShowcase />}
+        {activeTab === 'containers' && <ContainersShowcase />}
+        {activeTab === 'dialogs' && <DialogsShowcase />}
       </TabContainer>
     </div>
   );
