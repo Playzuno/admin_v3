@@ -195,9 +195,16 @@
 .title {
   @apply text-sm font-semibold;
 }
+.title-2 {
+  @apply text-base font-medium;
+}
 
 .zuno-border {
   @apply border-[#C1C1C1];
+}
+
+.zuno-border-dark {
+  @apply border-[0.5px] border-[#909090];
 }
 
 .container-title {

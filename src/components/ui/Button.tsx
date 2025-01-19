@@ -9,7 +9,8 @@ type ButtonVariant =
   | 'danger'
   | 'light'
   | 'error'
-  | 'zuno-light';
+  | 'zuno-light'
+  | 'zuno-dark';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -48,14 +49,17 @@ const Button: React.FC<ButtonProps> = ({
       'border-2 border-primary text-primary hover:bg-primary-50 focus:ring-primary/50',
     ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500/50',
     danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500/50',
-    light: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500/50',
+    light:
+      'bg-[#E2E2E2] text-[#909090] hover:bg-[#D1D1D1] focus:ring-[#400C7A]/50 px-6',
     error: 'bg-red-50 text-red-600 hover:bg-red-100 focus:ring-red-500/50',
     'zuno-light':
       'bg-[#E7D1FF] text-[#400C7A] hover:bg-[#D1B8F5] focus:ring-[#400C7A]/50 border-[#400C7A] border',
+    'zuno-dark':
+      'bg-[#400C7A]/25 text-[#400C7A] hover:bg-[#400C7A]/50 focus:ring-[#400C7A]/50 rounded-xl',
   };
 
   const sizeStyles: Record<ButtonSize, string> = {
-    sm: 'px-4 py-2 text-xs',
+    sm: 'px-8 py-2 text-xs',
     md: 'px-4 py-2 text-base',
     lg: 'px-6 py-3 text-lg',
   };

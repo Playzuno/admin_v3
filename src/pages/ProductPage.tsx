@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { ActionContainer } from '../components/containers';
 import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
@@ -7,11 +7,12 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
 import { menuApi } from '../services/api';
 import { toast } from 'react-hot-toast';
+import { ChevronRightIcon } from 'lucide-react';
 
 interface Category {
   id: string;
   name: string;
-  items: (MenuItem & { 
+  items: (MenuItem & {
     isDeleted?: boolean;
     originalCategory?: string;
   })[];
@@ -60,6 +61,15 @@ const initialCategories: Category[] = [
       { id: 'item-19', name: 'Paneer Dosa with Ghee' },
     ].map(item => ({ ...item, originalCategory: 'cat-4' })),
   },
+  {
+    id: 'cat-5',
+    name: 'Category - 05',
+    items: [
+      { id: 'item-20', name: 'Masala Dosa with Ghee' },
+      { id: 'item-21', name: 'Onion Rava with Ghee' },
+      { id: 'item-22', name: 'Paneer Dosa with Ghee' },
+    ].map(item => ({ ...item, originalCategory: 'cat-5' })),
+  },
 ];
 
 const ProductPage: React.FC = () => {
@@ -73,15 +83,19 @@ const ProductPage: React.FC = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<{id: string; name: string} | null>(null);
+  const [editingCategory, setEditingCategory] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const hasChanges = useMemo(() => {
-    return categories.some(category => 
-      category.name !== originalCategories.find(c => c.id === category.id)?.name ||
-      category.items.some(item => 
-        item.isDeleted || 
-        item.originalCategory !== category.id
-      )
+    return categories.some(
+      category =>
+        category.name !==
+          originalCategories.find(c => c.id === category.id)?.name ||
+        category.items.some(
+          item => item.isDeleted || item.originalCategory !== category.id
+        )
     );
   }, [categories, originalCategories]);
 
@@ -92,38 +106,54 @@ const ProductPage: React.FC = () => {
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
-    ) return;
+    )
+      return;
 
-    const sourceCategory = categories.find(cat => cat.id === source.droppableId);
-    const destCategory = categories.find(cat => cat.id === destination.droppableId);
+    const sourceCategory = categories.find(
+      cat => cat.id === source.droppableId
+    );
+    const destCategory = categories.find(
+      cat => cat.id === destination.droppableId
+    );
 
     if (!sourceCategory || !destCategory) return;
 
     const newCategories = [...categories];
-    const sourceCategoryIndex = newCategories.findIndex(cat => cat.id === source.droppableId);
-    const destCategoryIndex = newCategories.findIndex(cat => cat.id === destination.droppableId);
+    const sourceCategoryIndex = newCategories.findIndex(
+      cat => cat.id === source.droppableId
+    );
+    const destCategoryIndex = newCategories.findIndex(
+      cat => cat.id === destination.droppableId
+    );
 
-    const [movedItem] = newCategories[sourceCategoryIndex].items.splice(source.index, 1);
+    const [movedItem] = newCategories[sourceCategoryIndex].items.splice(
+      source.index,
+      1
+    );
     if (!movedItem.originalCategory) {
       movedItem.originalCategory = source.droppableId;
     }
 
-    newCategories[destCategoryIndex].items.splice(destination.index, 0, movedItem);
+    newCategories[destCategoryIndex].items.splice(
+      destination.index,
+      0,
+      movedItem
+    );
 
     setCategories(newCategories);
   };
 
   const handleDeleteItem = (categoryId: string, itemId: string) => {
-    setCategories(prevCategories => 
-      prevCategories.map(category => 
+    setCategories(prevCategories =>
+      prevCategories.map(category =>
         category.id === categoryId
           ? {
               ...category,
-              items: category.items.map(item => 
+              items: category.items.map(item =>
                 item.id === itemId
                   ? { ...item, isDeleted: !item.isDeleted }
                   : item
-              )
+              ),
             }
           : category
       )
@@ -171,7 +201,9 @@ const ProductPage: React.FC = () => {
       };
 
       categories.forEach(category => {
-        const originalCategory = originalCategories.find(c => c.id === category.id);
+        const originalCategory = originalCategories.find(
+          c => c.id === category.id
+        );
         if (originalCategory && originalCategory.name !== category.name) {
           changes.categoryNames.push({ id: category.id, name: category.name });
         }
@@ -190,7 +222,7 @@ const ProductPage: React.FC = () => {
       });
 
       await menuApi.saveChanges(changes);
-      
+
       // Update original state after successful save
       const newState = categories.map(category => ({
         ...category,
@@ -200,7 +232,7 @@ const ProductPage: React.FC = () => {
           isDeleted: false,
         })),
       }));
-      
+
       setCategories(newState);
       toast.success('Changes saved successfully');
     } catch (error) {
@@ -209,6 +241,20 @@ const ProductPage: React.FC = () => {
       setIsSaving(false);
     }
   };
+
+  const [hasHorizontalScroll, setHasHorizontalScroll] = useState(false);
+  useEffect(() => {
+    const checkForScroll = () => {
+      const container = document.querySelector('.overflow-x-auto');
+      if (container) {
+        setHasHorizontalScroll(container.scrollWidth > container.clientWidth);
+      }
+    };
+
+    checkForScroll();
+    window.addEventListener('resize', checkForScroll);
+    return () => window.removeEventListener('resize', checkForScroll);
+  }, [categories]);
 
   return (
     <div className="space-y-8">
@@ -219,27 +265,46 @@ const ProductPage: React.FC = () => {
         saveDisabled={!hasChanges || isSaving}
       >
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="flex flex-wrap -mx-3 justify-between">
+          <div className="flex flex-nowrap -mx-3 justify-between overflow-x-auto">
             {categories.map(category => (
               <Droppable key={category.id} droppableId={category.id}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={snapshot.isDraggingOver ? 'bg-gray-100 rounded-lg' : ''}
+                    className={
+                      'mx-2 ' +
+                      (snapshot.isDraggingOver ? 'bg-gray-100 rounded-lg' : '')
+                    }
                   >
                     <MenuCategory
                       id={category.id}
                       title={category.name}
                       items={category.items}
                       onEdit={() => handleEditCategory(category.id)}
-                      onDeleteItem={(itemId) => handleDeleteItem(category.id, itemId)}
+                      onDeleteItem={itemId =>
+                        handleDeleteItem(category.id, itemId)
+                      }
                     />
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             ))}
+          </div>
+          <div
+            className="absolute right-16 rounded-full top-1/2 -translate-y-1/2 bg-primary-500 text-white p-2 opacity-50 hover:opacity-100"
+            style={{
+              display: hasHorizontalScroll ? 'block' : 'none',
+            }}
+            onClick={() => {
+              const container = document.querySelector('.overflow-x-auto');
+              if (container) {
+                container.scrollLeft += 500;
+              }
+            }}
+          >
+            <ChevronRightIcon className="h-6 w-6 text-white" />
           </div>
         </DragDropContext>
       </ActionContainer>
