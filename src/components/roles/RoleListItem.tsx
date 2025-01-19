@@ -9,41 +9,48 @@ interface RoleListItemProps {
   onClick: () => void;
 }
 
-const RoleListItem: React.FC<RoleListItemProps> = ({ 
-  role, 
-  onToggleAccess, 
+const RoleListItem: React.FC<RoleListItemProps> = ({
+  role,
+  onToggleAccess,
   isSelected,
-  onClick 
+  onClick,
 }) => {
   const getBgColor = (code: string) => {
     const colors: { [key: string]: string } = {
-      SB: 'bg-orange-100',
-      GM: 'bg-orange-100',
-      W: 'bg-orange-100',
-      M: 'bg-orange-100',
-      R: 'bg-orange-100',
-      HK: 'bg-orange-100',
+      SB: 'bg-brand/20',
+      GM: 'bg-brand/20',
+      W: 'bg-brand/20',
+      M: 'bg-brand/20',
+      R: 'bg-brand/20',
+      HK: 'bg-brand/20',
     };
     return colors[code] || 'bg-gray-100';
   };
 
   return (
-    <div 
+    <div
       className={`grid grid-cols-2 p-4 items-center cursor-pointer transition-colors ${
-        isSelected ? 'bg-orange-50' : 'hover:bg-gray-50'
+        isSelected ? 'bg-[#400C7A]/20' : 'hover:bg-gray-50'
       }`}
       onClick={onClick}
     >
       <div className="flex items-center space-x-3">
-        <div className={`w-8 h-8 rounded-full ${getBgColor(role.code)} flex items-center justify-center`}>
-          <span className="text-sm font-medium">{role.code}</span>
+        <div
+          className={`w-10 h-10 rounded-full p-4 ${isSelected ? 'bg-brand' : getBgColor(role.code)} flex items-center justify-center`}
+        >
+          <span
+            className={`text-sm font-medium ${isSelected ? 'text-white' : ''}`}
+          >
+            {role.code}
+          </span>
         </div>
         <span className="font-medium">{role.name}</span>
       </div>
-      <div onClick={e => e.stopPropagation()}>
+      <div>
         <Toggle
           enabled={role.isActive}
           onChange={() => onToggleAccess(role.id)}
+          color="bg-brand"
         />
       </div>
     </div>

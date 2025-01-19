@@ -1,6 +1,7 @@
 import React from 'react';
 import { RolePermissions as IRolePermissions } from '../../types/role';
 import Checkbox from '../ui/Checkbox';
+import { ActionContainer } from '../containers';
 
 interface PermissionGroup {
   id: string;
@@ -49,7 +50,11 @@ const RolePermissions: React.FC<RolePermissionsProps> = ({
         { key: 'deleteProduct', label: 'Delete Product' },
         { key: 'addProduct', label: 'Add Product' },
         { key: 'viewProduct', label: 'Category change option' },
-        { key: 'modifyProduct', label: 'Priority change option', disabled: true },
+        {
+          key: 'modifyProduct',
+          label: 'Priority change option',
+          disabled: true,
+        },
       ],
     },
     {
@@ -75,58 +80,35 @@ const RolePermissions: React.FC<RolePermissionsProps> = ({
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-16rem)]">
-      <div className="h-16 flex justify-between items-center px-6 bg-gray-50 border-b">
-        <h3 className="text-xl font-semibold">Roles</h3>
-        <div className={`transition-opacity duration-200 ${showActions ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={onCancel}
-              className="h-9 px-6 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              disabled={isSaving}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onSave}
-              className="h-9 px-6 bg-secondary text-white rounded-lg hover:bg-secondary-600 transition-colors flex items-center space-x-2"
-              disabled={isSaving}
-            >
-              {isSaving ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <span>Save Changes</span>
-              )}
-            </button>
+    <ActionContainer
+      title={<div className="text-xs">Roles</div>}
+      onCancel={showActions ? onCancel : undefined}
+      onSave={showActions ? onSave : undefined}
+    >
+      <div className="flex flex-col h-[calc(100vh-16rem)]">
+        <div className="flex-1 overflow-y-auto">
+          <div className="space-y-12 p-6">
+            {permissionGroups.map(group => (
+              <div key={group.id} className="space-y-6">
+                <h4 className="text-base">{group.title}</h4>
+                <div className="grid grid-cols-4 gap-8">
+                  {group.permissions.map((permission, index) => (
+                    <Checkbox
+                      key={`${group.id}-${permission.key}-${index}`}
+                      label={permission.label}
+                      checked={permissions[permission.key]}
+                      onChange={() => onPermissionChange(permission.key)}
+                      disabled={permission.disabled || isSaving}
+                      size="sm"
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-12 p-6">
-          {permissionGroups.map(group => (
-            <div key={group.id} className="space-y-6">
-              <h4 className="text-2xl font-semibold">{group.title}</h4>
-              <div className="grid grid-cols-4 gap-8">
-                {group.permissions.map((permission, index) => (
-                  <Checkbox
-                    key={`${group.id}-${permission.key}-${index}`}
-                    label={permission.label}
-                    checked={permissions[permission.key]}
-                    onChange={() => onPermissionChange(permission.key)}
-                    disabled={permission.disabled || isSaving}
-                    size="lg"
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    </ActionContainer>
   );
 };
 

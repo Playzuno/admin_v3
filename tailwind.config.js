@@ -50,13 +50,14 @@ export default {
           300: '#E5E5E5',
         },
         brand: {
+          DEFAULT: '#400C7A',
           orange: '#FF6E01',
           purple: {
             light: '#E7D1FF',
             DEFAULT: '#9003DE',
             dark: '#400C7A',
             darker: '#400C7A',
-          }
+          },
         },
         stroke: {
           light: '#FFFFFF',
@@ -70,11 +71,11 @@ export default {
       fontSize: {
         '3xs': '12px',
         '2xs': '14px',
-        'xs': '16px',
-        'sm': '18px',
-        'base': '20px',
-        'lg': '24px',
-        'xl': '28px',
+        xs: '16px',
+        sm: '18px',
+        base: '20px',
+        lg: '24px',
+        xl: '28px',
         '2xl': '32px',
         '3xl': '36px',
         '4xl': '42px',
@@ -90,13 +91,16 @@ export default {
       },
       boxShadow: {
         sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-        DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+        DEFAULT:
+          '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
         lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
       },
       backgroundImage: {
-        'gradient-purple': 'linear-gradient(180deg, rgba(64, 12, 122, 0.2) 0%, rgba(255, 255, 255, 0.8) 100%)',
-        'gradient-purple-dark': 'linear-gradient(180deg, #7616E0 0%, #400C7A 100%)',
+        'gradient-purple':
+          'linear-gradient(180deg, rgba(64, 12, 122, 0.2) 0%, rgba(255, 255, 255, 0.8) 100%)',
+        'gradient-purple-dark':
+          'linear-gradient(180deg, #7616E0 0%, #400C7A 100%)',
       },
     },
   },
