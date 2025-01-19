@@ -1,0 +1,161 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import './utilities.scss';
+// Custom utility classes
+@layer components {
+  // Button variants
+  .btn {
+    @apply px-4 py-2 rounded-lg transition-colors duration-200 font-medium;
+
+    &-primary {
+      @apply bg-primary text-white hover:bg-primary-600;
+    }
+
+    &-secondary {
+      @apply bg-secondary text-white hover:bg-secondary-600;
+    }
+
+    &-outline {
+      @apply border-2 border-primary text-primary hover:bg-primary-50;
+    }
+
+    &-ghost {
+      @apply text-gray-700 hover:bg-gray-100;
+    }
+
+    &-danger {
+      @apply bg-red-500 text-white hover:bg-red-600;
+    }
+
+    &-light {
+      @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+    }
+  }
+
+  // Role management specific classes
+  .role {
+    &-item {
+      @apply grid grid-cols-2 p-4 items-center cursor-pointer transition-colors;
+
+      &:hover {
+        @apply bg-gray-50;
+      }
+
+      &-selected {
+        @apply bg-orange-50;
+      }
+    }
+
+    &-icon {
+      @apply w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center;
+    }
+
+    &-name {
+      @apply flex items-center space-x-3;
+    }
+
+    &-code {
+      @apply text-sm font-medium;
+    }
+  }
+
+  // Permission group styles
+  .permission {
+    &-group {
+      @apply space-y-6;
+    }
+
+    &-title {
+      @apply text-2xl font-semibold;
+    }
+
+    &-grid {
+      @apply grid grid-cols-4 gap-8;
+    }
+  }
+
+  // Banner styles
+  .banner {
+    &-info {
+      @apply bg-secondary-50 p-6 rounded-lg flex items-start space-x-4;
+    }
+
+    &-icon {
+      @apply p-2 bg-white rounded-lg;
+    }
+  }
+
+  // Section styles
+  .section {
+    &-header {
+      @apply flex justify-between items-center mb-4;
+    }
+
+    &-title {
+      @apply text-xl font-semibold;
+    }
+  }
+
+  // Layout styles
+  .layout {
+    &-main {
+      @apply space-y-8;
+    }
+
+    &-split {
+      @apply flex gap-8;
+    }
+
+    &-sidebar {
+      @apply w-[40%];
+    }
+
+    &-content {
+      @apply w-[60%];
+    }
+  }
+}
+
+// Animations
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float-reverse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 5s ease-in-out infinite;
+}

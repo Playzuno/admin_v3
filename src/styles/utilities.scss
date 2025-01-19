@@ -1,0 +1,201 @@
+@import './design-tokens.scss';
+
+// Typography Utilities
+.text {
+  &-heading {
+    @apply font-heading;
+
+    &-1 {
+      @apply text-3xl font-bold text-gray-900;
+    }
+
+    &-2 {
+      @apply text-2xl font-bold text-gray-900;
+    }
+
+    &-3 {
+      @apply text-xl font-semibold text-gray-900;
+    }
+  }
+
+  &-body {
+    @apply text-base text-gray-600;
+
+    &-large {
+      @apply text-lg;
+    }
+
+    &-small {
+      @apply text-sm;
+    }
+  }
+
+  &-subtle {
+    @apply text-sm text-gray-500;
+  }
+
+  &-label {
+    @apply text-sm font-medium text-gray-700;
+  }
+}
+
+// Container Styles
+.container {
+  &-card {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+  }
+
+  &-section {
+    @apply bg-white rounded-2xl border border-gray-200 p-6;
+  }
+
+  &-banner {
+    @apply bg-secondary-50 rounded-xl p-6;
+  }
+}
+
+// Button Variants
+.btn {
+  @apply px-4 py-2 rounded-lg transition-colors duration-200 font-medium inline-flex items-center justify-center;
+
+  &-primary {
+    @apply bg-primary text-white hover:bg-primary-600;
+  }
+
+  &-secondary {
+    @apply bg-secondary text-white hover:bg-secondary-600;
+  }
+
+  &-outline {
+    @apply border-2 border-primary text-primary hover:bg-primary-50;
+  }
+
+  &-ghost {
+    @apply text-gray-700 hover:bg-gray-100;
+  }
+
+  &-link {
+    @apply text-primary hover:text-primary-600 underline;
+  }
+}
+
+// Form Elements
+.form {
+  &-input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary;
+  }
+
+  &-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  &-helper {
+    @apply mt-1 text-sm text-gray-500;
+  }
+
+  &-error {
+    @apply mt-1 text-sm text-error;
+  }
+}
+
+// Badge Variants
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+
+  &-primary {
+    @apply bg-primary-50 text-primary;
+  }
+
+  &-secondary {
+    @apply bg-secondary-50 text-secondary;
+  }
+
+  &-success {
+    @apply bg-green-50 text-success;
+  }
+
+  &-warning {
+    @apply bg-yellow-50 text-warning;
+  }
+
+  &-error {
+    @apply bg-red-50 text-error;
+  }
+}
+
+// Icon Containers
+.icon {
+  &-container {
+    @apply p-2 rounded-lg transition-colors;
+
+    &-primary {
+      @apply bg-primary-50 text-primary;
+    }
+
+    &-secondary {
+      @apply bg-secondary-50 text-secondary;
+    }
+  }
+
+  &-button {
+    @apply p-2 rounded-full hover:bg-gray-100 transition-colors;
+  }
+}
+
+// Layout Utilities
+.layout {
+  &-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  &-section {
+    @apply py-6 space-y-6;
+  }
+
+  &-grid {
+    @apply grid gap-6;
+
+    &-2 {
+      @apply grid-cols-2;
+    }
+
+    &-3 {
+      @apply grid-cols-3;
+    }
+
+    &-4 {
+      @apply grid-cols-4;
+    }
+  }
+}
+
+// Flex Utilities
+.flex {
+  &-center {
+    @apply flex items-center justify-center;
+  }
+
+  &-between {
+    @apply flex items-center justify-between;
+  }
+
+  &-start {
+    @apply flex items-start;
+  }
+}
+
+.subtitle {
+  @apply text-2xs text-gray-500;
+}
+
+.mini-subtitle {
+  @apply text-3xs text-gray-500;
+}
+
+.title {
+  @apply text-sm font-semibold;
+}
+
+.zuno-border {
+  @apply border-[#C1C1C1];
+}
