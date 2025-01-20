@@ -131,7 +131,7 @@ const TeamPage: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  className="pl-10 pr-4 py-3 bg-gray-100 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-brand/20"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                 />
@@ -180,7 +180,7 @@ const TeamPage: React.FC = () => {
           <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
-                <tr className="text-left border-y">
+                <tr className="text-left border-b">
                   <th className="pl-6 py-4">
                     <Checkbox
                       bgColor="bg-brand"
@@ -189,7 +189,7 @@ const TeamPage: React.FC = () => {
                       onChange={handleSelectAll}
                     />
                   </th>
-                  <th className="px-6 py-4 title">Account</th>
+                  <th className="pr-6 py-4 title">Account</th>
                   <th className="px-6 py-4 title">Access expires in</th>
                   <th className="px-6 py-4 title">Role</th>
                   <th className="px-6 py-4 title">Expiration</th>
@@ -207,13 +207,13 @@ const TeamPage: React.FC = () => {
                         onChange={() => handleSelectMember(member.id)}
                       />
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="pr-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                        {/* <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
                           <span className="text-primary font-medium">
                             {member.initial}
                           </span>
-                        </div>
+                        </div> */}
                         <div>
                           <div className="zuno-text">{member.name}</div>
                           <div className="subtitle-2">{member.position}</div>
