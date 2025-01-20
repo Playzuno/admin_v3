@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import containersvg from ''
-const Container = ({ children }) => {
-  const lrW = 400;
+interface ContainerProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+const Container = ({ title = 'Dashboard', children }: ContainerProps) => {
   const r = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -29,8 +32,15 @@ const Container = ({ children }) => {
   }, [dimensions]);
 
   return (
-    <div className="bg-white rounded-2xl zuno-border-dark overflow-hidden p-6 relative pt-16">
-      <div className="flex justify-center absolute top-0 left-1/2 -translate-x-1/2 z-20">
+    <div className="bg-white rounded-t-3xl rounded-b-2xl border-[0.5px] border-[#909090] border-t-0 overflow-hidden p-0 relative">
+      <div className="flex mb-8">
+        <div className="h-10 w-full border-r border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
+        <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center">
+          <h1 className="text-base font-medium">{title}</h1>
+        </div>
+        <div className="h-10 w-full border-r border-l border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
+      </div>
+      {/* <div className="flex justify-center absolute top-0 left-1/2 -translate-x-1/2 z-20">
         <div>
           <img
             ref={r}
@@ -60,9 +70,8 @@ const Container = ({ children }) => {
             style={{ zIndex: '0' }}
           />
         </div>
-      </div>
-
-      {children}
+      </div> */}
+      <div className="p-6">{children}</div>
     </div>
   );
 };

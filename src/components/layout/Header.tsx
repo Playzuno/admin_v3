@@ -56,7 +56,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b w-full">
+    <header className="bg-white w-full">
       <div className="container mx-auto px-4">
         <div className="flex h-[4.5rem] items-center justify-between">
           {/* Logo */}
@@ -84,7 +84,7 @@ const Header = () => {
                   style={getItemStyle(index)}
                   className={`absolute left-1/2 p-3 rounded-full transition-all cursor-pointer ${
                     location.pathname === path
-                      ? 'bg-secondary text-white scale-110'
+                      ? 'bg-brand text-white scale-110'
                       : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}
                   title={label}

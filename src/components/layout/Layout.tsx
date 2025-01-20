@@ -13,10 +13,10 @@ const Layout = () => {
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       {!isPublicPage && <Header />}
       <main
-        className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 py-6' : ''}`}
+        className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 pb-6 pt-2' : ''}`}
       >
         {!isPublicPage ? (
-          <Container>
+          <Container title="Dashboard">
             <Outlet />
           </Container>
         ) : (
