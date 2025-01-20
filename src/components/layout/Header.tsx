@@ -45,7 +45,7 @@ const Header = () => {
     const translateX = relativePosition * 60; // Base spacing
     // change 1 to 0 for applying reduced opacity from center to end
     const opacity = Math.max(1, 1 - Math.abs(relativePosition) * 0.3);
-    const scale = 1.2 - Math.abs(relativePosition) * 0.1;
+    const scale = index === activeIndex ? 1.3 : 1.1;
 
     return {
       transform: `translateX(${translateX}px) scale(${scale})`,
@@ -56,7 +56,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white w-full">
+    <header className="w-full">
       <div className="container mx-auto px-4">
         <div className="flex h-[4.5rem] items-center justify-between">
           {/* Logo */}

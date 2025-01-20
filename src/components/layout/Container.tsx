@@ -35,8 +35,9 @@ const Container = ({ title = 'Dashboard', children }: ContainerProps) => {
     <div className="bg-white rounded-t-3xl rounded-b-2xl border-[0.5px] border-[#909090] border-t-0 overflow-hidden p-0 relative">
       <div className="flex mb-8">
         <div className="h-10 w-full border-r border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
-        <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center">
+        <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center bg-[#F7F7F7] relative">
           <h1 className="text-base font-medium">{title}</h1>
+          <div className="absolute top-0 left-0 w-full h-full bg-[#F7F7F7] -z-10"></div>
         </div>
         <div className="h-10 w-full border-r border-l border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
       </div>
