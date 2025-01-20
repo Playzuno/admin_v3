@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import Carousel from '../components/ui/Carousel';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,19 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const slides = [
+    {
+      title: 'Connect with Zuno.',
+      description: 'Everything you need in an easy customizable dashboard.',
+      image: '/assets/images/login-carousel-1.png',
+    },
+    {
+      title: 'Forgot Your Password? No Worries!',
+      description:
+        'We’ve got you covered! Resetting your password is quick and secure.',
+      image: '/assets/images/forgot_carousel.png',
+    },
+  ];
   const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,14 +40,22 @@ const Login = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Section */}
-      <div className="w-1/2 p-12 flex flex-col">
-        <div className="mb-16">
-          <h1 className="text-4xl font-bold text-secondary">ZUNO</h1>
-        </div>
+      <div className="w-1/2 p-12 flex flex-col items-center justify-center">
+        <Link to="/" className="flex items-center mb-10">
+          <img
+            src="/assets/images/logo.svg"
+            alt="Zuno Logo"
+            style={{ height: '35px' }}
+          />
+        </Link>
 
-        <div className="max-w-md">
-          <h2 className="text-3xl font-bold text-secondary mb-2">Log in to your Account</h2>
-          <p className="text-gray-500 mb-8">Welcome back! Please enter your details</p>
+        <div className="max-w-lg">
+          <h2 className="text-2xl font-medium text-brand">
+            Log in to your Account
+          </h2>
+          <p className="subtitle-2 mb-8">
+            Welcome back! Please enter your details
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -42,12 +63,17 @@ const Login = () => {
                 <input
                   type="text"
                   placeholder="Email or Phone Number"
-                  className="w-full px-4 py-3 border rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-secondary/20"
+                  className="w-[380px] px-4 py-3 border rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-secondary/20"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                 />
                 <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                  <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
@@ -62,10 +88,15 @@ const Login = () => {
                   placeholder="Password"
                   className="w-full px-4 py-3 border rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-secondary/20"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                 />
                 <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                  <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
@@ -89,12 +120,16 @@ const Login = () => {
                 <input
                   type="checkbox"
                   checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  onChange={e => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary"
                 />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <button type="button" className="text-secondary hover:underline">
+              <button
+                type="button"
+                className="text-secondary hover:underline"
+                onClick={() => navigate('/forgot-password')}
+              >
                 Forgot Password?
               </button>
             </div>
@@ -110,7 +145,8 @@ const Login = () => {
       </div>
 
       {/* Right Section */}
-      <div className="w-1/2 bg-secondary p-12 flex flex-col justify-between text-white">
+      <Carousel slides={slides} />
+      {/* <div className="w-1/2 bg-secondary p-12 flex flex-col justify-between text-white">
         <div className="flex-1 flex items-center justify-center">
           <img
             src="https://raw.githubusercontent.com/your-username/your-repo/main/public/dashboard-preview.png"
@@ -129,7 +165,7 @@ const Login = () => {
             <div className="w-2 h-2 rounded-full bg-white/50"></div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

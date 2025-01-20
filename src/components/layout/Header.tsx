@@ -61,7 +61,11 @@ const Header = () => {
         <div className="flex h-[4.5rem] items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-primary">ZUNO</span>
+            <img
+              src="/assets/images/logo.svg"
+              alt="Zuno Logo"
+              style={{ height: '35px' }}
+            />
           </Link>
 
           {/* Navigation Icons
