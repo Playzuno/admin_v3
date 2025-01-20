@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown, MoreVertical } from 'lucide-react';
-import { HeaderContainer } from '../components/containers';
+import { Search, ChevronDown, MoreVertical, Filter } from 'lucide-react';
 import { transactions } from '../seeds/transactions';
-import { Transaction, SortField, SortOrder } from '../types/transaction';
+import { SortField, SortOrder } from '../types/transaction';
+import PlainContainer from '../components/containers/PlainContainer';
+import Button from '../components/ui/Button';
 
 const TransactionHistoryPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,7 +36,7 @@ const TransactionHistoryPage: React.FC = () => {
     // Apply sorting
     result.sort((a, b) => {
       let comparison = 0;
-      
+
       if (sortField === 'date') {
         const dateA = new Date(`${a.date} ${a.time}`).getTime();
         const dateB = new Date(`${b.date} ${b.time}`).getTime();
@@ -52,7 +53,7 @@ const TransactionHistoryPage: React.FC = () => {
 
   const handleSort = (field: SortField) => {
     if (field === sortField) {
-      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+      setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortField(field);
       setSortOrder('desc');
@@ -64,56 +65,49 @@ const TransactionHistoryPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header with breadcrumb and title */}
       <div className="space-y-1">
-        <div className="text-sm text-gray-500">Project1 / Members</div>
+        {/* <div className="text-sm text-gray-500">Project1 / Members</div> */}
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Transaction History</h1>
-          <button className="px-8 py-3 bg-secondary text-white rounded-full">
+          <h1 className="container-title">Transaction History</h1>
+          <Button variant="primary" size="sm">
             Add Profile
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      <HeaderContainer>
+      <PlainContainer>
         {/* Search and Sort */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="relative">
+        <div className="flex space-x-4 flex-1 mb-8">
+          <div className="relative flex-1 max-w-xs">
             <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by name or ID"
-              className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg w-[300px] focus:outline-none focus:ring-2 focus:ring-primary/20"
+              placeholder="Search"
+              className="pl-10 pr-4 py-3 bg-gray-100 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-brand/20"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="relative">
-            <button 
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg text-gray-700"
-              onClick={() => setShowSortMenu(!showSortMenu)}
+          {/* <div className="flex items-center space-x-4">
+            <Button
+              variant="secondary"
+              size="sm"
+              bgColor="bg-brand"
+              style={{ borderRadius: '8px' }}
+              icon={Filter}
+              iconPosition="left"
+              onClick={() => setRoleFilter(null)}
             >
-              <span>Sort by {sortOptions.find(opt => opt.field === sortField)?.label.toLowerCase()}</span>
+              <span>Filter by role</span>
+              <ChevronDown className="w-4 h-4 ml-2" />
+            </Button>
+          </div> */}
+          <div className="flex-1"></div>
+          <div className="flex items-center space-x-4">
+            <button className="px-4 py-2 bg-[#EDEDED] rounded-lg text-[#7E7E7E] flex items-center space-x-2">
+              <span className="mr-4">Sort by teams</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-
-            {showSortMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-1 z-10">
-                {sortOptions.map((option) => (
-                  <button
-                    key={option.field}
-                    className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                      sortField === option.field ? 'text-secondary' : 'text-gray-700'
-                    }`}
-                    onClick={() => handleSort(option.field)}
-                  >
-                    {option.label}
-                    {sortField === option.field && (
-                      <span className="ml-2">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
 
@@ -123,48 +117,58 @@ const TransactionHistoryPage: React.FC = () => {
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
                 <tr className="text-left border-b">
-                  <th className="pb-4 font-medium">Name</th>
-                  <th className="pb-4 font-medium">Date of joining</th>
-                  <th className="pb-4 font-medium">No. of brands</th>
-                  <th className="pb-4 font-medium">Total Rewards</th>
-                  <th className="pb-4 font-medium">Total redemption</th>
-                  <th className="pb-4 font-medium">Balance</th>
-                  <th className="pb-4"></th>
+                  <th className="px-6 py-2 title">Name</th>
+                  <th className="px-6 py-2 title">Date of joining</th>
+                  <th className="px-6 py-2 title">No. of brands</th>
+                  <th className="px-6 py-2 title">Total Rewards</th>
+                  <th className="px-6 py-2 title">Total redemption</th>
+                  <th className="px-6 py-2 title">Balance</th>
+                  <th className="px-6 py-2"></th>
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {filteredAndSortedTransactions.map((transaction) => (
+                {filteredAndSortedTransactions.map(transaction => (
                   <tr key={transaction.id} className="group hover:bg-gray-50">
-                    <td className="py-4">
+                    <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                          <span className="text-secondary font-medium">{transaction.initial}</span>
+                        <div className="w-8 h-8 rounded-full p-4 text-brand bg-brand/25 flex items-center justify-center">
+                          <span className="text-sm font-medium">
+                            {transaction.initial}
+                          </span>
                         </div>
                         <div>
-                          <div className="font-medium">{transaction.name}</div>
-                          <div className="text-sm text-gray-500">ID: {transaction.id}</div>
+                          <div className="zuno-text">{transaction.name}</div>
+                          <div className="subtitle">ID: {transaction.id}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="py-4">
+                    <td className="px-6 py-4">
                       <div>
                         <div>{transaction.date}</div>
-                        <div className="text-sm text-gray-500">at {transaction.time}</div>
+                        <div className="subtitle">at {transaction.time}</div>
                       </div>
                     </td>
-                    <td className="py-4">
-                      <span className="text-secondary font-medium">{transaction.brands}</span>
+                    <td className="px-6 py-4 text-right">
+                      <span className="text-brand zuno-text mr-8">
+                        {transaction.brands}
+                      </span>
                     </td>
-                    <td className="py-4">
-                      <span className="text-secondary font-medium">{transaction.totalRewards} Coins</span>
+                    <td className="px-6 py-4">
+                      <span className="text-brand zuno-text">
+                        {transaction.totalRewards} Coins
+                      </span>
                     </td>
-                    <td className="py-4">
-                      <span className="text-gray-600">{transaction.totalRedemption} coins</span>
+                    <td className="px-6 py-4">
+                      <span className="zuno-text">
+                        {transaction.totalRedemption} coins
+                      </span>
                     </td>
-                    <td className="py-4">
-                      <span className="text-gray-900">{transaction.balance} Coins</span>
+                    <td className="px-6 py-4">
+                      <span className="zuno-text">
+                        {transaction.balance} Coins
+                      </span>
                     </td>
-                    <td className="py-4">
+                    <td className="px-6 py-4">
                       <button className="opacity-0 group-hover:opacity-100 transition-opacity">
                         <MoreVertical className="w-5 h-5 text-gray-400" />
                       </button>
@@ -175,7 +179,7 @@ const TransactionHistoryPage: React.FC = () => {
             </table>
           </div>
         </div>
-      </HeaderContainer>
+      </PlainContainer>
     </div>
   );
 };

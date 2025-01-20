@@ -78,7 +78,7 @@ const Header = () => {
                   key={path}
                   to={path}
                   style={getItemStyle(index)}
-                  className={`absolute left-1/2 p-3 rounded-full transition-all ${
+                  className={`absolute left-1/2 p-3 rounded-full transition-all cursor-pointer ${
                     location.pathname === path
                       ? 'bg-secondary text-white scale-110'
                       : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
