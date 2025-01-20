@@ -5,9 +5,12 @@ import { teamMembers as seedTeamMembers } from '../seeds';
 import RoleDropdown from '../components/team/RoleDropdown';
 import ExpirationDate from '../components/team/ExpirationDate';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
+import Button from '../components/ui/Button';
+import { TabContainer } from '../components/containers';
+import Checkbox from '../components/ui/Checkbox';
 
 const TeamPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('All');
+  const [activeTab, setActiveTab] = useState('all');
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(seedTeamMembers);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
@@ -16,8 +19,8 @@ const TeamPage: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
 
   const handleSelectMember = (memberId: string) => {
-    setSelectedMembers(prev => 
-      prev.includes(memberId) 
+    setSelectedMembers(prev =>
+      prev.includes(memberId)
         ? prev.filter(id => id !== memberId)
         : [...prev, memberId]
     );
@@ -48,7 +51,9 @@ const TeamPage: React.FC = () => {
 
   const confirmDelete = () => {
     if (memberToDelete) {
-      setTeamMembers(prev => prev.filter(member => member.id !== memberToDelete));
+      setTeamMembers(prev =>
+        prev.filter(member => member.id !== memberToDelete)
+      );
       setMemberToDelete(null);
     }
   };
@@ -63,14 +68,20 @@ const TeamPage: React.FC = () => {
           ? {
               ...member,
               expiration: date
-                ? date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  }).split('/').join('.')
+                ? date
+                    .toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                    })
+                    .split('/')
+                    .join('.')
                 : null,
               daysToExpire: date
-                ? Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+                ? Math.ceil(
+                    (date.getTime() - new Date().getTime()) /
+                      (1000 * 60 * 60 * 24)
+                  )
                 : -1,
             }
           : member
@@ -79,162 +90,176 @@ const TeamPage: React.FC = () => {
   };
 
   const getAccessExpiresText = (daysToExpire: number) => {
-    if (daysToExpire === -1) return <div className="flex items-center space-x-1">
-      <Infinity className="w-4 h-4" />
-      <span>No expiration</span>
-    </div>;
+    if (daysToExpire === -1)
+      return (
+        <div className="flex items-center space-x-1">
+          <Infinity className="w-4 h-4" />
+          <span>No expiration</span>
+        </div>
+      );
     return `${daysToExpire} days`;
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Manage Team Members</h1>
+        <h1 className="title-2">Manage Team Members</h1>
         <div className="flex space-x-4">
-          <button className="btn btn-secondary">Add member</button>
-          <button className="px-6 py-2 bg-secondary-50 text-secondary rounded-md hover:bg-secondary-100 transition-colors">
+          <Button variant="secondary" size="sm">
+            Add member
+          </Button>
+          <Button variant="zuno-dark-2" size="sm">
             Edit roles
-          </button>
+          </Button>
         </div>
       </div>
-
-      <div className="bg-white rounded-lg shadow-sm">
-        {/* Tabs */}
-        <div className="flex space-x-8 px-6 pt-4 border-b">
-          {['All', 'Members', 'Groups'].map((tab) => (
-            <button
-              key={tab}
-              className={`pb-4 relative ${
-                activeTab === tab
-                  ? 'text-primary font-medium border-b-2 border-primary'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Search and Filters */}
-        <div className="p-6 flex items-center border-b">
-          <div className="flex space-x-4 flex-1">
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search"
-                className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-primary/20"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <button 
-                className="px-4 py-2 bg-secondary text-white rounded-lg flex items-center space-x-2"
-                onClick={() => setRoleFilter(null)}
-              >
-                <Filter className="w-4 h-4" />
-                <span>Filter by role</span>
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </button>
-              <button className="px-4 py-2 bg-gray-100 rounded-lg text-gray-700 flex items-center space-x-2">
-                <span>Sort by teams</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              {editingMember && (
-                <>
-                  <button 
-                    onClick={() => setEditingMember(null)}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={() => setEditingMember(null)}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
-                  >
-                    Save Changes
-                  </button>
-                </>
-              )}
+      <TabContainer
+        tabs={[
+          { key: 'all', label: 'All' },
+          { key: 'members', label: 'Members' },
+          { key: 'groups', label: 'Groups' },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      >
+        <div className="bg-white rounded-lg shadow-sm">
+          {/* Search and Filters */}
+          <div className="mb-8 flex items-center">
+            <div className="flex space-x-4 flex-1">
+              <div className="relative flex-1 max-w-xs">
+                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="pl-10 pr-4 py-2 bg-gray-100 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center space-x-4">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  bgColor="bg-brand"
+                  style={{ borderRadius: '8px' }}
+                  icon={Filter}
+                  iconPosition="left"
+                  onClick={() => setRoleFilter(null)}
+                >
+                  <span>Filter by role</span>
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+              <div className="flex-1"></div>
+              <div className="flex items-center space-x-4">
+                {editingMember && (
+                  <>
+                    <Button
+                      variant="light"
+                      onClick={() => setEditingMember(null)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => setEditingMember(null)}
+                    >
+                      Save Changes
+                    </Button>
+                  </>
+                )}
+                <button className="px-4 py-2 bg-[#EDEDED] rounded-lg text-[#7E7E7E] flex items-center space-x-2">
+                  <span className="mr-4">Sort by teams</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Table */}
-        <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-          <table className="w-full">
-            <thead className="sticky top-0 bg-white">
-              <tr className="text-left border-y">
-                <th className="pl-6 py-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedMembers.length === teamMembers.length}
-                    onChange={handleSelectAll}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                </th>
-                <th className="px-6 py-4 font-medium">Account</th>
-                <th className="px-6 py-4 font-medium">Access expires</th>
-                <th className="px-6 py-4 font-medium">Role</th>
-                <th className="px-6 py-4 font-medium">Expiration</th>
-                <th className="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {teamMembers.map((member) => (
-                <tr key={member.id} className="hover:bg-gray-50">
-                  <td className="pl-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedMembers.includes(member.id)}
-                      onChange={() => handleSelectMember(member.id)}
-                      className="rounded border-gray-300 text-primary focus:ring-primary"
+          {/* Table */}
+          <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
+            <table className="w-full">
+              <thead className="sticky top-0 bg-white">
+                <tr className="text-left border-y">
+                  <th className="pl-6 py-4">
+                    <Checkbox
+                      bgColor="bg-brand"
+                      label=""
+                      checked={selectedMembers.length === teamMembers.length}
+                      onChange={handleSelectAll}
                     />
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                        <span className="text-primary font-medium">{member.initial}</span>
-                      </div>
-                      <div>
-                        <div className="font-medium">{member.name}</div>
-                        <div className="text-sm text-gray-500">{member.position}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">{getAccessExpiresText(member.daysToExpire)}</td>
-                  <td className="px-6 py-4">
-                    <RoleDropdown
-                      role={member.role}
-                      roles={member.roles}
-                      onRoleChange={(newRole) => handleRoleChange(member.id, newRole)}
-                      disabled={editingMember !== null && editingMember !== member.id}
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <ExpirationDate
-                      date={member.expiration}
-                      onClear={() => handleDateChange(member.id, null)}
-                      onSelectDate={(date) => handleDateChange(member.id, date)}
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleDelete(member.id)}
-                      className="text-red-500 hover:text-red-600"
-                      disabled={editingMember !== null && editingMember !== member.id}
-                    >
-                      Delete
-                    </button>
-                  </td>
+                  </th>
+                  <th className="px-6 py-4 title">Account</th>
+                  <th className="px-6 py-4 title">Access expires in</th>
+                  <th className="px-6 py-4 title">Role</th>
+                  <th className="px-6 py-4 title">Expiration</th>
+                  <th className="px-6 py-4"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y">
+                {teamMembers.map(member => (
+                  <tr key={member.id} className="hover:bg-gray-50">
+                    <td className="pl-6 py-4">
+                      <Checkbox
+                        bgColor="bg-brand"
+                        label=""
+                        checked={selectedMembers.includes(member.id)}
+                        onChange={() => handleSelectMember(member.id)}
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                          <span className="text-primary font-medium">
+                            {member.initial}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="zuno-text">{member.name}</div>
+                          <div className="subtitle-2">{member.position}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 zuno-text">
+                      {getAccessExpiresText(member.daysToExpire)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <RoleDropdown
+                        role={member.role}
+                        roles={member.roles}
+                        onRoleChange={newRole =>
+                          handleRoleChange(member.id, newRole)
+                        }
+                        disabled={
+                          editingMember !== null && editingMember !== member.id
+                        }
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <ExpirationDate
+                        date={member.expiration}
+                        onClear={() => handleDateChange(member.id, null)}
+                        onSelectDate={date => handleDateChange(member.id, date)}
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleDelete(member.id)}
+                        className="text-error hover:text-error"
+                        disabled={
+                          editingMember !== null && editingMember !== member.id
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </TabContainer>
 
       <ConfirmDialog
         isOpen={memberToDelete !== null}

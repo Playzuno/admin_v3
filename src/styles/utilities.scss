@@ -192,6 +192,14 @@
   @apply text-3xs text-gray-500;
 }
 
+.subtitle-2 {
+  @apply text-xs font-regular text-[#ADADAD];
+}
+
+.zuno-text {
+  @apply text-sm font-regular;
+}
+
 .title {
   @apply text-sm font-semibold;
 }

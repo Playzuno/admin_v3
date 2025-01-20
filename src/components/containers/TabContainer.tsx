@@ -21,19 +21,14 @@ const TabContainer: React.FC<TabContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.15)] border border-gray-200 overflow-hidden">
-      {/* {title && (
-        <div className="px-6 py-4 bg-[#F2F2F2] border-b border-gray-200">
-          <h2 className="text-xl font-semibold">{title}</h2>
-        </div>
-      )} */}
-      <div className="flex space-x-8 px-6 bg-[#F2F2F2] border-b border-gray-200">
+    <div className="bg-white rounded-lg zuno-border-dark overflow-hidden">
+      <div className="flex space-x-8 items-center px-6 bg-[#F2F2F2] border-b border-[#BBBBBB] border-[0.5px]">
         {tabs.map(tab => (
           <button
             key={tab.key}
-            className={`py-4 relative ${
+            className={`py-4 relative  min-w-16 ${
               activeTab === tab.key
-                ? 'text-primary font-medium border-b-2 border-primary'
+                ? 'text-brand font-medium border-b-2 border-brand'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
             onClick={() => onTabChange(tab.key)}

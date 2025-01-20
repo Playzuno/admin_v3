@@ -43,7 +43,7 @@ export default {
         },
         success: '#10B981',
         warning: '#F59E0B',
-        error: '#EF4444',
+        error: '#C53A24',
         neutral: {
           100: '#F6F6F6',
           200: '#FFFFFF',

@@ -8,7 +8,11 @@ interface ExpirationDateProps {
   onSelectDate: (date: Date | null) => void;
 }
 
-const ExpirationDate: React.FC<ExpirationDateProps> = ({ date, onClear, onSelectDate }) => {
+const ExpirationDate: React.FC<ExpirationDateProps> = ({
+  date,
+  onClear,
+  onSelectDate,
+}) => {
   const [showCalendar, setShowCalendar] = useState(false);
 
   const handleDateSelect = (selectedDate: Date) => {
@@ -35,25 +39,27 @@ const ExpirationDate: React.FC<ExpirationDateProps> = ({ date, onClear, onSelect
 
   return (
     <div className="relative">
-      <div className={`px-4 py-2 rounded-lg flex items-center justify-between ${
-        !date ? 'bg-gray-100' : 'bg-secondary-50'
-      }`}>
+      <div
+        className={`px-4 py-2 rounded-lg flex items-center justify-between ${
+          !date ? 'bg-gray-100' : 'bg-[#EEE9FD]'
+        }`}
+      >
         <div className="flex items-center space-x-2">
           {!date && <Infinity className="w-4 h-4 text-gray-500" />}
-          <span className={!date ? 'text-gray-500' : 'text-secondary'}>
+          <span className={!date ? 'text-gray-500' : 'text-brand'}>
             {getDisplayText()}
           </span>
         </div>
         <div className="flex space-x-1">
           {date ? (
-            <button 
+            <button
               onClick={handleClear}
               className="p-1 hover:bg-secondary-100 rounded transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <button 
+            <button
               onClick={handleCalendarClick}
               className="p-1 hover:bg-secondary-100 rounded transition-colors"
             >
@@ -62,7 +68,7 @@ const ExpirationDate: React.FC<ExpirationDateProps> = ({ date, onClear, onSelect
           )}
         </div>
       </div>
-      
+
       {showCalendar && !date && (
         <Calendar
           selectedDate={null}

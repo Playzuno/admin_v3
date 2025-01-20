@@ -8,6 +8,7 @@ interface CheckboxProps {
   disabled?: boolean;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  bgColor?: string;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -17,6 +18,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   disabled = false,
   className = '',
   size = 'md',
+  bgColor = 'bg-primary',
 }) => {
   const sizeClasses = {
     sm: 'w-[20px] h-[20px]',
@@ -37,7 +39,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
       <div className={`w-8`}>
         <div
           className={`${sizeClasses[size]} rounded border ${
-            checked ? 'bg-primary border-primary' : 'border-gray-300 bg-white'
+            checked
+              ? `${bgColor} border-${bgColor}`
+              : 'border-gray-300 bg-white'
           } flex items-center justify-center transition-colors mr-2 box-content`}
           onClick={() => !disabled && onChange()}
         >

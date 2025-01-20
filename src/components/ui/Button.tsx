@@ -10,7 +10,8 @@ type ButtonVariant =
   | 'light'
   | 'error'
   | 'zuno-light'
-  | 'zuno-dark';
+  | 'zuno-dark'
+  | 'zuno-dark-2';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -23,6 +24,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
   className?: string;
   children: React.ReactNode;
+  bgColor?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -35,6 +37,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = '',
   children,
+  bgColor,
   ...props
 }) => {
   const baseStyles =
@@ -56,6 +59,8 @@ const Button: React.FC<ButtonProps> = ({
       'bg-[#E7D1FF] text-[#400C7A] hover:bg-[#D1B8F5] focus:ring-[#400C7A]/50 border-[#400C7A] border',
     'zuno-dark':
       'bg-[#400C7A]/25 text-[#400C7A] hover:bg-[#400C7A]/50 focus:ring-[#400C7A]/50 rounded-xl',
+    'zuno-dark-2':
+      'bg-[#EDEAFD] text-[#400C7A] hover:bg-[#400C7A]/50 focus:ring-[#400C7A]/50 font-semibold',
   };
 
   const sizeStyles: Record<ButtonSize, string> = {
@@ -73,6 +78,7 @@ const Button: React.FC<ButtonProps> = ({
     fullWidth ? 'w-full' : '',
     disabled || loading ? disabledStyles : '',
     className,
+    bgColor ? `bg-[${bgColor}]` : '',
   ].join(' ');
 
   return (
