@@ -23,7 +23,10 @@ const InviteModal: React.FC<InviteModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="mt-0 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style={{marginTop: '0px'}}>
+    <div
+      className="mt-0 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      style={{ marginTop: '0px' }}
+    >
       <div className="bg-white rounded-2xl w-[500px]">
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-lg font-semibold">Invite branch team member</h2>
@@ -33,51 +36,63 @@ const InviteModal: React.FC<InviteModalProps> = ({
         </div>
         <div className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Username:
+            </label>
             <input
               type="text"
               value={formData.username}
-              onChange={(e) => onInputChange('username', e.target.value)}
+              onChange={e => onInputChange('username', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
               readOnly
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Id:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Id:
+            </label>
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => onInputChange('email', e.target.value)}
+              onChange={e => onInputChange('email', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contact no:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contact no:
+            </label>
             <input
               type="tel"
               value={formData.contact}
-              onChange={(e) => onInputChange('contact', e.target.value)}
+              onChange={e => onInputChange('contact', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Branch:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Branch:
+            </label>
             <select
               value={formData.branch}
-              onChange={(e) => onInputChange('branch', e.target.value)}
+              onChange={e => onInputChange('branch', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
             >
               <option value="">Select branch</option>
               {branches.map(branch => (
-                <option key={branch.id} value={branch.id}>{branch.name}</option>
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Role:
+            </label>
             <select
               value={formData.role}
-              onChange={(e) => onInputChange('role', e.target.value)}
+              onChange={e => onInputChange('role', e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
             >
               <option value="">Select role</option>

@@ -5,6 +5,7 @@ import BranchCard from '../components/brand/BranchCard';
 import BranchList from '../components/brand/BranchList';
 import InviteModal from '../components/brand/InviteModal';
 import NewBranchDialog from '../components/brand/NewBranchDialog';
+import Button from '../components/ui/Button';
 
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
@@ -76,7 +77,11 @@ const BrandPage: React.FC = () => {
     setShowInviteModal(false);
   };
 
-  const handleAddBranch = (branchData: { name: string; contact: string; address: string }) => {
+  const handleAddBranch = (branchData: {
+    name: string;
+    contact: string;
+    address: string;
+  }) => {
     // Handle adding new branch
     setShowNewBranchDialog(false);
   };
@@ -91,30 +96,44 @@ const BrandPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <h1 className="text-sm">Company Name: </h1>
-          <span className="text-sm font-medium text-purple-700">Adayar Ananda Bhavan</span>
-          <button 
+          <span className="text-sm font-medium text-brand">
+            Adayar Ananda Bhavan
+          </span>
+          <button
             onClick={handleEditProfile}
             className="text-gray-400 hover:text-gray-600"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
             </svg>
           </button>
         </div>
-        <button
+        <Button
+          variant="primary"
+          size="sm"
+          className="px-4 py-1.5"
           onClick={() => setShowNewBranchDialog(true)}
-          className="px-4 py-1.5 bg-purple-700 text-white text-sm rounded-full hover:bg-purple-800 transition-colors"
         >
           Add new branch
-        </button>
+        </Button>
       </div>
 
       {/* Branch Cards */}
       <div className="grid grid-cols-5 gap-4">
         {branches.map(branch => (
-          <BranchCard 
-            key={branch.id} 
-            branch={branch} 
+          <BranchCard
+            key={branch.id}
+            branch={branch}
             isSelected={selectedBranch?.id === branch.id}
           />
         ))}

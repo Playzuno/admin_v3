@@ -14,7 +14,7 @@ const HeaderContainer: React.FC<HeaderContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="bg-white rounded-lg zuno-border-dark overflow-hidden">
+    <div className="bg-white rounded-2xl zuno-border-dark overflow-hidden">
       <div className="flex justify-between items-center px-6 py-4 bg-[#F2F2F2] border-b border-[#BBBBBB] border-[0.5px]">
         <div className="w-full">
           {typeof title === 'string' ? (
