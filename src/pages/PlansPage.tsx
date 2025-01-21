@@ -11,7 +11,7 @@ const PlansPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto">
       <PlainContainer>
         <div className="flex items-center justify-between mb-6">
           <h2 className="container-title">Choose your plan</h2>
@@ -38,11 +38,11 @@ const PlansPage: React.FC = () => {
         {/* Feature List Section */}
         <div className="mt-12">
           <div className="flex items-center space-x-6">
-            <div className="h-[2px] flex-1 bg-gradient-to-l from-secondary to-transparent" />
-            <h2 className="text-2xl font-bold text-secondary whitespace-nowrap">
+            <div className="h-[2px] flex-1 bg-gradient-to-l from-brand to-transparent" />
+            <h2 className="text-lg font-medium text-brand whitespace-nowrap">
               Feature List
             </h2>
-            <div className="h-[2px] flex-1 bg-gradient-to-r from-secondary to-transparent" />
+            <div className="h-[2px] flex-1 bg-gradient-to-r from-brand to-transparent" />
           </div>
 
           <div className="grid grid-cols-3 gap-8 mt-12">

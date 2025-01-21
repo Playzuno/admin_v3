@@ -12,13 +12,19 @@ interface PlanFeaturesProps {
   variant: 'starter' | 'professional';
 }
 
-const PlanFeatures: React.FC<PlanFeaturesProps> = ({ title, features, variant }) => {
+const PlanFeatures: React.FC<PlanFeaturesProps> = ({
+  title,
+  features,
+  variant,
+}) => {
   const isProfessional = variant === 'professional';
-  
+
   return (
     <div className="space-y-8">
       <div className="space-y-4 text-center">
-        <h3 className={`text-2xl font-bold ${isProfessional ? 'text-secondary' : 'text-secondary'}`}>
+        <h3
+          className={`text-base font-semibold ${isProfessional ? 'text-secondary' : 'text-secondary'}`}
+        >
           {title}
         </h3>
         <div className="flex justify-center">
@@ -28,19 +34,21 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({ title, features, variant })
 
       {/* Features list */}
       <div className="flex items-center justify-center">
-      <div className="space-y-6">
-        {features.map((feature, index) => (
-          <div key={index} className="flex items-center">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-              isProfessional ? 'bg-secondary' : 'bg-gray-200'
-            }`}>
-              <Check className="w-4 h-4 text-white" />
+        <div className="space-y-6">
+          {features.map((feature, index) => (
+            <div key={index} className="flex items-center">
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  isProfessional ? 'bg-secondary' : 'bg-gray-200'
+                }`}
+              >
+                <Check className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-gray-700 ml-8 text-xs">{feature.name}</span>
             </div>
-            <span className="text-gray-700 ml-8">{feature.name}</span>
-          </div>
-        ))}
-      </div>
+          ))}
         </div>
+      </div>
     </div>
   );
 };

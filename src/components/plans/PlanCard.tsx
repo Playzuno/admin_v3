@@ -18,50 +18,66 @@ const PlanCard: React.FC<PlanCardProps> = ({
   onSubscribe,
 }) => {
   const isStarter = variant === 'starter';
-  
+
   return (
-    <div 
-      className={`relative rounded-[16px] p-12 h-[300px] overflow-hidden ${
-        isStarter 
-          ? 'bg-gradient-to-b from-purple-200 via-white to-orange-50'
-          : 'bg-secondary'
+    <div
+      className={`relative rounded-[16px] p-6 max-h-[300px] overflow-hidden ${
+        isStarter
+          ? 'bg-gradient-to-b from-[#E4B4FF] to-[#FFFCF3]'
+          : 'bg-gradient-to-b from-[#7616E0] to-brand'
       }`}
     >
       {isPopular && (
         <div className="absolute top-0 right-0">
-          <div className="bg-[#FF6E01] text-white px-8 py-2 transform translate-y-[0.5px] font-medium rounded-bl-[36px]">
+          <div className="bg-[#FF6E01] text-2xs text-white px-8 py-1 transform translate-y-[0.5px] font-medium rounded-bl-[36px]">
             Most Popular
           </div>
         </div>
       )}
 
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h3 className={`text-2xl font-bold ${isStarter ? 'text-secondary' : 'text-white'}`}>
+      <div className="space-y-3">
+        <div className="">
+          <h3
+            className={`text-sm font-bold ${isStarter ? 'text-[#9003DE]' : 'text-white'}`}
+          >
             {title}
           </h3>
-          <p className={`text-md ${isStarter ? 'text-gray-800' : 'text-white'}`}>
+          <p
+            className={`text-2xs ${isStarter ? 'text-gray-800' : 'text-white'}`}
+          >
             {subtitle}
           </p>
         </div>
 
         <div>
           <div className="flex items-baseline">
-            <span className={`text-xl ${isStarter ? 'text-secondary' : 'text-white'}`}>₹</span>
-            <span className={`text-2xl font-bold ${isStarter ? 'text-secondary' : 'text-white'}`}>
+            <span
+              className={`text-sm ${isStarter ? 'text-brand' : 'text-white'}`}
+            >
+              ₹
+            </span>
+            <span
+              className={`text-2xl font-semibold ${isStarter ? 'text-brand' : 'text-white'}`}
+            >
               {price.toFixed(1)}
             </span>
-            <span className={`text-lg ${isStarter ? 'text-secondary' : 'text-white'}`}>/mo</span>
+            <span
+              className={`text-lg ${isStarter ? 'text-brand' : 'text-white'}`}
+            >
+              /mo
+            </span>
           </div>
-          <p className={`mt-1 ${isStarter ? 'text-gray-600' : 'text-white/80'}`}>
+          <p
+            className={`text-2xs mt-1 ${isStarter ? 'text-gray-600' : 'text-white/80'}`}
+          >
             Auto-renewal can be canceled anytime.
           </p>
         </div>
 
         <button
           onClick={onSubscribe}
-          className={`w-3/4 py-4 rounded-lg font-medium transition-colors ${
-            isStarter 
+          className={`w-3/4 py-3 rounded-lg font-medium transition-colors ${
+            isStarter
               ? 'border border-[#FF6E01] text-[#FF6E01] hover:bg-[#FF6E01]/5'
               : 'bg-[#FF6E01] text-white hover:bg-[#FF6E01]/90'
           }`}
@@ -71,10 +87,16 @@ const PlanCard: React.FC<PlanCardProps> = ({
       </div>
 
       {/* Background Pattern */}
-      <div className={`absolute top-8 right-8 text-[200px] leading-none ${
-        isStarter ? 'text-purple-200' : 'text-white/10'
-      }`}>
-        un
+      <div
+        className={`absolute top-8 right-8 text-[200px] leading-none ${
+          isStarter ? 'text-purple-200' : 'text-white/10'
+        }`}
+      >
+        {isPopular ? (
+          <img src="/assets/images/un-dark-logo.svg" alt="un" />
+        ) : (
+          <img src="/assets/images/un-logo.svg" alt="un" />
+        )}
       </div>
     </div>
   );
