@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import Carousel from '../components/ui/Carousel';
+import Checkbox from '../components/ui/Checkbox';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -117,13 +118,13 @@ const Login = () => {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
+                <Checkbox
+                  label="Remember me"
+                  bgColor="bg-brand"
                   checked={rememberMe}
-                  onChange={e => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary"
+                  onChange={() => setRememberMe(!rememberMe)}
                 />
-                <span className="text-gray-600">Remember me</span>
+                {/* <span className="text-gray-600">Remember me</span> */}
               </label>
               <button
                 type="button"

@@ -20,7 +20,7 @@ const ActionContainer: React.FC<ActionContainerProps> = ({
     <div className="bg-white rounded-lg zuno-border-dark overflow-hidden">
       <div className="flex justify-between items-center px-6 py-4 bg-[#F2F2F2] border-b border-[#BBBBBB] border-[0.5px]">
         {typeof title === 'string' ? (
-          <h2 className="container-title">{title}</h2>
+          <h2 className="container-title-2">{title}</h2>
         ) : (
           title
         )}

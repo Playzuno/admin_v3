@@ -39,7 +39,7 @@ const QRCodePage: React.FC = () => {
     ctx.fillRect(340, 340, 160, 160);
 
     // Convert to blob and download
-    canvas.toBlob((blob) => {
+    canvas.toBlob(blob => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -55,7 +55,7 @@ const QRCodePage: React.FC = () => {
   const handlePrint = () => {
     if (printCount > 0) {
       setPrintCount(prev => prev - 1);
-      
+
       // Create a new window for printing
       const printWindow = window.open('', '_blank');
       if (!printWindow) return;
@@ -110,7 +110,12 @@ const QRCodePage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-12">
       <div>
-        <div className="text-lg">Company Name: <span className="text-primary font-medium">Adayar Ananda Bhavan</span></div>
+        <div className="text-base">
+          Company Name:{' '}
+          <span className="text-brand font-medium pl-2">
+            Adayar Ananda Bhavan
+          </span>
+        </div>
       </div>
 
       <div className="flex gap-12">
@@ -122,7 +127,10 @@ const QRCodePage: React.FC = () => {
               <div className="w-[320px] h-[320px] bg-white rounded-3xl shadow-lg p-8 relative">
                 {/* QR Code Image */}
                 <div className="w-full h-full bg-white">
-                  <svg viewBox="0 0 100 100" className="w-full h-full qr-code-svg">
+                  <svg
+                    viewBox="0 0 100 100"
+                    className="w-full h-full qr-code-svg"
+                  >
                     {/* Purple squares */}
                     <rect x="20" y="20" width="20" height="20" fill="#6B21A8" />
                     <rect x="60" y="20" width="20" height="20" fill="#6B21A8" />
@@ -148,7 +156,7 @@ const QRCodePage: React.FC = () => {
           <div className="mt-8 w-full max-w-md">
             <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-4">
               <span className="flex-1 text-center font-medium">{code}</span>
-              <button 
+              <button
                 onClick={handleCopyCode}
                 className="p-2 hover:bg-gray-200 rounded-lg transition-colors group relative"
               >
@@ -170,23 +178,25 @@ const QRCodePage: React.FC = () => {
           <div className="bg-white rounded-3xl p-8 shadow-lg">
             <div className="space-y-2">
               <div>Coupon Name:</div>
-              <div className="text-2xl font-bold text-primary">ZUNO Labs coupon</div>
+              <div className="text-base font-semibold text-brand">
+                ZUNO Labs coupon
+              </div>
             </div>
 
             <div className="mt-8">
-              <p className="text-lg">Hooray! Lets print your ZUNO code</p>
+              <p className="text-sm">Hooray! Lets print your ZUNO code</p>
             </div>
 
             <div className="mt-8 space-y-4">
-              <button 
+              <button
                 onClick={handleDownload}
-                className="w-full py-4 bg-primary text-white rounded-lg font-medium hover:bg-primary-600 transition-colors"
+                className="w-full py-4 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
               >
                 Download Now
               </button>
 
               <div className="flex items-center">
-                <button 
+                <button
                   onClick={handlePrint}
                   disabled={printCount === 0}
                   className={`flex-1 py-4 rounded-lg font-medium transition-colors ${
@@ -204,9 +214,11 @@ const QRCodePage: React.FC = () => {
             </div>
 
             <div className="mt-8">
-              <button 
-                onClick={() => window.open('https://help.zuno.com/qr-printing', '_blank')}
-                className="text-primary hover:underline"
+              <button
+                onClick={() =>
+                  window.open('https://help.zuno.com/qr-printing', '_blank')
+                }
+                className="text-brand hover:underline"
               >
                 Need help in printing your QR?
               </button>

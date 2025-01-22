@@ -44,7 +44,10 @@ const RewardsPage: React.FC = () => {
 
       const num = Number(value);
       if (isNaN(num)) {
-        setErrors(prev => ({ ...prev, [field]: 'Please enter a valid number' }));
+        setErrors(prev => ({
+          ...prev,
+          [field]: 'Please enter a valid number',
+        }));
       } else if (num < 0) {
         setErrors(prev => ({ ...prev, [field]: 'Value cannot be negative' }));
       } else {
@@ -58,14 +61,17 @@ const RewardsPage: React.FC = () => {
     setHasChanges(true);
 
     // Clear error when user starts typing
-    if (typeof value === 'string' && (field === 'value' || field === 'zunoValue')) {
+    if (
+      typeof value === 'string' &&
+      (field === 'value' || field === 'zunoValue')
+    ) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
   const handleFileSelect = (file: File) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = e => {
       setPreviewImage(e.target?.result as string);
     };
     reader.readAsDataURL(file);
@@ -115,7 +121,7 @@ const RewardsPage: React.FC = () => {
       <div className="flex-1 space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold">Rewards setup</h1>
+            <h1 className="container-title">Rewards setup</h1>
           </div>
         </div>
 
