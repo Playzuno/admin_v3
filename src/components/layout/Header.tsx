@@ -23,7 +23,7 @@ const Header = () => {
     { path: '/transactions', icon: Receipt, label: 'Transactions' },
     { path: '/plans', icon: CreditCard, label: 'Plans' },
     { path: '/brand', icon: PaintBucket, label: 'Brand' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
+    // { path: '/settings', icon: Settings, label: 'Settings' },
     { path: '/rewards', icon: Gift, label: 'Rewards' },
     { path: '/qr-code', icon: QrCode, label: 'QR Code' },
   ]);
