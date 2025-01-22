@@ -6,8 +6,11 @@ import {
   Users,
   Receipt,
   CreditCard,
-  ScrollText,
   Settings,
+  Gift,
+  QrCode,
+  Briefcase,
+  PaintBucket,
 } from 'lucide-react';
 
 const Header = () => {
@@ -15,12 +18,14 @@ const Header = () => {
   const [navItems] = useState([
     { path: '/', icon: Home, label: 'Dashboard' },
     { path: '/products', icon: Package, label: 'Products' },
-    { path: '/roles', icon: ScrollText, label: 'Roles' },
+    { path: '/roles', icon: Briefcase, label: 'Roles' },
     { path: '/team', icon: Users, label: 'Team' },
     { path: '/transactions', icon: Receipt, label: 'Transactions' },
     { path: '/plans', icon: CreditCard, label: 'Plans' },
-    { path: '/brand', icon: Package, label: 'Brand' },
+    { path: '/brand', icon: PaintBucket, label: 'Brand' },
     { path: '/settings', icon: Settings, label: 'Settings' },
+    { path: '/rewards', icon: Gift, label: 'Rewards' },
+    { path: '/qr-code', icon: QrCode, label: 'QR Code' },
   ]);
 
   // Find the active index

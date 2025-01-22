@@ -23,7 +23,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         setSelectedImage(e.target?.result as string);
         setShowCropper(true);
       };
@@ -48,7 +48,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
         </div>
       </div>
 
-      <div className="space-x-3">
+      <div className="space-x-3 w-full">
         <input
           type="file"
           ref={fileInputRef}
@@ -56,20 +56,22 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
           accept="image/*"
           onChange={handleFileSelect}
         />
-        <Button
-          variant="light"
-          icon={Camera}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Change Picture
-        </Button>
-        <Button
-          variant="error"
-          icon={Trash2}
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          Delete
-        </Button>
+        <div className="flex items-center space-x-4 w-full justify-end">
+          <Button
+            variant="light"
+            // icon={Camera}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Change Picture
+          </Button>
+          <Button
+            variant="error"
+            icon={Trash2}
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            Delete
+          </Button>
+        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}
@@ -88,7 +90,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Adjust Profile Picture</h2>
-                <button 
+                <button
                   onClick={() => {
                     setShowCropper(false);
                     setSelectedImage(null);

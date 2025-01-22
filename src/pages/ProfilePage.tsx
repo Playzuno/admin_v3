@@ -32,8 +32,7 @@ const ProfilePage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <div className="text-sm text-gray-500">Project1 / Account Settings</div>
-          <h1 className="text-2xl font-bold">Account Settings</h1>
+          <h1 className="container-title">Account Settings</h1>
         </div>
         <Button
           variant="primary"
@@ -49,7 +48,7 @@ const ProfilePage: React.FC = () => {
       <TabContainer
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={(key) => setActiveTab(key as 'general' | 'security')}
+        onTabChange={key => setActiveTab(key as 'general' | 'security')}
       >
         {activeTab === 'general' ? (
           <GeneralSettings onFieldChange={handleChange} />

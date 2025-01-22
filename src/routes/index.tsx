@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import Layout from '../components/layout/Layout';
+import Layout, { LayoutProvider } from '../components/layout/Layout';
 import Login from '../pages/Login';
 import ForgotPassword from '../pages/ForgotPassword';
 import Dashboard from '../pages/Dashboard';
@@ -21,12 +21,16 @@ import PrivateRoute from '../components/auth/PrivateRoute';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: (
+      <LayoutProvider>
+        <Layout />
+      </LayoutProvider>
+    ),
     children: [
       {
         index: true,
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Dashboard">
             <Dashboard />
           </PrivateRoute>
         ),
@@ -42,7 +46,7 @@ export const router = createBrowserRouter([
       {
         path: 'roles',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Roles">
             <RolesPage />
           </PrivateRoute>
         ),
@@ -50,7 +54,7 @@ export const router = createBrowserRouter([
       {
         path: 'products',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Products">
             <ProductPage />
           </PrivateRoute>
         ),
@@ -58,7 +62,7 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Profile">
             <ProfilePage />
           </PrivateRoute>
         ),
@@ -66,7 +70,7 @@ export const router = createBrowserRouter([
       {
         path: 'transactions',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Transactions">
             <TransactionHistoryPage />
           </PrivateRoute>
         ),
@@ -74,7 +78,7 @@ export const router = createBrowserRouter([
       {
         path: 'team',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Team">
             <TeamPage />
           </PrivateRoute>
         ),
@@ -82,7 +86,7 @@ export const router = createBrowserRouter([
       {
         path: 'plans',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Plans">
             <PlansPage />
           </PrivateRoute>
         ),
@@ -90,7 +94,7 @@ export const router = createBrowserRouter([
       {
         path: 'rewards',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Rewards">
             <RewardsPage />
           </PrivateRoute>
         ),
@@ -98,7 +102,7 @@ export const router = createBrowserRouter([
       {
         path: 'qr-code',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="QR Code">
             <QRCodePage />
           </PrivateRoute>
         ),
@@ -106,7 +110,7 @@ export const router = createBrowserRouter([
       {
         path: 'brand',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Brand">
             <BrandPage />
           </PrivateRoute>
         ),
@@ -114,7 +118,7 @@ export const router = createBrowserRouter([
       {
         path: 'brand/profile',
         element: (
-          <PrivateRoute>
+          <PrivateRoute title="Brand Profile">
             <BrandProfilePage />
           </PrivateRoute>
         ),

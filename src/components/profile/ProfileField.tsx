@@ -41,7 +41,7 @@ const ProfileField: React.FC<ProfileFieldProps> = ({
               value={value}
               placeholder={placeholder}
               readOnly={readOnly}
-              onChange={(e) => onChange?.(e.target.value)}
+              onChange={e => onChange?.(e.target.value)}
               className={`w-full px-4 py-2 ${countryCode ? 'rounded-r-lg' : 'rounded-lg'} ${className} ${
                 readOnly ? 'bg-gray-50' : 'border'
               } ${endAdornment ? 'pr-12' : ''}`}

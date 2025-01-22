@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import ProfileField from './ProfileField';
+import Button from '../ui/Button';
 
 interface SecuritySettingsProps {
   onFieldChange: (changed: boolean) => void;
 }
 
-const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) => {
+const SecuritySettings: React.FC<SecuritySettingsProps> = ({
+  onFieldChange,
+}) => {
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -18,7 +21,10 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
   });
   const [passwordError, setPasswordError] = useState<string>('');
   const lastPasswordChange = new Date('2024-02-15').toLocaleDateString();
-  const daysSinceChange = Math.floor((new Date().getTime() - new Date('2024-02-15').getTime()) / (1000 * 60 * 60 * 24));
+  const daysSinceChange = Math.floor(
+    (new Date().getTime() - new Date('2024-02-15').getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
 
   useEffect(() => {
     if (passwordData.new && passwordData.confirm) {
@@ -37,15 +43,19 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
 
   const generateSecurePassword = () => {
     const length = 16;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-    let password = "";
+    const charset =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+';
+    let password = '';
     for (let i = 0; i < length; i++) {
       password += charset.charAt(Math.floor(Math.random() * charset.length));
     }
     setPasswordData(prev => ({ ...prev, new: password, confirm: password }));
   };
 
-  const handlePasswordChange = (field: keyof typeof passwordData, value: string) => {
+  const handlePasswordChange = (
+    field: keyof typeof passwordData,
+    value: string
+  ) => {
     setPasswordData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -56,11 +66,12 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
   return (
     <div className="space-y-8">
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-        <p className="text-sm text-gray-600">
+        <p className="text-xs text-gray-600">
           Last password change: {lastPasswordChange}
           {daysSinceChange > 90 && (
             <span className="text-orange-500 ml-2">
-              ⚠️ Your password is {daysSinceChange} days old. Consider updating it.
+              ⚠️ Your password is {daysSinceChange} days old. Consider updating
+              it.
             </span>
           )}
         </p>
@@ -72,7 +83,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
           label="Current Password"
           type={showPasswords.current ? 'text' : 'password'}
           value={passwordData.current}
-          onChange={(val) => handlePasswordChange('current', val)}
+          onChange={val => handlePasswordChange('current', val)}
           placeholder="Enter current password"
           endAdornment={
             <button
@@ -94,7 +105,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
           label="New Password"
           type={showPasswords.new ? 'text' : 'password'}
           value={passwordData.new}
-          onChange={(val) => handlePasswordChange('new', val)}
+          onChange={val => handlePasswordChange('new', val)}
           placeholder="Enter new password"
           endAdornment={
             <button
@@ -117,7 +128,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
             label="Confirm Password"
             type="password"
             value={passwordData.confirm}
-            onChange={(val) => handlePasswordChange('confirm', val)}
+            onChange={val => handlePasswordChange('confirm', val)}
             placeholder="Confirm new password"
           />
           {passwordError && (
@@ -137,15 +148,15 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ onFieldChange }) =>
       </div>
 
       <div className="pt-4">
-        <h3 className="text-lg font-medium mb-4">Two-Factor Authentication</h3>
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+        <h3 className="title mb-4">Two-Factor Authentication</h3>
+        <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
           <div>
             <p className="font-medium">Authenticator App</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs text-gray-500">
               Use an authenticator app to generate one-time codes
             </p>
           </div>
-          <button className="btn btn-secondary">Enable</button>
+          <Button variant="secondary">Enable</Button>
         </div>
       </div>
     </div>
