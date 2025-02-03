@@ -7,12 +7,14 @@ interface ProfilePhotoProps {
   imageUrl: string;
   onChangePhoto: (file: File) => void;
   onDeletePhoto: () => void;
+  initial?: string;
 }
 
 const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
   imageUrl,
   onChangePhoto,
   onDeletePhoto,
+  initial,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
@@ -40,11 +42,17 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center space-x-4">
         <div className="w-24 h-24 rounded-full overflow-hidden">
-          <img
-            src={imageUrl}
-            alt="Profile"
-            className="w-full h-full object-cover"
-          />
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full bg-brand flex items-center justify-center text-white text-3xl">
+              {initial}
+            </div>
+          )}
         </div>
       </div>
 

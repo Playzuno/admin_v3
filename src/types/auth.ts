@@ -1,7 +1,8 @@
-import { User } from '.';
+import { LoggedInUser } from '.';
 
 export interface AuthContextType {
-  user: User | null;
+  user: LoggedInUser | null;
+  updateUser: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;

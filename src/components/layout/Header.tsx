@@ -12,6 +12,7 @@ import {
   Briefcase,
   PaintBucket,
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const Header = () => {
   const location = useLocation();
@@ -60,6 +61,8 @@ const Header = () => {
     };
   };
 
+  const { user } = useAuth();
+
   return (
     <header className="w-full">
       <div className="container mx-auto px-4">
@@ -107,15 +110,24 @@ const Header = () => {
           <div className="flex items-center">
             <div className="mr-3 text-right">
               <div className="text-sm">Welcome,</div>
-              <div className="font-medium text-secondary">Abhijith Sharma</div>
+              <div className="font-medium text-secondary">
+                {user?.user?.fullName}
+              </div>
             </div>
             <Link to="/profile">
               <div className="h-10 w-10 rounded-full overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
+                {user?.user?.metadata?.profilePictureURL ? (
+                  <img
+                    src={user?.user?.metadata?.profilePictureURL}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  // use avatar with initials
+                  <div className="h-full w-full bg-brand flex items-center justify-center text-white text-sm">
+                    {user?.user?.fullName?.charAt(0)}
+                  </div>
+                )}
               </div>
             </Link>
           </div>

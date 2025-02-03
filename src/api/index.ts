@@ -1,4 +1,4 @@
-import { LoginResponse } from '@/types';
+import { Branch, LoggedInUser, LoginResponse } from '@/types';
 import { ApiClient } from './client';
 
 export interface ApiErrorType extends Error {
@@ -203,6 +203,14 @@ export const userApi = {
       throw handleRequestError(error);
     }
   },
+  get: async (): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get<LoginResponse>(`/users/me/memberships`);
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
 };
 
 // Roles APIs
@@ -355,8 +363,15 @@ export const branchApi = {
     orgId: string
   ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(`/organizations/${orgId}/branches`);
-      return response;
+      const response = await api.get<Branch[]>(
+        `/organizations/${orgId}/branches`
+      );
+      console.log(response.data);
+      return {
+        data: response.data,
+        status: response.status,
+        headers: response.headers,
+      };
     } catch (error) {
       throw handleRequestError(error);
     }

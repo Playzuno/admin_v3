@@ -3,11 +3,17 @@ import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import ProfileField from './ProfileField';
 import Button from '../ui/Button';
 
+import { LoggedInUser } from '@/types';
+
 interface SecuritySettingsProps {
+  editableUser: LoggedInUser;
+  onUserUpdate: (user: LoggedInUser) => void;
   onFieldChange: (changed: boolean) => void;
 }
 
 const SecuritySettings: React.FC<SecuritySettingsProps> = ({
+  editableUser,
+  onUserUpdate,
   onFieldChange,
 }) => {
   const [showPasswords, setShowPasswords] = useState({

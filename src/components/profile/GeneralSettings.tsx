@@ -2,76 +2,81 @@ import React, { useState } from 'react';
 import ProfilePhoto from './ProfilePhoto';
 import ProfileField from './ProfileField';
 
+import { LoggedInUser } from '@/types';
+
 interface GeneralSettingsProps {
+  editableUser: LoggedInUser;
+  onUserUpdate: (user: LoggedInUser) => void;
   onFieldChange: (changed: boolean) => void;
 }
 
-const GeneralSettings: React.FC<GeneralSettingsProps> = ({ onFieldChange }) => {
-  const [formData, setFormData] = useState({
-    fullName: 'Abhijith Sharma',
-    username: '@Abhijith.S',
-    email: 'abhijith.sharma@email.com',
-    phone: '9182019283',
-  });
+const GeneralSettings: React.FC<GeneralSettingsProps> = ({
+  editableUser,
+  onUserUpdate,
+  onFieldChange,
+}) => {
+  const [formData, setFormData] = useState(editableUser.user);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => {
       const newData = { ...prev, [field]: value };
       onFieldChange(true);
+      onUserUpdate({ ...editableUser, user: newData });
       return newData;
     });
   };
-
+  console.log(formData);
   return (
     <div className="space-y-8">
       <ProfileField
         label="Profile photo"
         customField={
           <ProfilePhoto
-            imageUrl="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            imageUrl={formData?.metadata?.profilePictureURL}
             onChangePhoto={() => onFieldChange(true)}
             onDeletePhoto={() => onFieldChange(true)}
+            initial={formData?.fullName?.charAt(0)}
           />
         }
       />
 
       <ProfileField
         label="Full name"
-        value={formData.fullName}
-        onChange={(value) => handleInputChange('fullName', value)}
+        value={formData?.fullName}
+        onChange={value => handleInputChange('fullName', value)}
       />
 
       <ProfileField
         label="Username"
-        value={formData.username}
-        onChange={(value) => handleInputChange('username', value)}
+        value={formData?.username}
+        onChange={value => handleInputChange('username', value)}
       />
 
       <ProfileField
         label="Email"
         type="email"
-        value={formData.email}
-        onChange={(value) => handleInputChange('email', value)}
+        value={formData?.email}
+        onChange={value => handleInputChange('email', value)}
       />
 
       <ProfileField
         label="Phone number"
         type="tel"
-        value={formData.phone}
+        value={formData?.mobile}
         countryCode="+91"
-        onChange={(value) => handleInputChange('phone', value)}
+        onChange={value => handleInputChange('mobile', value)}
       />
 
       <ProfileField
         label="Designation"
-        value="General Manager"
+        value={formData?.metadata?.designation}
         readOnly
         className="bg-gray-50"
       />
 
       <ProfileField
         label="Default branch"
-        value="Chrompet - Main branch"
+        value={editableUser.memberships[0].branchName}
         readOnly
         className="bg-gray-50"
       />
