@@ -20,10 +20,20 @@ export class ApiClient {
     this.instance = axios.create({
       baseURL: config.baseURL,
       timeout: config.timeout || 30000,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
         ...config.headers,
       },
+    });
+
+    // Add a request interceptor to attach the bearer token
+    this.instance.interceptors.request.use(config => {
+      const token = localStorage.getItem('token'); // Adjust this line to retrieve your token
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      return config;
     });
   }
 
