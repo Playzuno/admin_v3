@@ -3,7 +3,8 @@ import { TabContainer } from '../components/containers';
 import Button from '../components/ui/Button';
 import GeneralSettings from '../components/profile/GeneralSettings';
 import SecuritySettings from '../components/profile/SecuritySettings';
-import { Save } from 'lucide-react';
+import { LogOut, Save } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'general' | 'security'>('general');
@@ -28,21 +29,36 @@ const ProfilePage: React.FC = () => {
     }, 1000);
   };
 
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="container-title">Account Settings</h1>
         </div>
-        <Button
-          variant="primary"
-          icon={Save}
-          disabled={!hasChanges}
-          loading={isSaving}
-          onClick={handleSave}
-        >
-          Save Changes
-        </Button>
+        <div>
+          <Button
+            className="mx-4"
+            variant="light"
+            icon={LogOut}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+          <Button
+            variant="primary"
+            icon={Save}
+            disabled={!hasChanges}
+            loading={isSaving}
+            onClick={handleSave}
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
 
       <TabContainer

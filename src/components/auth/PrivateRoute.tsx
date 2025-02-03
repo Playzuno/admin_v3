@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LayoutContext } from '../layout/Layout';
 
@@ -16,7 +16,7 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, title }) => {
-  // const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   // const location = useLocation();
 
   const { setLayoutContext } = useContext(LayoutContext);
@@ -33,8 +33,9 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, title }) => {
       });
     };
   }, [title, setLayoutContext]);
-
-  // In development, always render children
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
   return (
     <RouteContext.Provider value={{ title }}>{children}</RouteContext.Provider>
   );

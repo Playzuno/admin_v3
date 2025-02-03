@@ -1,31 +1,41 @@
 import React, { createContext, useContext, useState } from 'react';
-import { AuthContextType, User } from '../types/auth';
-
+import { AuthContextType } from '../types/auth';
+import { authApi } from '../api';
+import { User } from '../types';
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Development mock user
-const MOCK_USER: User = {
-  id: '1',
-  email: 'dev@example.com',
-  name: 'Development User',
-};
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const loggedInUser = localStorage.getItem('user');
+  const [user, setUser] = useState<User | null>(
+    loggedInUser ? JSON.parse(loggedInUser) : null
+  );
+  const loggedInToken = localStorage.getItem('token');
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // In development, start with the mock user already logged in
-  const [user, setUser] = useState<User | null>(MOCK_USER);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    loggedInToken !== null
+  );
 
   const login = async (email: string, password: string) => {
-    // In development, always succeed and use mock user
-    setUser(MOCK_USER);
+    const response = await authApi.signIn({ email, password });
+    if (response.status === 200) {
+      console.log(response.data);
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+    }
   };
 
   const logout = () => {
     // In development, immediately log back in as mock user
-    setUser(MOCK_USER);
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: true }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
