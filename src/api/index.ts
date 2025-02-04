@@ -33,10 +33,10 @@ export class ApiError implements ApiErrorType {
 const getBearerToken = (): string | null => {
   return localStorage.getItem('token');
 };
-
+const baseURL = 'http://localhost:8080/api/v1';
 // Create and export the default API client instance
 export const api = new ApiClient({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL,
   timeout: 30000,
   headers: {
     Accept: 'application/json',
@@ -683,11 +683,34 @@ export const productApi = {
     data: any
   ): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
-      const response = await api.post('/ai/menu/parse', data);
+      const response = await api.post('/ai/menu/parse', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 400000,
+      });
       return response;
     } catch (error) {
       throw handleRequestError(error);
     }
+    // const eventSource = new EventSource(`${baseURL}/ai/menu/parse`, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   timeout: 400000,
+    // });
+
+    // eventSource.onmessage = event => {
+    //   console.log('New message:', event.data);
+    //   // Handle the incoming data
+    // };
+
+    // eventSource.onerror = error => {
+    //   console.error('EventSource failed:', error);
+    //   eventSource.close();
+    // };
+
+    // return eventSource;
   },
 };
 

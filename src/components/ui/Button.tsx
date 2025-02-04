@@ -42,14 +42,13 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseStyles =
     'inline-flex items-center justify-center transition-colors duration-200 rounded-[32px] focus:outline-none focus:ring-2 focus:ring-offset-2';
-
+  const btnColor = bgColor || 'primary';
   const variantStyles: Record<ButtonVariant, string> = {
     primary:
       'bg-[#400C7A] text-white hover:bg-[#330962] focus:ring-[#400C7A]/50',
     secondary:
       'bg-secondary text-white hover:bg-secondary-600 focus:ring-secondary/50',
-    outline:
-      'border-2 border-primary text-primary hover:bg-primary-50 focus:ring-primary/50',
+    outline: `border-2 border-${btnColor} text-${btnColor} hover:bg-${btnColor}-50 focus:ring-${btnColor}/50`,
     ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500/50',
     danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500/50',
     light:
