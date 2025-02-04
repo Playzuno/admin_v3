@@ -2,12 +2,30 @@ import { MessageSquare, Gift, Store, Coins, Users } from 'lucide-react';
 import StatsCard from '../components/dashboard/StatsCard';
 import FeedbackChart from '../components/dashboard/FeedbackChart';
 import FeedbackStats from '../components/dashboard/FeedbackStats';
+import { analyticsApi } from '@/api';
+import { useEffect, useState } from 'react';
+import { useOrg } from '@/context/OrgContext';
+import { BranchStats } from '@/types';
 
 const Dashboard = () => {
+  const { branch, branches } = useOrg();
+  const [branchStats, setBranchStats] = useState<BranchStats | null>(null);
+  useEffect(() => {
+    const fetchBranchStats = async () => {
+      if (!branch?.id) return;
+      const resp = await analyticsApi.getBranchStats(branch?.id);
+      if (resp.status === 200) {
+        setBranchStats(resp.data);
+      }
+    };
+    fetchBranchStats();
+  }, [branch]);
+
+  // console.log(branchStats);
   const statsCards = [
     {
       title: '# of Feedback',
-      count: 500,
+      count: branchStats?.totalFeedbacks || 0,
       subtext: 'feedbacks',
       growth: 20,
       icon: <MessageSquare className="w-6 h-6 text-primary" />,
@@ -15,7 +33,7 @@ const Dashboard = () => {
     },
     {
       title: '# of Reward User',
-      count: 120,
+      count: branchStats?.rewardedEndUsers || 0,
       subtext: 'active users',
       growth: 6,
       icon: <Gift className="w-6 h-6 text-primary" />,
@@ -23,7 +41,7 @@ const Dashboard = () => {
     },
     {
       title: '# of Branch/Brand',
-      count: 45,
+      count: branches.length || 1,
       subtext: 'active branch',
       growth: 2,
       icon: <Store className="w-6 h-6 text-primary" />,
@@ -31,7 +49,7 @@ const Dashboard = () => {
     },
     {
       title: '# of Zuno Coins',
-      count: 5000,
+      count: branchStats?.totalCoinsGiven || 0,
       subtext: 'zuno coins',
       growth: 15,
       icon: <Coins className="w-6 h-6 text-primary" />,
@@ -39,7 +57,7 @@ const Dashboard = () => {
     },
     {
       title: '# of End Users',
-      count: 65,
+      count: branchStats?.totalCoinsGiven || 0,
       subtext: 'active users',
       growth: 4,
       icon: <Users className="w-6 h-6 text-primary" />,
@@ -50,11 +68,13 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Stats Cards */}
-      <div className="grid grid-cols-5 gap-6">
-        {statsCards.map((card, index) => (
-          <StatsCard key={index} {...card} index={index} />
-        ))}
-      </div>
+      {branchStats && (
+        <div className="grid grid-cols-5 gap-6">
+          {statsCards.map((card, index) => (
+            <StatsCard key={index} {...card} index={index} />
+          ))}
+        </div>
+      )}
 
       {/* Feedback Section */}
       <div className="grid grid-cols-2 gap-6">

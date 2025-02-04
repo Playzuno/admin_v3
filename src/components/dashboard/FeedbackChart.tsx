@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, Star } from 'lucide-react';
 import {
   BarChart,
@@ -11,89 +11,92 @@ import {
   Tooltip,
 } from 'recharts';
 import Button from '../ui/Button';
+import { analyticsApi } from '@/api';
+import { useOrg } from '@/context/OrgContext';
+import { FeedbackReport, FeedbackReportData } from '@/types';
 
-const chartData = {
-  daily: {
-    topRated: [
-      { label: 'As', value: 4.4, name: 'Asian Platter' },
-      { label: 'Sr', value: 4.6, name: 'Sushi Roll' },
-      { label: 'Vb', value: 4.5, name: 'Veg Burger' },
-      { label: 'Sp', value: 4.8, name: 'Sushi Platter' },
-      { label: 'Cm', value: 4.4, name: 'Chicken Manchurian' },
-      { label: 'Cf', value: 4.1, name: 'Chicken Fried Rice' },
-      { label: 'Mp', value: 4.5, name: 'Mango Pudding' },
-    ],
-    lowestRated: [
-      { label: 'As', value: 3.4, name: 'Asian Soup' },
-      { label: 'Sr', value: 3.6, name: 'Spring Roll' },
-      { label: 'Vb', value: 3.5, name: 'Veg Biryani' },
-      { label: 'Sp', value: 3.2, name: 'Spicy Pasta' },
-      { label: 'Cm', value: 3.4, name: 'Chow Mein' },
-      { label: 'Cf', value: 3.1, name: 'Corn Fritters' },
-      { label: 'Mp', value: 3.5, name: 'Mixed Platter' },
-    ],
-  },
-  weekly: {
-    topRated: [
-      { label: 'As', value: 4.3, name: 'Asian Platter' },
-      { label: 'Sr', value: 4.7, name: 'Sushi Roll' },
-      { label: 'Vb', value: 4.6, name: 'Veg Burger' },
-      { label: 'Sp', value: 4.8, name: 'Sushi Platter' },
-      { label: 'Cm', value: 4.4, name: 'Chicken Manchurian' },
-      { label: 'Cf', value: 4.2, name: 'Chicken Fried Rice' },
-      { label: 'Mp', value: 4.5, name: 'Mango Pudding' },
-    ],
-    lowestRated: [
-      { label: 'As', value: 3.3, name: 'Asian Soup' },
-      { label: 'Sr', value: 3.5, name: 'Spring Roll' },
-      { label: 'Vb', value: 3.4, name: 'Veg Biryani' },
-      { label: 'Sp', value: 3.1, name: 'Spicy Pasta' },
-      { label: 'Cm', value: 3.3, name: 'Chow Mein' },
-      { label: 'Cf', value: 3.0, name: 'Corn Fritters' },
-      { label: 'Mp', value: 3.4, name: 'Mixed Platter' },
-    ],
-  },
-  monthly: {
-    topRated: [
-      { label: 'As', value: 4.5, name: 'Asian Platter' },
-      { label: 'Sr', value: 4.8, name: 'Sushi Roll' },
-      { label: 'Vb', value: 4.7, name: 'Veg Burger' },
-      { label: 'Sp', value: 4.9, name: 'Sushi Platter' },
-      { label: 'Cm', value: 4.5, name: 'Chicken Manchurian' },
-      { label: 'Cf', value: 4.3, name: 'Chicken Fried Rice' },
-      { label: 'Mp', value: 4.6, name: 'Mango Pudding' },
-    ],
-    lowestRated: [
-      { label: 'As', value: 3.5, name: 'Asian Soup' },
-      { label: 'Sr', value: 3.7, name: 'Spring Roll' },
-      { label: 'Vb', value: 3.6, name: 'Veg Biryani' },
-      { label: 'Sp', value: 3.3, name: 'Spicy Pasta' },
-      { label: 'Cm', value: 3.5, name: 'Chow Mein' },
-      { label: 'Cf', value: 3.2, name: 'Corn Fritters' },
-      { label: 'Mp', value: 3.6, name: 'Mixed Platter' },
-    ],
-  },
-  yearly: {
-    topRated: [
-      { label: 'As', value: 4.6, name: 'Asian Platter' },
-      { label: 'Sr', value: 4.9, name: 'Sushi Roll' },
-      { label: 'Vb', value: 4.8, name: 'Veg Burger' },
-      { label: 'Sp', value: 4.9, name: 'Sushi Platter' },
-      { label: 'Cm', value: 4.6, name: 'Chicken Manchurian' },
-      { label: 'Cf', value: 4.4, name: 'Chicken Fried Rice' },
-      { label: 'Mp', value: 4.7, name: 'Mango Pudding' },
-    ],
-    lowestRated: [
-      { label: 'As', value: 3.6, name: 'Asian Soup' },
-      { label: 'Sr', value: 3.8, name: 'Spring Roll' },
-      { label: 'Vb', value: 3.7, name: 'Veg Biryani' },
-      { label: 'Sp', value: 3.4, name: 'Spicy Pasta' },
-      { label: 'Cm', value: 3.6, name: 'Chow Mein' },
-      { label: 'Cf', value: 3.3, name: 'Corn Fritters' },
-      { label: 'Mp', value: 3.7, name: 'Mixed Platter' },
-    ],
-  },
-};
+// const chartData = {
+//   daily: {
+//     topRated: [
+//       { label: 'As', value: 4.4, name: 'Asian Platter' },
+//       { label: 'Sr', value: 4.6, name: 'Sushi Roll' },
+//       { label: 'Vb', value: 4.5, name: 'Veg Burger' },
+//       { label: 'Sp', value: 4.8, name: 'Sushi Platter' },
+//       { label: 'Cm', value: 4.4, name: 'Chicken Manchurian' },
+//       { label: 'Cf', value: 4.1, name: 'Chicken Fried Rice' },
+//       { label: 'Mp', value: 4.5, name: 'Mango Pudding' },
+//     ],
+//     lowestRated: [
+//       { label: 'As', value: 3.4, name: 'Asian Soup' },
+//       { label: 'Sr', value: 3.6, name: 'Spring Roll' },
+//       { label: 'Vb', value: 3.5, name: 'Veg Biryani' },
+//       { label: 'Sp', value: 3.2, name: 'Spicy Pasta' },
+//       { label: 'Cm', value: 3.4, name: 'Chow Mein' },
+//       { label: 'Cf', value: 3.1, name: 'Corn Fritters' },
+//       { label: 'Mp', value: 3.5, name: 'Mixed Platter' },
+//     ],
+//   },
+//   weekly: {
+//     topRated: [
+//       { label: 'As', value: 4.3, name: 'Asian Platter' },
+//       { label: 'Sr', value: 4.7, name: 'Sushi Roll' },
+//       { label: 'Vb', value: 4.6, name: 'Veg Burger' },
+//       { label: 'Sp', value: 4.8, name: 'Sushi Platter' },
+//       { label: 'Cm', value: 4.4, name: 'Chicken Manchurian' },
+//       { label: 'Cf', value: 4.2, name: 'Chicken Fried Rice' },
+//       { label: 'Mp', value: 4.5, name: 'Mango Pudding' },
+//     ],
+//     lowestRated: [
+//       { label: 'As', value: 3.3, name: 'Asian Soup' },
+//       { label: 'Sr', value: 3.5, name: 'Spring Roll' },
+//       { label: 'Vb', value: 3.4, name: 'Veg Biryani' },
+//       { label: 'Sp', value: 3.1, name: 'Spicy Pasta' },
+//       { label: 'Cm', value: 3.3, name: 'Chow Mein' },
+//       { label: 'Cf', value: 3.0, name: 'Corn Fritters' },
+//       { label: 'Mp', value: 3.4, name: 'Mixed Platter' },
+//     ],
+//   },
+//   monthly: {
+//     topRated: [
+//       { label: 'As', value: 4.5, name: 'Asian Platter' },
+//       { label: 'Sr', value: 4.8, name: 'Sushi Roll' },
+//       { label: 'Vb', value: 4.7, name: 'Veg Burger' },
+//       { label: 'Sp', value: 4.9, name: 'Sushi Platter' },
+//       { label: 'Cm', value: 4.5, name: 'Chicken Manchurian' },
+//       { label: 'Cf', value: 4.3, name: 'Chicken Fried Rice' },
+//       { label: 'Mp', value: 4.6, name: 'Mango Pudding' },
+//     ],
+//     lowestRated: [
+//       { label: 'As', value: 3.5, name: 'Asian Soup' },
+//       { label: 'Sr', value: 3.7, name: 'Spring Roll' },
+//       { label: 'Vb', value: 3.6, name: 'Veg Biryani' },
+//       { label: 'Sp', value: 3.3, name: 'Spicy Pasta' },
+//       { label: 'Cm', value: 3.5, name: 'Chow Mein' },
+//       { label: 'Cf', value: 3.2, name: 'Corn Fritters' },
+//       { label: 'Mp', value: 3.6, name: 'Mixed Platter' },
+//     ],
+//   },
+//   yearly: {
+//     topRated: [
+//       { label: 'As', value: 4.6, name: 'Asian Platter' },
+//       { label: 'Sr', value: 4.9, name: 'Sushi Roll' },
+//       { label: 'Vb', value: 4.8, name: 'Veg Burger' },
+//       { label: 'Sp', value: 4.9, name: 'Sushi Platter' },
+//       { label: 'Cm', value: 4.6, name: 'Chicken Manchurian' },
+//       { label: 'Cf', value: 4.4, name: 'Chicken Fried Rice' },
+//       { label: 'Mp', value: 4.7, name: 'Mango Pudding' },
+//     ],
+//     lowestRated: [
+//       { label: 'As', value: 3.6, name: 'Asian Soup' },
+//       { label: 'Sr', value: 3.8, name: 'Spring Roll' },
+//       { label: 'Vb', value: 3.7, name: 'Veg Biryani' },
+//       { label: 'Sp', value: 3.4, name: 'Spicy Pasta' },
+//       { label: 'Cm', value: 3.6, name: 'Chow Mein' },
+//       { label: 'Cf', value: 3.3, name: 'Corn Fritters' },
+//       { label: 'Mp', value: 3.7, name: 'Mixed Platter' },
+//     ],
+//   },
+// };
 
 const CustomTooltip = ({ active, payload, chartData }: any) => {
   if (active && payload && payload.length) {
@@ -135,8 +138,69 @@ const FeedbackChart = () => {
     'topRated'
   );
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
+  const [chartData, setChartData] = useState<
+    Record<
+      string,
+      { topRated: FeedbackReportData[]; lowestRated: FeedbackReportData[] }
+    >
+  >({});
 
-  const currentData = chartData[period][chartType];
+  const currentData =
+    chartData[period] && chartData[period][chartType]
+      ? chartData[period][chartType]
+      : [];
+  const [feedbackReport, setFeedbackReport] = useState<FeedbackReport[]>([]);
+  const { branch } = useOrg();
+  useEffect(() => {
+    const fetchFeedbackReport = async () => {
+      if (!branch?.id) return;
+      const resp = await analyticsApi.getFeedbackReport(
+        branch?.id,
+        period,
+        chartType
+      );
+      setFeedbackReport(resp.data);
+      const report: Record<
+        string,
+        { topRated: FeedbackReportData[]; lowestRated: FeedbackReportData[] }
+      > = {
+        daily: {
+          topRated: [],
+          lowestRated: [],
+        },
+        weekly: {
+          topRated: [],
+          lowestRated: [],
+        },
+        monthly: {
+          topRated: [],
+          lowestRated: [],
+        },
+        yearly: {
+          topRated: [],
+          lowestRated: [],
+        },
+      };
+      resp.data.forEach(item => {
+        if (!report[period]) {
+          report[period] = {
+            topRated: [],
+            lowestRated: [],
+          };
+        }
+        report[period][chartType].push({
+          label: item.productName,
+          value: item.avgRating,
+          productId: item.productId,
+          productName: item.productName,
+          avgRating: item.avgRating,
+        });
+      });
+      setChartData(report);
+    };
+    fetchFeedbackReport();
+  }, [period, chartType, branch]);
+  // console.log(feedbackReport, chartData);
 
   return (
     <div className="space-y-6">
