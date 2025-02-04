@@ -7,6 +7,7 @@ export interface MenuItem {
   id: string;
   name: string;
   isDeleted?: boolean;
+  originalCategory: string;
 }
 
 interface MenuCategoryProps {
@@ -15,6 +16,11 @@ interface MenuCategoryProps {
   items: MenuItem[];
   onEdit?: () => void;
   onDeleteItem?: (itemId: string) => void;
+  onUpdateItem?: (
+    itemId: string,
+    originalCategory: string,
+    name: string
+  ) => void;
 }
 
 const MenuCategory: React.FC<MenuCategoryProps> = ({
@@ -23,7 +29,11 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
   items,
   onEdit,
   onDeleteItem,
+  onUpdateItem,
 }) => {
+  const updateItem = (item: MenuItem, name: string) => {
+    onUpdateItem?.(item.id, item.originalCategory, name);
+  };
   return (
     <div className="bg-[#F6F6F6] rounded-lg p-6 w-[330px]">
       <div className="flex justify-between items-center">
@@ -61,12 +71,23 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   msUserSelect: 'none',
                 }}
               >
-                <div className="flex items-center space-x-3">
+                <div
+                  className="flex items-center space-x-3"
+                  onClick={() =>
+                    document.getElementById(`input-${item.id}`)?.focus()
+                  }
+                >
                   <MoreHorizontal className="w-4 h-4 text-gray-400 cursor-grab" />
                   <span
                     className={`text-gray-700 ${item.isDeleted ? 'line-through' : ''}`}
                   >
-                    {item.name}
+                    <input
+                      id={`input-${item.id}`}
+                      type="text"
+                      value={item.name}
+                      onChange={e => updateItem(item, e.target.value)}
+                      className="border-b border-transparent focus:outline-none focus:border-orange-500"
+                    />
                   </span>
                 </div>
                 <button

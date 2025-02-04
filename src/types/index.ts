@@ -82,3 +82,11 @@ export interface FeedbackSummaryResponse {
   positiveFeedbacks: number;
   negativeFeedbacks: number;
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  categoryId: number;
+  branchId: string;
+  originalCategory: string;
+}
