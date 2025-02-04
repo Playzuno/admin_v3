@@ -49,6 +49,9 @@ export class ApiClient {
         data: config.body, // Axios uses 'data' for request body
         timeout: config.timeout,
       };
+      if (config.headers) {
+        axiosConfig.headers = config.headers;
+      }
 
       const response: AxiosResponse<T> =
         await this.instance.request(axiosConfig);

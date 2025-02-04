@@ -6,10 +6,11 @@ import ProductUploadModal from '../components/products/ProductUploadModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
-import { ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon, Plus } from 'lucide-react';
 import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
 import { productApi } from '@/api';
+import Button from '@/components/ui/Button';
 
 interface Category {
   id: string;
@@ -352,8 +353,39 @@ const ProductPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkForScroll);
   }, [categories]);
 
+  const uploadProductFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append('input_file', file);
+    // console.log('formData', file);
+
+    try {
+      const response = await productApi.parseMenuUsingAI(formData);
+      return response.data;
+    } catch (error: any) {
+      console.log('error', error);
+      if (!error.response) {
+        throw new Error('Network error. Please check your connection.');
+      }
+      throw error.response;
+    }
+  };
+
   return (
     <div className="space-y-8">
+      <div className="flex flex-col gap-4 absolute top-10 right-10">
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant="outline"
+            onClick={() => setIsUploadModalOpen(true)}
+            icon={Plus}
+            iconPosition="right"
+            size="sm"
+            bgColor="brand"
+          >
+            Add Products
+          </Button>
+        </div>
+      </div>
       <ActionContainer
         title="Menu Category Plan"
         onCancel={hasChanges ? handleCancel : undefined}
@@ -407,7 +439,10 @@ const ProductPage: React.FC = () => {
       </ActionContainer>
 
       {isUploadModalOpen && (
-        <ProductUploadModal onClose={() => setIsUploadModalOpen(false)} />
+        <ProductUploadModal
+          uploadProductFile={uploadProductFile}
+          onClose={() => setIsUploadModalOpen(false)}
+        />
       )}
 
       <ConfirmDialog
