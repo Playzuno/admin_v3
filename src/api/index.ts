@@ -5,6 +5,7 @@ import {
   FeedbackSummaryResponse,
   LoggedInUser,
   LoginResponse,
+  Product,
 } from '@/types';
 import { ApiClient } from './client';
 
@@ -573,9 +574,11 @@ export const inviteApi = {
 export const productApi = {
   getAll: async (
     branchId: string
-  ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Product[]; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(`/branches/${branchId}/products`);
+      const response = await api.get<Product[]>(
+        `/branches/${branchId}/products`
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);

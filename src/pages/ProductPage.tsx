@@ -5,9 +5,11 @@ import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
 import ProductUploadModal from '../components/products/ProductUploadModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
-import { menuApi } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { ChevronRightIcon } from 'lucide-react';
+import { useOrg } from '@/context/OrgContext';
+import { Product } from '@/types';
+import { productApi } from '@/api';
 
 interface Category {
   id: string;
@@ -18,68 +20,108 @@ interface Category {
   })[];
 }
 
-const initialCategories: Category[] = [
+const defaultCategories: Category[] = [
   {
-    id: 'cat-1',
+    id: '1',
     name: 'Category - 01',
-    items: [
-      { id: 'item-1', name: 'Masala Dosa with Ghee' },
-      { id: 'item-2', name: 'Onion Rava with Ghee' },
-      { id: 'item-3', name: 'Paneer Dosa with Ghee' },
-      { id: 'item-4', name: 'Mushroom Dosa with Ghee' },
-      { id: 'item-5', name: 'Normal Dosa with Ghee' },
-      { id: 'item-6', name: 'Podi Dosa with Ghee' },
-      { id: 'item-7', name: 'Onion Podi Dosa with Ghee' },
-    ].map(item => ({ ...item, originalCategory: 'cat-1' })),
+    items: [],
   },
   {
-    id: 'cat-2',
+    id: '2',
     name: 'Category - 02',
-    items: [
-      { id: 'item-8', name: 'Masala Dosa with Ghee' },
-      { id: 'item-9', name: 'Onion Rava with Ghee' },
-      { id: 'item-10', name: 'Paneer Dosa with Ghee' },
-      { id: 'item-11', name: 'Mushroom Dosa with Ghee' },
-      { id: 'item-12', name: 'Normal Dosa with Ghee' },
-    ].map(item => ({ ...item, originalCategory: 'cat-2' })),
+    items: [],
   },
   {
-    id: 'cat-3',
+    id: '3',
     name: 'Category - 03',
-    items: [
-      { id: 'item-13', name: 'Masala Dosa with Ghee' },
-      { id: 'item-14', name: 'Onion Rava with Ghee' },
-      { id: 'item-15', name: 'Paneer Dosa with Ghee' },
-    ].map(item => ({ ...item, originalCategory: 'cat-3' })),
+    items: [],
   },
   {
-    id: 'cat-4',
+    id: '4',
     name: 'Category - 04',
-    items: [
-      { id: 'item-17', name: 'Masala Dosa with Ghee' },
-      { id: 'item-18', name: 'Onion Rava with Ghee' },
-      { id: 'item-19', name: 'Paneer Dosa with Ghee' },
-    ].map(item => ({ ...item, originalCategory: 'cat-4' })),
+    items: [],
   },
   {
-    id: 'cat-5',
+    id: '5',
     name: 'Category - 05',
-    items: [
-      { id: 'item-20', name: 'Masala Dosa with Ghee' },
-      { id: 'item-21', name: 'Onion Rava with Ghee' },
-      { id: 'item-22', name: 'Paneer Dosa with Ghee' },
-    ].map(item => ({ ...item, originalCategory: 'cat-5' })),
+    items: [],
   },
 ];
 
 const ProductPage: React.FC = () => {
+  const { branch } = useOrg();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [originalCategories, setOriginalCategories] =
+    useState<Category[]>(defaultCategories);
+  const fetchProducts = async () => {
+    if (!branch) {
+      return;
+    }
+    const resp = await productApi.getAll(branch.id);
+    if (resp.status === 200) {
+      setProducts(resp.data);
+      // console.log('resp products', products);
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, [branch]);
+
+  useEffect(() => {
+    // console.log('products', products);
+    setOriginalCategories(orgCategories => {
+      const newCategories = orgCategories.map(v => {
+        return {
+          ...v,
+          items: [],
+        };
+      });
+      products.forEach(product => {
+        const category = newCategories.find(
+          c => c.id === product.categoryId.toString()
+        );
+        product.originalCategory = category?.id || '';
+        if (category) {
+          setOriginalCategories(prev => {
+            const newCategories = [...prev];
+            newCategories.find(c => c.id === category.id)?.items.push(product);
+            return newCategories;
+          });
+        }
+      });
+      return newCategories;
+    });
+    // console.log(originalCategories);
+  }, [products]);
+
+  const onUpdateItem = (
+    itemId: string,
+    originalCategory: string,
+    name: string
+  ) => {
+    setOriginalCategories(prev =>
+      prev.map(v =>
+        v.id === originalCategory
+          ? {
+              ...v,
+              items: v.items.map(i =>
+                i.id === itemId ? { ...i, name: name } : i
+              ),
+            }
+          : v
+      )
+    );
+  };
+
+  useEffect(() => {
+    setCategories(JSON.parse(JSON.stringify(originalCategories)));
+  }, [originalCategories]);
+
   // Store a deep copy of initial categories
-  const [originalCategories] = useState<Category[]>(
-    JSON.parse(JSON.stringify(initialCategories))
-  );
   const [categories, setCategories] = useState<Category[]>(
-    JSON.parse(JSON.stringify(initialCategories))
+    JSON.parse(JSON.stringify(originalCategories))
   );
+  // console.log('categories', categories);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -94,10 +136,13 @@ const ProductPage: React.FC = () => {
         category.name !==
           originalCategories.find(c => c.id === category.id)?.name ||
         category.items.some(
-          item => item.isDeleted || item.originalCategory !== category.id
+          item =>
+            item.isDeleted ||
+            item.originalCategory !== category.id ||
+            item.name !== products.find(p => p.id === item.id)?.name
         )
     );
-  }, [categories, originalCategories]);
+  }, [categories, originalCategories, products]);
 
   const handleDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -196,7 +241,12 @@ const ProductPage: React.FC = () => {
 
       const changes = {
         deletedItems: [] as string[],
-        categoryChanges: [] as { itemId: string; from: string; to: string }[],
+        categoryChanges: [] as {
+          itemId: string;
+          from: string;
+          to: string;
+          name: string;
+        }[],
         categoryNames: [] as { id: string; name: string }[],
       };
 
@@ -216,12 +266,20 @@ const ProductPage: React.FC = () => {
               itemId: item.id,
               from: item.originalCategory!,
               to: category.id,
+              name: item.name,
+            });
+          } else if (item.name !== products.find(p => p.id === item.id)?.name) {
+            changes.categoryChanges.push({
+              itemId: item.id,
+              from: item.originalCategory!,
+              to: item.originalCategory!,
+              name: item.name,
             });
           }
         });
       });
-
-      await menuApi.saveChanges(changes);
+      // console.log(changes);
+      await saveChanges(changes);
 
       // Update original state after successful save
       const newState = categories.map(category => ({
@@ -239,6 +297,44 @@ const ProductPage: React.FC = () => {
       toast.error('Failed to save changes. Please try again.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const saveChanges = async (changes: any) => {
+    console.log('changes', changes);
+    if (!branch?.id) {
+      toast.error('Branch not found');
+      return;
+    }
+    try {
+      if (changes.deletedItems.length > 0) {
+        await productApi.bulkDelete(
+          branch?.id,
+          changes.deletedItems.map((id: string) => id)
+        );
+      }
+      if (changes.categoryChanges.length > 0) {
+        const bulkUpdateData = changes.categoryChanges.map(
+          (change: {
+            itemId: string;
+            from: string;
+            to: string;
+            name: string;
+          }) => ({
+            id: change.itemId,
+            categoryId: Number(change.to),
+            name: change.name,
+          })
+        );
+        await productApi.bulkUpdate(branch?.id, bulkUpdateData);
+      }
+      fetchProducts();
+      // if (changes.categoryNames.length > 0) {
+      //   await productApi.bulkUpdate(branch?.id, changes.categoryNames);
+      // }
+    } catch (error) {
+      fetchProducts();
+      toast.error('Failed to save changes. Please try again.');
     }
   };
 
@@ -285,6 +381,7 @@ const ProductPage: React.FC = () => {
                       onDeleteItem={itemId =>
                         handleDeleteItem(category.id, itemId)
                       }
+                      onUpdateItem={onUpdateItem}
                     />
                     {provided.placeholder}
                   </div>
