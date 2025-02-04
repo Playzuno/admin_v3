@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Branch, OrgContextType } from '../types';
 import { branchApi } from '@/api';
 const OrgContext = createContext<OrgContextType | null>(null);
@@ -18,6 +18,13 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     setBranches(response.data);
     setBranch(response.data[0]);
   };
+
+  useEffect(() => {
+    if (!orgId) return;
+    if (branches.length === 0) {
+      refreshBranches();
+    }
+  }, []);
 
   return (
     <OrgContext.Provider

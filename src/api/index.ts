@@ -1,4 +1,11 @@
-import { Branch, LoggedInUser, LoginResponse } from '@/types';
+import {
+  Branch,
+  BranchStats,
+  FeedbackReport,
+  FeedbackSummaryResponse,
+  LoggedInUser,
+  LoginResponse,
+} from '@/types';
 import { ApiClient } from './client';
 
 export interface ApiErrorType extends Error {
@@ -1026,13 +1033,17 @@ export const rewardsAndPlansApi = {
 // Analytics APIs
 export const analyticsApi = {
   getFeedbackReport: async (
+    branchId: string,
     period: string,
     type: string
-  ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: FeedbackReport[]; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(`/analytics/feedbacks/report`, {
-        params: { period, type },
-      });
+      const response = await api.get<FeedbackReport[]>(
+        `/analytics/branches/${branchId}/feedbacks/report`,
+        {
+          params: { period, type },
+        }
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -1040,10 +1051,14 @@ export const analyticsApi = {
   },
   getFeedbackSummary: async (
     branchId: string
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: FeedbackSummaryResponse;
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
-      const response = await api.get(
-        `/analytics/feedbacks/summary/${branchId}`
+      const response = await api.get<FeedbackSummaryResponse>(
+        `/analytics/branches/${branchId}/feedbacks/summary`
       );
       return response;
     } catch (error) {
@@ -1064,9 +1079,11 @@ export const analyticsApi = {
   },
   getBranchStats: async (
     branchId: string
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{ data: BranchStats; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(`/analytics/branches/${branchId}`);
+      const response = await api.get<BranchStats>(
+        `/analytics/branches/${branchId}`
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);

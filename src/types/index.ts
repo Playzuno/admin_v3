@@ -54,3 +54,31 @@ export interface OrgContextType {
   branches: Branch[];
   refreshBranches: () => Promise<void>;
 }
+
+export interface BranchStats {
+  totalFeedbacks: number;
+  rewardedEndUsers: number;
+  totalCoinsGiven: number;
+  averageFeedback: number;
+  positiveFeedback: number;
+  negativeFeedback: number;
+}
+
+export interface FeedbackReport {
+  productId: string;
+  avgRating: number;
+  productName: string;
+}
+export interface FeedbackReportData extends FeedbackReport {
+  label: string;
+  value: number;
+}
+
+export interface FeedbackSummaryResponse {
+  totalFeedbacks: number;
+  averageRating: number;
+  positiveRate: number;
+  negativeRate: number;
+  positiveFeedbacks: number;
+  negativeFeedbacks: number;
+}
