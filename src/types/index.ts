@@ -90,3 +90,31 @@ export interface Product {
   branchId: string;
   originalCategory: string;
 }
+
+export interface OcrProcessingResponse {
+  message: string;
+  status: string;
+  batch_id: string;
+}
+
+export interface SseMenuParserData {
+  batchId: string;
+  orgId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  batchEndedAt: string;
+  response: {
+    Response: string;
+    BatchID: string;
+  };
+}
+
+export interface SseHeartbeatData {
+  data: string; // "keep-alive"
+}
+
+export interface SseMenuParserResponse {
+  Response: string; // JSON string of products
+  BatchID: string;
+}

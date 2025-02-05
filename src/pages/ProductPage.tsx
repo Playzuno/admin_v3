@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { ActionContainer } from '../components/containers';
 import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
-import ProductUploadModal from '../components/products/ProductUploadModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
@@ -11,6 +10,7 @@ import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
 import { productApi } from '@/api';
 import Button from '@/components/ui/Button';
+import ProductParser from '@/components/products/ProductParser';
 
 interface Category {
   id: string;
@@ -356,6 +356,7 @@ const ProductPage: React.FC = () => {
   const uploadProductFile = async (file: File) => {
     const formData = new FormData();
     formData.append('input_file', file);
+    formData.append('branchId', branch?.id || '');
     // console.log('formData', file);
 
     try {
@@ -373,7 +374,7 @@ const ProductPage: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 absolute top-10 right-10">
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2 justify-end relative">
           <Button
             variant="outline"
             onClick={() => setIsUploadModalOpen(true)}
@@ -384,6 +385,14 @@ const ProductPage: React.FC = () => {
           >
             Add Products
           </Button>
+          {isUploadModalOpen && (
+            <div className="absolute top-[60px] right-[25px] w-[410px] z-50">
+              <ProductParser
+                uploadProductFile={uploadProductFile}
+                onClose={() => setIsUploadModalOpen(false)}
+              />
+            </div>
+          )}
         </div>
       </div>
       <ActionContainer
@@ -437,13 +446,6 @@ const ProductPage: React.FC = () => {
           </div>
         </DragDropContext>
       </ActionContainer>
-
-      {isUploadModalOpen && (
-        <ProductUploadModal
-          uploadProductFile={uploadProductFile}
-          onClose={() => setIsUploadModalOpen(false)}
-        />
-      )}
 
       <ConfirmDialog
         isOpen={showSaveConfirm}

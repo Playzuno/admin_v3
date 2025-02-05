@@ -5,7 +5,9 @@ import {
   FeedbackSummaryResponse,
   LoggedInUser,
   LoginResponse,
+  OcrProcessingResponse,
   Product,
+  SseMenuParserData,
 } from '@/types';
 import { ApiClient } from './client';
 
@@ -681,14 +683,22 @@ export const productApi = {
   },
   parseMenuUsingAI: async (
     data: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: OcrProcessingResponse;
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
-      const response = await api.post('/ai/menu/parse', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        timeout: 400000,
-      });
+      const response = await api.post<OcrProcessingResponse>(
+        '/ai/menu/parse',
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 400000,
+        }
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -711,6 +721,75 @@ export const productApi = {
     // };
 
     // return eventSource;
+  },
+  getMenuParserStatus: async (
+    batchId: string,
+    onMessage: (data: SseMenuParserData) => void,
+    onError: (error: any) => void
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const eventSource = new EventSource(
+        `${baseURL}/ai/menu/parse/${batchId}/status`
+      );
+
+      eventSource.onmessage = event => {
+        const data = JSON.parse(event.data);
+        onMessage(data);
+      };
+
+      eventSource.onerror = error => {
+        onError(error);
+        eventSource.close();
+      };
+
+      return { data: null, status: 200 };
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  cancelQueue: async (
+    orgId: string,
+    branchId: string,
+    batchId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.post(
+        `/organizations/${orgId}/branches/${branchId}/parser/${batchId}/cancel`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  cancelAllQueues: async (
+    orgId: string,
+    branchId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.post(
+        `/organizations/${orgId}/branches/${branchId}/parser/cancelAll`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  getMenuParserQueues: async (
+    orgId: string,
+    branchId: string
+  ): Promise<{
+    data: SseMenuParserData[];
+    status: number;
+    headers?: Headers;
+  }> => {
+    try {
+      const response = await api.get<SseMenuParserData[]>(
+        `/organizations/${orgId}/branches/${branchId}/parser/list`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
   },
 };
 
