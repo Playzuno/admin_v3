@@ -11,6 +11,7 @@ import {
   SseMenuParserData,
 } from '@/types';
 import { ApiClient } from './client';
+import { Role } from '@/types/role';
 
 export interface ApiErrorType extends Error {
   status?: number;
@@ -228,13 +229,13 @@ export const userApi = {
 export const roleApi = {
   getAll: async (
     branchId: string
-  ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Role[]; status: number; headers?: Headers }> => {
     try {
       const token = getBearerToken();
       if (!token) {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
-      const response = await api.get(`/branches/${branchId}/roles`, {
+      const response = await api.get<Role[]>(`/branches/${branchId}/roles`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response;
@@ -264,7 +265,7 @@ export const roleApi = {
       if (!token) {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
-      const response = await api.post(`/branch/${branchId}/role`, data, {
+      const response = await api.post(`/branches/${branchId}/roles`, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response;

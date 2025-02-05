@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Toggle from '../ui/Toggle';
 import { ActionContainer } from '../containers';
+import { NewCustomRole } from '@/api/types';
 
 interface AddCustomRoleProps {
   onCancel: () => void;
-  onSave: (roleData: {
-    name: string;
-    tags: string;
-    createdBy: string;
-    notes: string;
-    isActive: boolean;
-  }) => void;
+  onSave: (roleData: NewCustomRole) => void;
 }
 
 const AddCustomRole: React.FC<AddCustomRoleProps> = ({ onCancel, onSave }) => {
@@ -19,7 +14,7 @@ const AddCustomRole: React.FC<AddCustomRoleProps> = ({ onCancel, onSave }) => {
     tags: '',
     createdBy: '',
     notes: '',
-    isActive: true,
+    status: 'active',
   });
 
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -64,9 +59,12 @@ const AddCustomRole: React.FC<AddCustomRoleProps> = ({ onCancel, onSave }) => {
                 <span className="text-gray-600">Status:</span>
                 <Toggle
                   color="bg-brand"
-                  enabled={formData.isActive}
+                  enabled={formData.status === 'active'}
                   onChange={() =>
-                    setFormData(prev => ({ ...prev, isActive: !prev.isActive }))
+                    setFormData(prev => ({
+                      ...prev,
+                      status: prev.status === 'active' ? 'inactive' : 'active',
+                    }))
                   }
                 />
               </div>

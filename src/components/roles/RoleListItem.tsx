@@ -41,14 +41,14 @@ const RoleListItem: React.FC<RoleListItemProps> = ({
           <span
             className={`text-sm font-medium ${isSelected ? 'text-white' : ''}`}
           >
-            {role.code}
+            {role.name.charAt(0).toUpperCase()}
           </span>
         </div>
         <span className="font-medium">{role.name}</span>
       </div>
       <div>
         <Toggle
-          enabled={role.isActive}
+          enabled={role.status === 'active'}
           onChange={() => onToggleAccess(role.id)}
           color="bg-brand"
         />

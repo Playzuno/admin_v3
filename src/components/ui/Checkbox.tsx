@@ -52,6 +52,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
       </div>
       <span
         className={`!ml-0 text-xs ${checked ? 'text-gray-900' : 'text-gray-500'}`}
+        onClick={() => !disabled && onChange()}
       >
         {label}
       </span>
