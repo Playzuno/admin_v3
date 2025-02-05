@@ -16,7 +16,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
   image,
 }) => {
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md mt-[5%]">
       <div className="bg-white rounded-[32px] overflow-hidden shadow-lg relative">
         {/* Top notch */}
         <div className="absolute -left-4 top-[calc(100%-218px)] w-8 h-8 bg-gray-100 rounded-full" />

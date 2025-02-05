@@ -63,7 +63,7 @@ const Header = () => {
   return (
     <header className="w-full">
       <div className="container mx-auto px-4">
-        <div className="flex h-[4.5rem] items-center justify-between">
+        <div className="flex h-[4.2rem] items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img

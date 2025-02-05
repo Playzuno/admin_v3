@@ -6,7 +6,7 @@ import FeedbackStats from '../components/dashboard/FeedbackStats';
 const Dashboard = () => {
   const statsCards = [
     {
-      title: '# of Feedback',
+      title: 'Feedback',
       count: 500,
       subtext: 'feedbacks',
       growth: 20,
@@ -14,7 +14,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Reward User',
+      title: 'Reward User',
       count: 120,
       subtext: 'active users',
       growth: 6,
@@ -22,7 +22,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Branch/Brand',
+      title: 'Branch/Brand',
       count: 45,
       subtext: 'active branch',
       growth: 2,
@@ -30,7 +30,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Zuno Coins',
+      title: 'Zuno Coins',
       count: 5000,
       subtext: 'zuno coins',
       growth: 15,
@@ -38,7 +38,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of End Users',
+      title: 'End Users',
       count: 65,
       subtext: 'active users',
       growth: 4,

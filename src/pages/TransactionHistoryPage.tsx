@@ -117,12 +117,12 @@ const TransactionHistoryPage: React.FC = () => {
             <table className="w-full">
               <thead className="sticky top-0 bg-white">
                 <tr className="text-left border-b">
-                  <th className="px-6 py-2 title">Name</th>
-                  <th className="px-6 py-2 title">Date of joining</th>
-                  <th className="px-6 py-2 title">No. of brands</th>
-                  <th className="px-6 py-2 title">Total Rewards</th>
-                  <th className="px-6 py-2 title">Total redemption</th>
-                  <th className="px-6 py-2 title">Balance</th>
+                  <th className="px-6 py-2   text-[20px] text-black">Name</th>
+                  <th className="px-6 py-2   text-[20px] text-black">Date of joining</th>
+                  <th className="px-6 py-2   text-[20px] text-black">No. of brands</th>
+                  <th className="px-6 py-2   text-[20px] text-black">Total Rewards</th>
+                  <th className="px-6 py-2   text-[20px] text-black">Total redemption</th>
+                  <th className="px-6 py-2   text-[20px] text-black">Balance</th>
                   <th className="px-6 py-2"></th>
                 </tr>
               </thead>
@@ -148,7 +148,7 @@ const TransactionHistoryPage: React.FC = () => {
                         <div className="subtitle">at {transaction.time}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-4">
                       <span className="text-brand zuno-text mr-8">
                         {transaction.brands}
                       </span>

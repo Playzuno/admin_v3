@@ -49,7 +49,7 @@ const Layout = () => {
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#F7F7F7]">
       {!isPublicPage && <Header />}
       <main
-        className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 pb-6 pt-2' : ''}`}
+        className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 pb-6 pt-0' : ''}`}
       >
         {!isPublicPage ? (
           <Container title={pageTitle}>
