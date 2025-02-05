@@ -100,7 +100,7 @@ const ProductPage: React.FC = () => {
     originalCategory: string,
     name: string
   ) => {
-    setOriginalCategories(prev =>
+    setCategories(prev =>
       prev.map(v =>
         v.id === originalCategory
           ? {
@@ -130,7 +130,7 @@ const ProductPage: React.FC = () => {
     id: string;
     name: string;
   } | null>(null);
-
+  const [parserBatchId, setParserBatchId] = useState('');
   const hasChanges = useMemo(() => {
     return categories.some(
       category =>
@@ -249,6 +249,11 @@ const ProductPage: React.FC = () => {
           name: string;
         }[],
         categoryNames: [] as { id: string; name: string }[],
+        insertedItems: [] as {
+          name: string;
+          categoryId: string;
+          branchId: string;
+        }[],
       };
 
       categories.forEach(category => {
@@ -258,23 +263,33 @@ const ProductPage: React.FC = () => {
         if (originalCategory && originalCategory.name !== category.name) {
           changes.categoryNames.push({ id: category.id, name: category.name });
         }
-
         category.items.forEach(item => {
           if (item.isDeleted) {
-            changes.deletedItems.push(item.id);
-          } else if (item.originalCategory !== category.id) {
+            if (item.branchId) {
+              changes.deletedItems.push(item.id);
+            }
+          } else if (item.originalCategory !== category.id && item.branchId) {
             changes.categoryChanges.push({
               itemId: item.id,
               from: item.originalCategory!,
               to: category.id,
               name: item.name,
             });
-          } else if (item.name !== products.find(p => p.id === item.id)?.name) {
+          } else if (
+            item.name !== products.find(p => p.id === item.id)?.name &&
+            item.branchId
+          ) {
             changes.categoryChanges.push({
               itemId: item.id,
               from: item.originalCategory!,
               to: item.originalCategory!,
               name: item.name,
+            });
+          } else if (!item.branchId) {
+            changes.insertedItems.push({
+              name: item.name,
+              categoryId: Number(category.id),
+              branchId: branch?.id || '',
             });
           }
         });
@@ -325,14 +340,20 @@ const ProductPage: React.FC = () => {
             id: change.itemId,
             categoryId: Number(change.to),
             name: change.name,
+            branchId: branch?.id,
           })
         );
         await productApi.bulkUpdate(branch?.id, bulkUpdateData);
       }
+      if (changes.insertedItems.length > 0) {
+        await productApi.bulkInsert(branch?.id, changes.insertedItems);
+      }
       fetchProducts();
-      // if (changes.categoryNames.length > 0) {
-      //   await productApi.bulkUpdate(branch?.id, changes.categoryNames);
-      // }
+      await productApi.markQueueAsProcessed(
+        branch?.orgId,
+        branch?.id,
+        parserBatchId
+      );
     } catch (error) {
       fetchProducts();
       toast.error('Failed to save changes. Please try again.');
@@ -353,22 +374,35 @@ const ProductPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkForScroll);
   }, [categories]);
 
-  const uploadProductFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('input_file', file);
-    formData.append('branchId', branch?.id || '');
-    // console.log('formData', file);
-
-    try {
-      const response = await productApi.parseMenuUsingAI(formData);
-      return response.data;
-    } catch (error: any) {
-      console.log('error', error);
-      if (!error.response) {
-        throw new Error('Network error. Please check your connection.');
+  const parseNewProducts = async (newProducts: string[]) => {
+    const uniqueProducts = newProducts.filter(
+      product => !products.find(p => p.name === product)
+    );
+    let count = 0;
+    const offset = products.length;
+    const formedProducts = uniqueProducts.map(p => {
+      count++;
+      return {
+        id: `${offset + count}`,
+        name: p,
+        categoryId: Math.min(1 + (count % 5), 5),
+        isDeleted: false,
+        originalCategory: Math.min(1 + (count % 5), 5),
+      };
+    });
+    setCategories(prev => {
+      const newCategories = [...prev];
+      for (let i = 0; i < 5; i++) {
+        const category = newCategories.find(c => c.id === (i + 1).toString());
+        if (category) {
+          category.items = [
+            ...category.items,
+            ...formedProducts.filter(p => p.categoryId === i + 1),
+          ];
+        }
       }
-      throw error.response;
-    }
+      return newCategories;
+    });
   };
 
   return (
@@ -388,7 +422,8 @@ const ProductPage: React.FC = () => {
           {isUploadModalOpen && (
             <div className="absolute top-[60px] right-[25px] w-[410px] z-50">
               <ProductParser
-                uploadProductFile={uploadProductFile}
+                parseNewProducts={parseNewProducts}
+                setParserBatchId={setParserBatchId}
                 onClose={() => setIsUploadModalOpen(false)}
               />
             </div>

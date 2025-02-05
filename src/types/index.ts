@@ -104,10 +104,12 @@ export interface SseMenuParserData {
   createdAt: string;
   updatedAt: string;
   batchEndedAt: string;
-  response: {
-    Response: string;
-    BatchID: string;
-  };
+  response: SseMenuInternalResponse;
+}
+
+export interface SseMenuInternalResponse {
+  Response: string;
+  BatchID: string;
 }
 
 export interface SseHeartbeatData {

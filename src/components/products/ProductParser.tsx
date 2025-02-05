@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Upload, X, Check, FileIcon } from 'lucide-react';
-import { SseMenuParserData } from '@/types';
+import { Upload, X, Check, FileIcon, Loader2 } from 'lucide-react';
+import { Product, SseMenuInternalResponse, SseMenuParserData } from '@/types';
 import { useOrg } from '@/context/OrgContext';
 import { productApi } from '@/api';
 import Button from '../ui/Button';
@@ -8,15 +8,23 @@ interface FileUpload {
   id: string;
   name: string;
   progress: number;
-  status: 'uploading' | 'completed' | 'error';
+  status: 'uploading' | 'completed' | 'processing' | 'failed';
   isExpanded: boolean;
+  file: File;
+  sent: boolean;
+  batchId?: string;
 }
 interface ProductParserProps {
-  uploadProductFile: (file: File) => Promise<void>;
+  parseNewProducts: (newProducts: Product[]) => Promise<void>;
   onClose: () => void;
+  setParserBatchId: (batchId: string) => void;
 }
 
-function ProductParser({ onClose }: ProductParserProps) {
+function ProductParser({
+  parseNewProducts,
+  onClose,
+  setParserBatchId,
+}: ProductParserProps) {
   const [files, setFiles] = useState<FileUpload[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const { branch } = useOrg();
@@ -26,6 +34,26 @@ function ProductParser({ onClose }: ProductParserProps) {
     if (branch) {
       productApi.getMenuParserQueues(branch.orgId, branch.id).then(res => {
         setQueues(res.data);
+        const queues = res.data;
+        for (const queue of queues) {
+          if (queue.status == '100') {
+            connectSSE(queue.batchId);
+          }
+          const formQueues: FileUpload[] = [];
+          queues.forEach(queue => {
+            formQueues.push({
+              id: queue.batchId,
+              name: queue.batchId,
+              progress: queue.status == '100' ? 100 : 100,
+              status: queue.status == '100' ? 'processing' : 'completed',
+              isExpanded: false,
+              file: new File([], queue.batchId),
+              sent: true,
+              batchId: queue.batchId,
+            });
+          });
+          setFiles(formQueues);
+        }
       });
       //   console.log(queues);
     }
@@ -59,6 +87,73 @@ function ProductParser({ onClose }: ProductParserProps) {
     []
   );
 
+  const sendFile = async (file: FileUpload) => {
+    console.log(file);
+    const formData = new FormData();
+    formData.append('input_file', file.file);
+    formData.append('branchId', branch?.id || '');
+    // console.log('formData', file);
+
+    try {
+      const response = await productApi.parseMenuUsingAI(formData);
+      setFiles(prev =>
+        prev.map(f =>
+          f.id === file.id
+            ? { ...f, sent: true, batchId: response.data.batch_id }
+            : f
+        )
+      );
+      connectSSE(response.data.batch_id);
+      return response.data;
+    } catch (error: any) {
+      console.log('error', error);
+      if (!error.response) {
+        throw new Error('Network error. Please check your connection.');
+      }
+      throw error.response;
+    }
+  };
+  const connectSSE = (batchId: string) => {
+    productApi.getMenuParserStatus(
+      batchId,
+      (data: SseMenuParserData | SseMenuInternalResponse) => {
+        // console.log('sse message', data);
+        if (data.batchId) {
+          setQueues(prev => {
+            const exist = prev.find(q => q.batchId === batchId);
+            if (exist) {
+              return prev.map(q =>
+                q.batchId === batchId ? { ...q, status: data.status } : q
+              );
+            } else {
+              return [...prev, { ...data }];
+            }
+          });
+        }
+        if (data.Response) {
+          const resp = JSON.parse(data.Response);
+          const products = resp.products;
+          //   console.log('products', products);
+          setQueues(prev =>
+            prev.map(q =>
+              q.batchId === batchId
+                ? { ...q, status: resp.status, response: resp }
+                : q
+            )
+          );
+          setFiles(prev =>
+            prev.map(f =>
+              f.batchId === batchId ? { ...f, status: 'completed' } : f
+            )
+          );
+        }
+      },
+      error => {
+        console.log('sse error', error);
+      }
+    );
+  };
+
   const handleFiles = (newFiles: File[]) => {
     const fileUploads: FileUpload[] = newFiles.map(file => ({
       id: Math.random().toString(36).substr(2, 9),
@@ -66,6 +161,8 @@ function ProductParser({ onClose }: ProductParserProps) {
       progress: 0,
       status: 'uploading',
       isExpanded: false,
+      file: file,
+      sent: false,
     }));
 
     setFiles(prev => [...prev, ...fileUploads]);
@@ -81,10 +178,11 @@ function ProductParser({ onClose }: ProductParserProps) {
           setFiles(prev =>
             prev.map(f =>
               f.id === fileUpload.id
-                ? { ...f, progress: 100, status: 'completed' }
+                ? { ...f, progress: 100, status: 'processing' }
                 : f
             )
           );
+          sendFile(fileUpload);
         } else {
           setFiles(prev =>
             prev.map(f => (f.id === fileUpload.id ? { ...f, progress } : f))
@@ -95,7 +193,18 @@ function ProductParser({ onClose }: ProductParserProps) {
   };
 
   const removeFile = (id: string) => {
-    setFiles(prev => prev.filter(f => f.id !== id));
+    const file = files.find(f => f.id === id);
+    const queue = queues.find(q => q.batchId === file?.batchId);
+    if (branch?.orgId && branch?.id && queue) {
+      productApi
+        .cancelQueue(branch?.orgId, branch?.id, queue.batchId)
+        .then(() => {
+          setFiles(prev => prev.filter(f => f.id !== id));
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
+    }
   };
 
   const toggleExpand = (id: string) => {
@@ -108,9 +217,16 @@ function ProductParser({ onClose }: ProductParserProps) {
     );
   };
 
-  const handleApply = (id: string) => {
+  const handleApply = (file: FileUpload) => {
     // Handle apply action here
-    console.log('Applied:', id);
+    // console.log('Applied:', file);
+    const queue = queues.find(q => q.batchId === file.batchId);
+    if (queue) {
+      const resp = JSON.parse(queue.response.Response);
+      const products = resp.products;
+      setParserBatchId(queue.batchId);
+      parseNewProducts(products);
+    }
   };
 
   return (
@@ -199,9 +315,16 @@ function ProductParser({ onClose }: ProductParserProps) {
                             />
                           </div>
                         </div>
-                        {file.status === 'completed' ? (
+                        {file.status === 'completed' && (
                           <Check className="w-6 h-6 text-green-500 flex-none" />
-                        ) : (
+                        )}
+                        {file.status === 'processing' && (
+                          <Loader2 className="w-6 h-6 text-brand-500 flex-none animate-spin" />
+                        )}
+                        {file.status === 'failed' && (
+                          <X className="w-6 h-6 text-red-500 flex-none" />
+                        )}
+                        {file.status === 'uploading' && (
                           <button
                             onClick={e => {
                               e.stopPropagation();
@@ -226,8 +349,9 @@ function ProductParser({ onClose }: ProductParserProps) {
                         <div className="p-4 pt-0 flex justify-end gap-2">
                           <Button
                             size="sm"
-                            onClick={() => handleApply(file.id)}
+                            onClick={() => handleApply(file)}
                             variant="primary"
+                            disabled={file.status !== 'completed'}
                           >
                             Apply
                           </Button>

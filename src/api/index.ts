@@ -7,6 +7,7 @@ import {
   LoginResponse,
   OcrProcessingResponse,
   Product,
+  SseMenuInternalResponse,
   SseMenuParserData,
 } from '@/types';
 import { ApiClient } from './client';
@@ -724,7 +725,7 @@ export const productApi = {
   },
   getMenuParserStatus: async (
     batchId: string,
-    onMessage: (data: SseMenuParserData) => void,
+    onMessage: (data: SseMenuParserData | SseMenuInternalResponse) => void,
     onError: (error: any) => void
   ): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
@@ -785,6 +786,26 @@ export const productApi = {
     try {
       const response = await api.get<SseMenuParserData[]>(
         `/organizations/${orgId}/branches/${branchId}/parser/list`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  markQueueAsProcessed: async (
+    orgId: string,
+    branchId: string,
+    batchId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const token = getBearerToken();
+      if (!token) {
+        throw new ApiError('Unauthorized', 'UNAUTHORIZED');
+      }
+      const response = await api.post(
+        `/organizations/${orgId}/branches/${branchId}/parser/${batchId}/markProcessed`,
+        {}, // Assuming no body is needed, adjust if necessary
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       return response;
     } catch (error) {
