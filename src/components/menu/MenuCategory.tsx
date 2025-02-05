@@ -8,6 +8,7 @@ export interface MenuItem {
   name: string;
   isDeleted?: boolean;
   originalCategory: string;
+  branchId?: string;
 }
 
 interface MenuCategoryProps {
@@ -62,7 +63,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   snapshot.isDragging
                     ? 'shadow-lg bg-white cursor-grabbing'
                     : ''
-                } ${item.isDeleted ? 'opacity-50' : ''}`}
+                } ${item.isDeleted ? 'opacity-50' : ''} `}
                 style={{
                   ...provided.draggableProps.style,
                   userSelect: 'none',
@@ -86,7 +87,8 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                       type="text"
                       value={item.name}
                       onChange={e => updateItem(item, e.target.value)}
-                      className="border-b border-transparent focus:outline-none focus:border-orange-500"
+                      style={{ color: !item.branchId ? 'green' : '' }}
+                      className={`border-b border-transparent focus:outline-none focus:border-orange-500`}
                     />
                   </span>
                 </div>
