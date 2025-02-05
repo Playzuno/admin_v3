@@ -1,5 +1,6 @@
 import {
   Branch,
+  BranchMember,
   BranchStats,
   FeedbackReport,
   FeedbackSummaryResponse,
@@ -450,9 +451,9 @@ export const memberApi = {
   getAll: async (
     orgId: string,
     branchId: string
-  ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: BranchMember[]; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(
+      const response = await api.get<BranchMember[]>(
         `/organizations/${orgId}/branches/${branchId}/members`
       );
       return response;
@@ -469,7 +470,7 @@ export const memberApi = {
       if (!token) {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
-      const response = await api.post(`/branch/${branchId}/member`, data, {
+      const response = await api.post(`/branches/${branchId}/members`, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response;
@@ -487,7 +488,7 @@ export const memberApi = {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
       const response = await api.delete(
-        `/branch/${branchId}/member/${userId}`,
+        `/branches/${branchId}/members/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       return response;
@@ -506,7 +507,7 @@ export const memberApi = {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
       const response = await api.put(
-        `/branch/${branchId}/member/${userId}`,
+        `/branches/${branchId}/members/${userId}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
