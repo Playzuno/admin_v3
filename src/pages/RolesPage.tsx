@@ -6,26 +6,28 @@ import AddCustomRole from '../components/roles/AddCustomRole';
 import { ChevronRightIcon, LockKeyhole } from 'lucide-react';
 import { initialRoles } from '../data/initialRoles';
 import Button from '../components/ui/Button';
-
-const mockUpdateRolePermissions = async (
-  roleId: string,
-  permissions: RolePermissions
-): Promise<void> => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      console.log('Permissions updated for role:', roleId, permissions);
-      resolve();
-    }, 1000);
-  });
-};
+import { useOrg } from '@/context/OrgContext';
+import { roleApi } from '@/api';
+import { RolePermission } from '@/types';
+import { NewCustomRole } from '@/api/types';
+import { ErrorToast } from '@/components/ui/toast';
 
 const RolesPage: React.FC = () => {
+  const { branch } = useOrg();
   const [roles, setRoles] = useState<Role[]>(initialRoles);
-  const [selectedRole, setSelectedRole] = useState<Role | null>(
-    initialRoles[0]
-  );
-  const [modifiedPermissions, setModifiedPermissions] =
-    useState<RolePermissions | null>(null);
+  useEffect(() => {
+    if (branch) {
+      roleApi.getAll(branch.id).then(res => {
+        // console.log('roles', res);
+        setRoles(res.data);
+        res.data.length > 0 && setSelectedRole(res.data[0]);
+      });
+    }
+  }, [branch]);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [modifiedPermissions, setModifiedPermissions] = useState<
+    string[] | null
+  >(null);
   const [isAddingRole, setIsAddingRole] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -36,25 +38,54 @@ const RolesPage: React.FC = () => {
   }, [selectedRole]);
 
   const handleToggleAccess = (roleId: string) => {
-    setRoles(
-      roles.map(role =>
-        role.id === roleId ? { ...role, isActive: !role.isActive } : role
-      )
-    );
+    if (!branch?.id) return;
+    const role = roles.find(role => role.id === roleId);
+    if (!role) return;
+    roleApi
+      .update(branch.id, roleId, {
+        status: role.status == 'active' ? 'inactive' : 'active',
+      })
+      .then(() => {
+        setRoles(
+          roles.map(role =>
+            role.id === roleId
+              ? {
+                  ...role,
+                  status: role.status == 'active' ? 'inactive' : 'active',
+                }
+              : role
+          )
+        );
+      })
+      .catch(error => {
+        console.error('Failed to update role status:', error);
+      });
   };
 
-  const handlePermissionChange = useCallback((key: keyof RolePermissions) => {
-    setModifiedPermissions(prev =>
-      prev ? { ...prev, [key]: !prev[key] } : null
-    );
+  const handlePermissionChange = useCallback((permission: RolePermission) => {
+    setModifiedPermissions(prev => {
+      // console.log('target permission', permission, prev);
+      if (!prev) return [permission.code];
+      if (prev.includes(permission.code)) {
+        return prev.filter(p => p !== permission.code);
+      } else {
+        return [...prev, permission.code];
+      }
+    });
   }, []);
 
   const hasChanges = useCallback(() => {
-    if (!selectedRole || !modifiedPermissions) return false;
-    return Object.keys(selectedRole.permissions).some(
-      key =>
-        selectedRole.permissions[key as keyof RolePermissions] !==
-        modifiedPermissions[key as keyof RolePermissions]
+    if (
+      !selectedRole ||
+      !modifiedPermissions ||
+      !selectedRole.permissions ||
+      !modifiedPermissions
+    )
+      return false;
+    const a = selectedRole.permissions.sort();
+    const b = modifiedPermissions.sort();
+    return (
+      a.length !== b.length || a.some((value, index) => value !== b[index])
     );
   }, [selectedRole, modifiedPermissions]);
 
@@ -66,10 +97,13 @@ const RolesPage: React.FC = () => {
 
   const handleSaveChanges = async () => {
     if (!selectedRole || !modifiedPermissions) return;
-
+    if (!branch?.id) return;
     try {
       setIsSaving(true);
-      await mockUpdateRolePermissions(selectedRole.id, modifiedPermissions);
+      if (!selectedRole.id) return;
+      await roleApi.update(branch.id, selectedRole.id, {
+        permissions: modifiedPermissions,
+      });
 
       setRoles(prevRoles =>
         prevRoles.map(role =>
@@ -89,39 +123,32 @@ const RolesPage: React.FC = () => {
     }
   };
 
-  const handleAddCustomRole = (roleData: {
-    name: string;
-    tags: string;
-    createdBy: string;
-    notes: string;
-    isActive: boolean;
-  }) => {
+  const handleAddCustomRole = async (roleData: NewCustomRole) => {
+    if (roleData.name.length === 0) {
+      ErrorToast('Role name is required');
+      return;
+    }
+    if (roleData.status !== 'active' && roleData.status !== 'inactive') {
+      ErrorToast('Invalid status');
+      return;
+    }
     const newRole: Role = {
-      id: (roles.length + 1).toString(),
-      code: roleData.name.substring(0, 2).toUpperCase(),
+      // id: (roles.length + 1).toString(),
       name: roleData.name,
-      isActive: roleData.isActive,
-      permissions: {
-        viewRole: false,
-        modifyRole: false,
-        deleteRole: false,
-        addNewRole: false,
-        viewProduct: false,
-        modifyProduct: false,
-        deleteProduct: false,
-        addProduct: false,
-        viewTransaction: false,
-        exportTransaction: false,
-        deleteTransaction: false,
-        managePayments: false,
-        viewSettings: false,
-        modifySettings: false,
-        manageIntegrations: false,
-        manageNotifications: false,
-      },
+      permissions: [],
+      description: roleData.notes,
+      status: roleData.status,
     };
-    setRoles([...roles, newRole]);
-    setIsAddingRole(false);
+    if (!branch?.id) return;
+    setIsAddingRole(true);
+    try {
+      await roleApi.create(branch.id, newRole);
+      setRoles([...roles, newRole]);
+    } catch (error) {
+      console.error('Failed to create role:', error);
+    } finally {
+      setIsAddingRole(false);
+    }
   };
 
   const handleRoleSelect = (role: Role) => {

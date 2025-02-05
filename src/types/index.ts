@@ -120,3 +120,16 @@ export interface SseMenuParserResponse {
   Response: string; // JSON string of products
   BatchID: string;
 }
+
+export interface RolePermission {
+  key: string;
+  label: string;
+  disabled?: boolean;
+  code: string;
+}
+
+export interface PermissionGroup {
+  id: string;
+  title: string;
+  permissions: RolePermission[];
+}

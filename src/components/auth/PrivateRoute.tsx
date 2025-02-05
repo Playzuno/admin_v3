@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { LayoutContext } from '../layout/Layout';
+import { Toaster } from 'react-hot-toast';
 
 interface RouteContextType {
   title: string;
@@ -37,7 +38,10 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, title }) => {
     return <Navigate to="/login" />;
   }
   return (
-    <RouteContext.Provider value={{ title }}>{children}</RouteContext.Provider>
+    <RouteContext.Provider value={{ title }}>
+      {children}
+      <Toaster />
+    </RouteContext.Provider>
   );
 };
 

@@ -32,11 +32,11 @@ export interface RolePermissions {
 }
 
 export interface Role {
-  id: string;
-  code: string;
+  id?: string;
+  description: string;
   name: string;
-  permissions: RolePermissions;
-  isActive: boolean;
+  permissions: string[];
+  status: string;
 }
 
 export interface RoleGroup {
