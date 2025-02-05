@@ -133,3 +133,15 @@ export interface PermissionGroup {
   title: string;
   permissions: RolePermission[];
 }
+
+export interface BranchMember {
+  id: string;
+  userId: string;
+  orgId: string;
+  branchId: string;
+  role: string;
+  roleExpiresAt: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
