@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import Button from '../ui/Button';
+import { ErrorToast } from '../ui/toast';
 
 interface NewBranchDialogProps {
   isOpen: boolean;
@@ -26,6 +27,10 @@ const NewBranchDialog: React.FC<NewBranchDialogProps> = ({
   if (!isOpen) return null;
 
   const handleSubmit = () => {
+    if (!formData.name || !formData.contact || !formData.address) {
+      ErrorToast('Please fill in all fields');
+      return;
+    }
     onAdd(formData);
     setFormData({ name: '', contact: '', address: '' });
   };

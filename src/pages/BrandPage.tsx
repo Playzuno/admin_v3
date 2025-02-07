@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Branch, InviteFormData } from '../types/brand';
+import { InviteFormData } from '../types/brand';
 import BranchCard from '../components/brand/BranchCard';
 import BranchList from '../components/brand/BranchList';
 import InviteModal from '../components/brand/InviteModal';
 import NewBranchDialog from '../components/brand/NewBranchDialog';
 import Button from '../components/ui/Button';
-import { inviteApi } from '@/api';
+import { branchApi, inviteApi, organizationApi } from '@/api';
 import { useOrg } from '@/context/OrgContext';
-
+import { Branch, BranchDashboardStats } from '@/types';
+import { ErrorToast } from '@/components/ui/toast';
+import { SuccessToast } from '@/components/ui/toast';
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
   const [showNewBranchDialog, setShowNewBranchDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState<Branch | undefined>();
+  const [selectedBranch, setSelectedBranch] = useState<BranchDashboardStats | undefined>();
   const [formData, setFormData] = useState<InviteFormData>({
     username: '',
     email: '',
@@ -21,55 +23,71 @@ const BrandPage: React.FC = () => {
     branch: '',
     role: '',
   });
-  
 
-  const branches: Branch[] = [
-    {
-      id: '1',
-      initial: 'T',
-      name: 'Tambaram',
-      branchId: '1848201',
-      users: 25,
-      feedback: 10250,
-      isActive: true,
-    },
-    {
-      id: '2',
-      initial: 'C',
-      name: 'Chromepet',
-      branchId: '2784011',
-      users: 21,
-      feedback: 24520,
-      isActive: true,
-    },
-    {
-      id: '3',
-      initial: 'P',
-      name: 'Pallavaram',
-      branchId: '6718200',
-      users: 14,
-      feedback: 1562,
-      isActive: false,
-    },
-    {
-      id: '4',
-      initial: 'M',
-      name: 'Meenambakam',
-      branchId: '2784011',
-      users: 38,
-      feedback: 14567,
-      isActive: true,
-    },
-    {
-      id: '5',
-      initial: 'M',
-      name: 'Guindy',
-      branchId: '2784011',
-      users: 56,
-      feedback: 32564,
-      isActive: false,
-    },
-  ];
+  const {orgId} = useOrg();
+  const [branches, setBranches] = useState<BranchDashboardStats[]>([]);
+  useEffect(() => {
+    fetchBranchStats();
+  }, [orgId]);
+  
+const fetchBranchStats  = () => {
+  organizationApi.getBranchDashboard(orgId).then(res => {
+    res.data.branches.map(branch => {
+      branch.initial = branch.branchName.charAt(0);
+    });
+    setBranches(res.data.branches);
+    if (res.data.branches.length > 0) {
+      setSelectedBranch(res.data.branches[0]);
+    }
+  });
+}
+  // const branches: Branch[] = [
+  //   {
+  //     id: '1',
+  //     initial: 'T',
+  //     name: 'Tambaram',
+  //     branchId: '1848201',
+  //     users: 25,
+  //     feedback: 10250,
+  //     isActive: true,
+  //   },
+  //   {
+  //     id: '2',
+  //     initial: 'C',
+  //     name: 'Chromepet',
+  //     branchId: '2784011',
+  //     users: 21,
+  //     feedback: 24520,
+  //     isActive: true,
+  //   },
+  //   {
+  //     id: '3',
+  //     initial: 'P',
+  //     name: 'Pallavaram',
+  //     branchId: '6718200',
+  //     users: 14,
+  //     feedback: 1562,
+  //     isActive: false,
+  //   },
+  //   {
+  //     id: '4',
+  //     initial: 'M',
+  //     name: 'Meenambakam',
+  //     branchId: '2784011',
+  //     users: 38,
+  //     feedback: 14567,
+  //     isActive: true,
+  //   },
+  //   {
+  //     id: '5',
+  //     initial: 'M',
+  //     name: 'Guindy',
+  //     branchId: '2784011',
+  //     users: 56,
+  //     feedback: 32564,
+  //     isActive: false,
+  //   },
+  // ];
 
   const handleInputChange = (field: keyof InviteFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -85,13 +103,22 @@ const BrandPage: React.FC = () => {
     address: string;
   }) => {
     // Handle adding new branch
-    setShowNewBranchDialog(false);
+    branchApi.create(orgId, {
+      name: branchData.name,
+      phone: [branchData.contact],
+      address: branchData.address,
+    }).then(res => {
+      SuccessToast('Branch created successfully');
+      setShowNewBranchDialog(false);
+      fetchBranchStats();
+    }).catch(err => {
+      ErrorToast('Failed to create branch');
+    });
   };
 
   const handleEditProfile = () => {
     navigate('/brand/profile');
   };
-  const {orgId} = useOrg();
   const handleInvite = (formData: InviteFormData) => {
     // console.log('invite', formData);
     inviteApi.inviteUser(orgId, formData.branch, {

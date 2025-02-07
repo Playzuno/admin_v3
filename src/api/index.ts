@@ -1,5 +1,6 @@
 import {
   Branch,
+  BranchDashboardStats,
   BranchMember,
   BranchMemberResponse,
   BranchStats,
@@ -165,6 +166,25 @@ export const organizationApi = {
       const response = await api.put(`/organizations/${id}/subscription`, {
         planId,
       });
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  getBranchDashboard: async (
+    orgId: string
+  ): Promise<{ data: { branches: BranchDashboardStats[] }; status: number; headers?: Headers }> => {
+    try {
+      const token = getBearerToken();
+      if (!token) {
+        throw new ApiError('Unauthorized', 'UNAUTHORIZED');
+      }
+      const response = await api.get<{ branches: BranchDashboardStats[] }>(
+        `/organizations/${orgId}/branches/dashboard`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -399,7 +419,7 @@ export const branchApi = {
       if (!token) {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
-      const response = await api.post(`/organization/${orgId}/branches`, data, {
+      const response = await api.post(`/organizations/${orgId}/branches`, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response;
@@ -417,7 +437,7 @@ export const branchApi = {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
       const response = await api.delete(
-        `/organization/${orgId}/branches/${id}`,
+        `/organizations/${orgId}/branches/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       return response;
@@ -436,7 +456,7 @@ export const branchApi = {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
       const response = await api.put(
-        `/organization/${orgId}/branches/${id}`,
+        `/organizations/${orgId}/branches/${id}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );

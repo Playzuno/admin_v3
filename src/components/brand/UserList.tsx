@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import InviteForm from './InviteForm';
 import { HeaderContainer } from '../containers';
-import { Branch } from '@/types/brand';
 import { useLocation } from 'react-router-dom';
-import { InviteFormData } from '@/types';
+import { BranchDashboardStats, InviteFormData } from '@/types';
+import { branchApi, memberApi } from '@/api';
+import { useOrg } from '@/context/OrgContext';
 
 interface User {
   id: string;
@@ -18,6 +19,7 @@ interface UserListProps {
   showInviteForm: boolean;
   setShowInviteForm: (show: boolean) => void;
   cancelAction: (cancel: boolean) => void;
+  branch: BranchDashboardStats | undefined;
 }
 
 const UserList: React.FC<UserListProps> = ({
@@ -25,37 +27,27 @@ const UserList: React.FC<UserListProps> = ({
   showInviteForm,
   setShowInviteForm,
   cancelAction,
+  branch,
 }) => {
-  // const [showInviteForm, setShowInviteForm] = useState(true);
 
-  const users: User[] = [
-    {
-      id: '1',
-      initial: 'A',
-      name: 'Abhijith Sharma',
-      role: 'General Manager',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    {
-      id: '2',
-      initial: 'A',
-      name: 'Ashok Kumar',
-      role: 'General Manager',
-    },
-    {
-      id: '3',
-      initial: 'K',
-      name: 'Kumara velu',
-      role: 'Waitron',
-    },
-    {
-      id: '4',
-      initial: 'S',
-      name: 'Selva Kumar',
-      role: 'Manager',
-    },
-  ];
+  const [members, setMembers] = useState<User[]>([]);
+  const {orgId} = useOrg();
+  useEffect(() => {
+    if (!branch) return;
+    memberApi.getAll(orgId, branch.branchId).then(res => {
+      if (!res.data || res.data.length === 0) {
+        setMembers([]);
+        return;
+      }
+      setMembers(res.data.map(member => ({
+        id: member.id,
+        initial: member.user.fullName.charAt(0),
+        name: member.user.fullName,
+        role: member.role.name,
+        avatar: member.user.metadata.profilePictureURL,
+      })));
+    });
+  }, [branch]);
 
   // const handleInviteComplete = () => {
   //   setShowInviteForm(false);
@@ -88,28 +80,28 @@ const UserList: React.FC<UserListProps> = ({
     >
       <>
         <div className="divide-y">
-          {users.map(user => (
+          {members.map(member => (
             <div
-              key={user.id}
+              key={member.id}
               className="flex items-center justify-between px-4 py-3"
             >
               <div className="flex items-center space-x-3 px-4 space-y-2">
-                {user.avatar ? (
+                {member.avatar ? (
                   <img
-                    src={user.avatar}
-                    alt={user.name}
+                    src={member.avatar}
+                    alt={member.name}
                     className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
                     <span className="text-sm font-medium text-brand">
-                      {user.initial}
+                      {member.initial}
                     </span>
                   </div>
                 )}
-                <span className="text-xs pb-1">{user.name}</span>
+                <span className="text-xs pb-1">{member.name}</span>
               </div>
-              <span className="text-xs w-40 text-left">{user.role}</span>
+              <span className="text-xs w-40 text-left">{member.role}</span>
             </div>
           ))}
         </div>
