@@ -1,15 +1,15 @@
 import React from 'react';
-import { CheckIcon, Search } from 'lucide-react';
-import { Branch } from '../../types/brand';
+import { CheckIcon, Search, XIcon } from 'lucide-react';
+import { BranchDashboardStats } from '../../types';
 import UserList from './UserList';
 import { useState } from 'react';
 import Button from '../ui/Button';
 import PlainContainer from '../containers/PlainContainer';
 import { InviteFormData } from '@/types';
 interface BranchListProps {
-  branches: Branch[];
-  selectedBranch?: Branch;
-  onBranchSelect: (branch: Branch) => void;
+  branches: BranchDashboardStats[];
+  selectedBranch?: BranchDashboardStats;
+  onBranchSelect: (branch: BranchDashboardStats) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onInvite: (formData: InviteFormData) => void;
@@ -83,20 +83,26 @@ const BranchList: React.FC<BranchListProps> = ({
                   </span>
                 </div>
                 <div className="ml-4">
-                  <div className="text-xs">{branch.name}</div>
-                  <div className="text-3xs text-gray-400">
+                  <div className="text-xs">{branch.branchName}</div>
+                  <div className="text-3xs text-gray-400 truncate max-w-[100px]" title={branch.branchId}>
                     Branch ID: {branch.branchId}
                   </div>
                 </div>
               </div>
-              <div className="text-xs text-center">{branch.users}</div>
+              <div className="text-xs text-center">{branch.totalUsers}</div>
               <div className="text-xs text-center text-brand">
-                {branch.feedback}
+                {branch.totalFeedbacks}
               </div>
               <div className="flex items-center gap-2 pl-6">
-                <div className="w-5 h-5 rounded-full bg-[#FF6E01] flex items-center justify-center">
-                  <CheckIcon className="w-3 h-3 text-white" />
-                </div>
+                {branch.isActive ? (
+                  <div className="w-5 h-5 rounded-full bg-[#FF6E01] flex items-center justify-center">
+                    <CheckIcon className="w-3 h-3 text-white" />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
+                    <XIcon className="w-3 h-3 text-gray-400" />
+                  </div>
+                )}
               </div>
             </button>
           ))}
@@ -105,6 +111,7 @@ const BranchList: React.FC<BranchListProps> = ({
 
       {/* Right side - Users List */}
       <UserList
+        branch={selectedBranch}
         onInvite={onInvite}
         showInviteForm={showInviteForm}
         setShowInviteForm={setShowInviteForm}

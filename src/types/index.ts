@@ -185,3 +185,15 @@ export interface InviteFormData {
   branch: string;
   role: string;
 }
+
+export interface BranchDashboardStats {
+  id: string;
+  initial: string;
+  name: string;
+  branchId: string;
+  isActive: boolean;
+  branchName: string;
+  totalUsers: number;
+  totalProducts: number;
+  totalFeedbacks: number;
+}

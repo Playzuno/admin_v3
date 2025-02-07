@@ -1,9 +1,9 @@
 import React from 'react';
 import { MoreHorizontal } from 'lucide-react';
-import { Branch } from '../../types/brand';
+import { BranchDashboardStats, BranchStats } from '../../types';
 
 interface BranchCardProps {
-  branch: Branch;
+  branch: BranchDashboardStats;
   isSelected?: boolean;
 }
 
@@ -29,7 +29,7 @@ const BranchCard: React.FC<BranchCardProps> = ({ branch, isSelected }) => {
           </div>
           <div className="flex flex-col">
             <div className="subtitle">Branch</div>
-            <h3 className="text-sm font-regular">{branch.name}</h3>
+            <h3 className="text-sm font-regular">{branch.branchName}</h3>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@ const BranchCard: React.FC<BranchCardProps> = ({ branch, isSelected }) => {
           <div className="text-3xs font-regular underline decoration-gray-300 mb-1">
             No. of Users
           </div>
-          <div className="text-xs font-semibold text-brand">{branch.users}</div>
+          <div className="text-xs font-semibold text-brand">{branch.totalUsers}</div>
         </div>
         <div className="mx-4 w-[1px] h-12 bg-gray-200" />
         <div>
@@ -47,7 +47,7 @@ const BranchCard: React.FC<BranchCardProps> = ({ branch, isSelected }) => {
             No. of Feedback
           </div>
           <div className="text-xs font-semibold text-brand">
-            {branch.feedback}
+            {branch.totalFeedbacks}
           </div>
         </div>
       </div>
