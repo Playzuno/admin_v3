@@ -28,7 +28,7 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <OrgContext.Provider
-      value={{ branch, setBranch, branches, refreshBranches }}
+      value={{ branch, setBranch, branches, refreshBranches, orgId: orgId || '' }}
     >
       {children}
     </OrgContext.Provider>

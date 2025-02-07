@@ -5,13 +5,14 @@ import UserList from './UserList';
 import { useState } from 'react';
 import Button from '../ui/Button';
 import PlainContainer from '../containers/PlainContainer';
+import { InviteFormData } from '@/types';
 interface BranchListProps {
   branches: Branch[];
   selectedBranch?: Branch;
   onBranchSelect: (branch: Branch) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onInvite: () => void;
+  onInvite: (formData: InviteFormData) => void;
 }
 
 const BranchList: React.FC<BranchListProps> = ({
@@ -106,6 +107,7 @@ const BranchList: React.FC<BranchListProps> = ({
       <UserList
         onInvite={onInvite}
         showInviteForm={showInviteForm}
+        setShowInviteForm={setShowInviteForm}
         cancelAction={toggleShowInvite}
       />
     </div>

@@ -1,6 +1,7 @@
 import {
   Branch,
   BranchMember,
+  BranchMemberResponse,
   BranchStats,
   FeedbackReport,
   FeedbackSummaryResponse,
@@ -374,7 +375,7 @@ export const authApi = {
 export const branchApi = {
   getAll: async (
     orgId: string
-  ): Promise<{ data: any[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Branch[]; status: number; headers?: Headers }> => {
     try {
       const response = await api.get<Branch[]>(
         `/organizations/${orgId}/branches`
@@ -451,9 +452,9 @@ export const memberApi = {
   getAll: async (
     orgId: string,
     branchId: string
-  ): Promise<{ data: BranchMember[]; status: number; headers?: Headers }> => {
+  ): Promise<{ data: BranchMemberResponse[]; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get<BranchMember[]>(
+      const response = await api.get<BranchMemberResponse[]>(
         `/organizations/${orgId}/branches/${branchId}/members`
       );
       return response;

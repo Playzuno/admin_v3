@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Branch, InviteFormData } from '../types/brand';
 import BranchCard from '../components/brand/BranchCard';
 import BranchList from '../components/brand/BranchList';
 import InviteModal from '../components/brand/InviteModal';
 import NewBranchDialog from '../components/brand/NewBranchDialog';
 import Button from '../components/ui/Button';
+import { inviteApi } from '@/api';
+import { useOrg } from '@/context/OrgContext';
 
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
-  const [showInviteModal, setShowInviteModal] = useState(false);
   const [showNewBranchDialog, setShowNewBranchDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBranch, setSelectedBranch] = useState<Branch | undefined>();
   const [formData, setFormData] = useState<InviteFormData>({
-    username: 'Abhishek Rath',
+    username: '',
     email: '',
     contact: '',
     branch: '',
     role: '',
   });
+  
 
   const branches: Branch[] = [
     {
@@ -73,9 +75,9 @@ const BrandPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleInvite = () => {
-    setShowInviteModal(false);
-  };
+  // const handleInvite = () => {
+  //   setShowInviteModal(false);
+  // };
 
   const handleAddBranch = (branchData: {
     name: string;
@@ -88,6 +90,21 @@ const BrandPage: React.FC = () => {
 
   const handleEditProfile = () => {
     navigate('/brand/profile');
+  };
+  const {orgId} = useOrg();
+  const handleInvite = (formData: InviteFormData) => {
+    // console.log('invite', formData);
+    inviteApi.inviteUser(orgId, formData.branch, {
+      email: formData.email,
+      role: formData.role,
+      username: formData.username,
+      branchId: formData.branch,
+      mobile: formData.contact,
+    }).then(res => {
+      console.log('res', res);
+    }).catch(err => {
+      console.log('err', err);
+    });
   };
 
   return (
@@ -146,18 +163,18 @@ const BrandPage: React.FC = () => {
         onBranchSelect={setSelectedBranch}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        onInvite={() => setShowInviteModal(true)}
+        onInvite={handleInvite}
       />
 
       {/* Invite Modal */}
-      <InviteModal
+      {/* <InviteModal
         isOpen={showInviteModal}
         onClose={() => setShowInviteModal(false)}
         formData={formData}
         branches={branches}
         onInputChange={handleInputChange}
         onInvite={handleInvite}
-      />
+      /> */}
 
       {/* New Branch Dialog */}
       <NewBranchDialog

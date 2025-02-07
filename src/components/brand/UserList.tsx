@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InviteForm from './InviteForm';
 import { HeaderContainer } from '../containers';
+import { Branch } from '@/types/brand';
+import { useLocation } from 'react-router-dom';
+import { InviteFormData } from '@/types';
 
 interface User {
   id: string;
@@ -11,12 +14,16 @@ interface User {
 }
 
 interface UserListProps {
-  onInvite: () => void;
+  onInvite: (formData: InviteFormData) => void;
+  showInviteForm: boolean;
+  setShowInviteForm: (show: boolean) => void;
+  cancelAction: (cancel: boolean) => void;
 }
 
 const UserList: React.FC<UserListProps> = ({
   onInvite,
   showInviteForm,
+  setShowInviteForm,
   cancelAction,
 }) => {
   // const [showInviteForm, setShowInviteForm] = useState(true);
@@ -50,15 +57,25 @@ const UserList: React.FC<UserListProps> = ({
     },
   ];
 
-  const handleInviteComplete = () => {
-    setShowInviteForm(false);
-    onInvite();
-  };
+  // const handleInviteComplete = () => {
+  //   setShowInviteForm(false);
+  //   onInvite();
+  // };
+
+  const {state: locationState} = useLocation();
+  useEffect(() => {
+    if (locationState?.openMemberForm) {
+      setShowInviteForm(true);
+    }
+  }, [locationState]);
 
   return showInviteForm ? (
     <InviteForm
       onClose={() => cancelAction(false)}
-      onInvite={handleInviteComplete}
+      onInvite={(props) => {
+        setShowInviteForm(false);
+        onInvite(props);
+      }}
     />
   ) : (
     <HeaderContainer

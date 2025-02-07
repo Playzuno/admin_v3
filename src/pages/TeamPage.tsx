@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, ChevronDown, Infinity, Filter } from 'lucide-react';
 import { TeamMember } from '../types/team';
 import { teamMembers as seedTeamMembers } from '../seeds';
@@ -8,6 +8,10 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Button from '../components/ui/Button';
 import { TabContainer } from '../components/containers';
 import Checkbox from '../components/ui/Checkbox';
+import { useOrg } from '@/context/OrgContext';
+import { memberApi, roleApi } from '@/api';
+import { BranchMember, BranchMemberResponse, ExpireMode, Role } from '@/types';
+import { useNavigate } from 'react-router-dom';
 
 const TeamPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -17,6 +21,41 @@ const TeamPage: React.FC = () => {
   const [editingMember, setEditingMember] = useState<string | null>(null);
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [originalTeamMembers, setOriginalTeamMembers] = useState<TeamMember[]>([]);
+
+  const { branch} = useOrg();
+  useEffect(() => {
+    if (branch) {
+      memberApi.getAll(branch.orgId, branch.id).then(response => {
+        // console.log(response.data);
+        const members: TeamMember[] = response.data.map((member: BranchMemberResponse) => ({
+          id: member.id,
+          name: member.user.fullName,
+          initial: member.user.fullName.charAt(0),
+          role: member.role,
+          position: member.user.metadata.designation,
+          expiration: member.roleExpiresAt,
+          daysToExpire: countExpirationDays(member.roleExpiresAt),
+          accessExpires: new Date(member.roleExpiresAt).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          }),
+          accessExpiresAt: new Date(member.roleExpiresAt),
+          roles: [member.role.name],
+          roleId: member.roleId,
+          expireMode: member.expireMode,
+        }));
+        setTeamMembers(members);
+        setOriginalTeamMembers(members);
+      });
+
+      roleApi.getAll(branch.id).then(response => {
+        setRoles(response.data);
+      });
+    }
+  }, [branch]);
 
   const handleSelectMember = (memberId: string) => {
     setSelectedMembers(prev =>
@@ -40,7 +79,7 @@ const TeamPage: React.FC = () => {
     }
     setTeamMembers(prev =>
       prev.map(member =>
-        member.id === memberId ? { ...member, role: newRole } : member
+        member.id === memberId ? { ...member, roleId: newRole } : member
       )
     );
   };
@@ -62,55 +101,95 @@ const TeamPage: React.FC = () => {
     if (editingMember !== memberId) {
       setEditingMember(memberId);
     }
+    if (!date) {
+      setTeamMembers(prev =>
+        prev.map(member =>
+          member.id === memberId
+            ? { ...member, accessExpiresAt: new Date("0001-01-01T00:00:00Z"), daysToExpire: -1, accessExpires: 'No expiration', expireMode: ExpireMode.INFINITE }
+            : member
+        )
+      );
+      return
+    }
     setTeamMembers(prev =>
-      prev.map(member =>
-        member.id === memberId
+      prev.map(member => {
+        // console.log(member.id, memberId, date, countExpirationDays(date.toISOString()))
+        return member.id === memberId
           ? {
               ...member,
-              expiration: date
-                ? date
-                    .toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                    })
-                    .split('/')
-                    .join('.')
-                : null,
-              daysToExpire: date
-                ? Math.ceil(
-                    (date.getTime() - new Date().getTime()) /
-                      (1000 * 60 * 60 * 24)
-                  )
-                : -1,
+              accessExpiresAt: date,
+              daysToExpire: countExpirationDays(date.toISOString()),
+              accessExpires: date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              }),
+              expireMode: ExpireMode.FINITE,
             }
           : member
+      }
       )
     );
   };
 
-  const getAccessExpiresText = (daysToExpire: number) => {
-    if (daysToExpire === -1)
+  const countExpirationDays = (expiration: string) => {
+    const expirationDate = new Date(expiration);
+    const today = new Date();
+    const diffTime = expirationDate.getTime() - today.getTime();
+    const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : -1;
+  };
+
+  const updateTeamMember = () => {
+    // console.log(teamMembers);
+    if (!branch?.id) return;
+    const member = teamMembers.find(member => member.id === editingMember);
+    if (!member) return;
+    const updatedMembers = memberApi.update(branch.id, member.id, {
+      roleId: member.roleId,
+      roleExpiresAt: member.accessExpiresAt,
+      expireMode: member.expireMode,
+    });
+    // console.log(updatedMembers);
+  };
+
+  const getAccessExpiresText = (member: TeamMember) => {
+    if (member.expireMode === ExpireMode.INFINITE) {
       return (
         <div className="flex items-center space-x-1">
           <Infinity className="w-4 h-4" />
           <span>No expiration</span>
         </div>
       );
-    return `${daysToExpire} days`;
+    }
+    if (member.daysToExpire <= 0) {
+      return (
+        <div className="flex items-center space-x-1">
+          <span>Expired {Math.abs(member.daysToExpire)} days ago</span>
+        </div>
+      );
+    }
+    return `${member.daysToExpire} days`;
   };
+
+  const navigate = useNavigate();
+  const openMemberForm = () => {
+    navigate('/brand', {
+      state: {openMemberForm: true}
+    });
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="title-2">Manage Team Members</h1>
         <div className="flex space-x-4">
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={openMemberForm}>
             Add member
           </Button>
-          <Button variant="zuno-dark-2" size="sm">
+          {/* <Button variant="zuno-dark-2" size="sm">
             Edit roles
-          </Button>
+          </Button> */}
         </div>
       </div>
       <TabContainer
@@ -156,13 +235,16 @@ const TeamPage: React.FC = () => {
                   <>
                     <Button
                       variant="light"
-                      onClick={() => setEditingMember(null)}
+                      onClick={() => {
+                        setTeamMembers(originalTeamMembers);
+                        setEditingMember(null);
+                      }}
                     >
                       Cancel
                     </Button>
                     <Button
                       variant="primary"
-                      onClick={() => setEditingMember(null)}
+                      onClick={() => updateTeamMember()}
                     >
                       Save Changes
                     </Button>
@@ -179,7 +261,7 @@ const TeamPage: React.FC = () => {
           {/* Table */}
           <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
             <table className="w-full">
-              <thead className="sticky top-0 bg-white">
+              <thead className="sticky top-0 ">
                 <tr className="text-left border-b">
                   <th className="pl-6 py-4">
                     <Checkbox
@@ -198,7 +280,7 @@ const TeamPage: React.FC = () => {
               </thead>
               <tbody className="divide-y">
                 {teamMembers.map(member => (
-                  <tr key={member.id} className="hover:bg-gray-50">
+                  <tr key={member.id} className={`hover:bg-gray-50 ${editingMember !== member.id && !!editingMember ? 'cursor-not-allowed pointer-events-none' : ''}`}>
                     <td className="pl-6 py-4">
                       <Checkbox
                         bgColor="bg-brand"
@@ -221,12 +303,12 @@ const TeamPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 zuno-text">
-                      {getAccessExpiresText(member.daysToExpire)}
+                      {getAccessExpiresText(member)}
                     </td>
                     <td className="px-6 py-4">
                       <RoleDropdown
-                        role={member.role}
-                        roles={member.roles}
+                        role={member.roleId}
+                        roles={roles}
                         onRoleChange={newRole =>
                           handleRoleChange(member.id, newRole)
                         }
@@ -237,7 +319,8 @@ const TeamPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <ExpirationDate
-                        date={member.expiration}
+                        date={member.daysToExpire === -1 ? null : member.accessExpiresAt}
+                        expireMode={member.expireMode}
                         onClear={() => handleDateChange(member.id, null)}
                         onSelectDate={date => handleDateChange(member.id, date)}
                       />

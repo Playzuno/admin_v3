@@ -21,7 +21,7 @@ const TabContainer: React.FC<TabContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="bg-white rounded-lg zuno-border-dark overflow-hidden">
+    <div className="bg-white rounded-lg zuno-border-dark overflow-hidden min-h-[calc(100vh-300px)]">
       <div className="flex space-x-8 items-center px-6 bg-[#F2F2F2] border-b border-[#BBBBBB] border-[0.5px]">
         {tabs.map(tab => (
           <button
