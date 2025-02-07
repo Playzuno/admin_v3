@@ -13,3 +13,17 @@ export const ErrorToast = (message: string) => {
     },
   });
 };
+
+export const SuccessToast = (message: string) => {
+  return toast.success(message, {
+    style: {
+      border: '1px solid #388e3c',
+      padding: '16px',
+      color: '#388e3c',
+    },
+    iconTheme: {
+      primary: '#388e3c',
+      secondary: '#FFFAEE',
+    },
+  });
+};
