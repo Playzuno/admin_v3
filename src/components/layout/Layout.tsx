@@ -46,11 +46,9 @@ const Layout = () => {
   const publicPages = ['/login', '/forgot-password'];
   const isPublicPage = publicPages.includes(location.pathname);
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden bg-[#F7F7F7]">
+    <div className="min-h-screen flex flex-col bg-[#F7F7F7]">
       {!isPublicPage && <Header />}
-      <main
-        className={`flex-grow w-full ${!isPublicPage ? 'container mx-auto px-4 pb-6 pt-0' : ''}`}
-      >
+      <main className={`flex-1 w-full overflow-auto ${!isPublicPage ? 'container mx-auto px-4 pb-6 pt-0' : ''}`}>
         {!isPublicPage ? (
           <Container title={pageTitle}>
             <Outlet />
@@ -59,7 +57,12 @@ const Layout = () => {
           <Outlet />
         )}
       </main>
-      {!isPublicPage && <Footer />}
+      {!isPublicPage && (
+        <footer className="sticky bottom-0 left-0 right-0 bg-[#F7F7F7]">
+           
+            <Footer />
+        </footer>
+      )}
     </div>
   );
 };
