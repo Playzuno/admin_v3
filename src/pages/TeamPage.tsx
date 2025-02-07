@@ -12,6 +12,7 @@ import { useOrg } from '@/context/OrgContext';
 import { memberApi, roleApi } from '@/api';
 import { BranchMember, BranchMemberResponse, ExpireMode, Role } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { ErrorToast, SuccessToast } from '@/components/ui/toast';
 
 const TeamPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -82,6 +83,11 @@ const TeamPage: React.FC = () => {
         member.id === memberId ? { ...member, roleId: newRole } : member
       )
     );
+   setOriginalTeamMembers(prev =>
+    prev.map(member =>
+      member.id === memberId ? { ...member, roleId: newRole } : member
+    )
+  );
   };
 
   const handleDelete = (memberId: string) => {
@@ -89,12 +95,20 @@ const TeamPage: React.FC = () => {
   };
 
   const confirmDelete = () => {
+    if (!branch?.id) return;
     if (memberToDelete) {
+    memberApi.removeFromBranch(branch.id, memberToDelete).then(response => {
+      // console.log(response);
+      SuccessToast('Member removed from branch');
       setTeamMembers(prev =>
         prev.filter(member => member.id !== memberToDelete)
       );
       setMemberToDelete(null);
-    }
+    }).catch(error => {
+      console.log(error);
+      ErrorToast('Failed to remove member from branch');
+    });
+  }
   };
 
   const handleDateChange = (memberId: string, date: Date | null) => {
