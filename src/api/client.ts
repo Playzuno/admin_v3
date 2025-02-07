@@ -113,6 +113,7 @@ export class ApiClient {
         case 400:
           return new ValidationError('Invalid request', data);
         case 401:
+          logout();
           return new NetworkError('Unauthorized', 401);
         case 403:
           return new NetworkError('Forbidden', 403);
@@ -133,3 +134,10 @@ export class ApiClient {
     }
   }
 }
+
+const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('orgId');
+  window.location.href = '/login';
+};

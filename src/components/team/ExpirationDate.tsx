@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { X, Calendar as CalendarIcon, Infinity } from 'lucide-react';
 import Calendar from '../ui/Calendar';
+import { ExpireMode } from '@/types';
 
 interface ExpirationDateProps {
-  date: string | null;
+  date: Date | null;
   onClear: () => void;
   onSelectDate: (date: Date | null) => void;
+  expireMode: ExpireMode;
 }
 
 const ExpirationDate: React.FC<ExpirationDateProps> = ({
   date,
   onClear,
   onSelectDate,
+  expireMode,
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
 
   const handleDateSelect = (selectedDate: Date) => {
+    // console.log(selectedDate)
     onSelectDate(selectedDate);
     setShowCalendar(false);
   };
@@ -33,8 +37,13 @@ const ExpirationDate: React.FC<ExpirationDateProps> = ({
   };
 
   const getDisplayText = () => {
-    if (!date) return 'No expiration';
-    return date;
+    if (expireMode === ExpireMode.INFINITE) return 'No expiration';
+    if (!date) return 'Not set';
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   };
 
   return (
@@ -45,7 +54,7 @@ const ExpirationDate: React.FC<ExpirationDateProps> = ({
         }`}
       >
         <div className="flex items-center space-x-2">
-          {!date && <Infinity className="w-4 h-4 text-gray-500" />}
+          {!date && expireMode === ExpireMode.INFINITE && <Infinity className="w-4 h-4 text-gray-500" />}
           <span className={!date ? 'text-gray-500' : 'text-brand'}>
             {getDisplayText()}
           </span>
@@ -71,7 +80,7 @@ const ExpirationDate: React.FC<ExpirationDateProps> = ({
 
       {showCalendar && !date && (
         <Calendar
-          selectedDate={null}
+          selectedDate={date}
           onSelect={handleDateSelect}
           onClose={() => setShowCalendar(false)}
           minDate={new Date()}

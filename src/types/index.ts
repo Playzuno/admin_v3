@@ -53,6 +53,7 @@ export interface OrgContextType {
   setBranch: (branch: Branch | null) => void;
   branches: Branch[];
   refreshBranches: () => Promise<void>;
+  orgId: string;
 }
 
 export interface BranchStats {
@@ -141,7 +142,46 @@ export interface BranchMember {
   branchId: string;
   role: string;
   roleExpiresAt: string;
+  expireMode: ExpireMode;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export const ExpireMode = {
+  INFINITE: 'infinite',
+  FINITE: 'finite',
+} as const;
+
+export type ExpireMode = typeof ExpireMode[keyof typeof ExpireMode];
+
+export interface BranchMemberResponse {
+  id: string;
+  userId: string;
+  orgId: string;
+  branchId: string;
+  roleId: string;
+  roleExpiresAt: string;
+  expireMode: ExpireMode;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+  role: Role;
+}
+
+export interface Role {
+  id?: string;
+  description: string;
+  name: string;
+  permissions: string[];
+  status: string;
+}
+
+export interface InviteFormData {
+  username: string;
+  email: string;
+  contact: string;
+  branch: string;
+  role: string;
 }
