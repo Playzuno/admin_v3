@@ -5,8 +5,8 @@ interface CouponFormProps {
   formData: {
     company: string;
     name: string;
-    value: string;
-    zunoValue: string;
+    value: number;
+    zunoValue: number;
     color: string;
     status: boolean;
   };
@@ -64,7 +64,7 @@ const CouponForm: React.FC<CouponFormProps> = ({
 
       <FormField
         label="Coupon value:"
-        value={formData.value}
+        value={formData.value.toString()}
         onChange={value => onInputChange('value', value)}
         onValidate={value => onValidate('value', value)}
         error={errors.value}
@@ -74,7 +74,7 @@ const CouponForm: React.FC<CouponFormProps> = ({
 
       <FormField
         label="Zuno value:"
-        value={formData.zunoValue}
+        value={formData.zunoValue.toString()}
         onChange={value => onInputChange('zunoValue', value)}
         onValidate={value => onValidate('zunoValue', value)}
         error={errors.zunoValue}

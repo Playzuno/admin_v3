@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActionContainer } from '../components/containers';
 import CouponForm from '../components/rewards/CouponForm';
 import ImageUpload from '../components/rewards/ImageUpload';
 import CouponPreview from '../components/rewards/CouponPreview';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
+import { CouponList } from '../components/rewards/CouponList';
+import { Plus } from 'lucide-react';
+import { couponApi } from '../api';
+import { Coupon } from '../types';
+import { SuccessToast } from '@/components/ui/toast';
+import Button from '@/components/ui/Button';
 
 interface CouponFormData {
   company: string;
   name: string;
-  value: string;
-  zunoValue: string;
+  value: number;
+  zunoValue: number;
   color: string;
   status: boolean;
   image?: File;
@@ -21,11 +27,13 @@ interface FormErrors {
 }
 
 const RewardsPage: React.FC = () => {
+  const [showNewCouponForm, setShowNewCouponForm] = useState(false);
+  const [selectedCouponId, setSelectedCouponId] = useState<string | null>(null);
   const [formData, setFormData] = useState<CouponFormData>({
     company: '',
     name: '',
-    value: '',
-    zunoValue: '',
+    value: 0,
+    zunoValue: 0,
     color: '#FFFFFF',
     status: true,
   });
@@ -34,6 +42,24 @@ const RewardsPage: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const fetchCoupons = async () => {
+    const response = await couponApi.getAll();
+    const formattedCoupons = response.data.map(coupon => ({
+      ...coupon,
+      value: coupon.value || 0,
+      zunoValue: coupon.zunoValue || 0,
+    }));
+    setCoupons(formattedCoupons);
+    if (formattedCoupons.length > 0) {
+      handleCouponSelect(formattedCoupons[0]);
+    }
+  };
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
 
   const validateField = (field: string, value: string) => {
     if (field === 'value' || field === 'zunoValue') {
@@ -50,23 +76,27 @@ const RewardsPage: React.FC = () => {
         }));
       } else if (num < 0) {
         setErrors(prev => ({ ...prev, [field]: 'Value cannot be negative' }));
-      } else {
-        setErrors(prev => ({ ...prev, [field]: undefined }));
+      } else if (num > 1000000) {
+        setErrors(prev => ({ ...prev, [field]: 'Value cannot be greater than 1000000' }));
       }
     }
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setHasChanges(true);
-
-    // Clear error when user starts typing
-    if (
-      typeof value === 'string' &&
-      (field === 'value' || field === 'zunoValue')
-    ) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+    if (field === 'value' || field === 'zunoValue') {
+      setFormData(prev => ({ ...prev, [field]: Number(value) }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
     }
+    setHasChanges(true);
+    validateField(field, value.toString());
+    setErrors({});
+    // if (
+    //   typeof value === 'string' &&
+    //   (field === 'value' || field === 'zunoValue')
+    // ) {
+    //   setErrors(prev => ({ ...prev, [field]: undefined }));
+    // }
   };
 
   const handleFileSelect = (file: File) => {
@@ -78,7 +108,6 @@ const RewardsPage: React.FC = () => {
     setFormData(prev => ({ ...prev, image: file }));
     setHasChanges(true);
 
-    // Simulate upload progress
     let progress = 0;
     const interval = setInterval(() => {
       progress += 10;
@@ -100,20 +129,95 @@ const RewardsPage: React.FC = () => {
     if (hasChanges) {
       setShowConfirmDialog(true);
     } else {
-      // Navigate back or close form
+      setShowNewCouponForm(false);
     }
   };
 
   const handleSave = () => {
-    // Validate all fields before saving
-    validateField('value', formData.value);
-    validateField('zunoValue', formData.zunoValue);
-
-    // Check if there are any errors
+    validateField('value', formData.value.toString());
+    validateField('zunoValue', formData.zunoValue.toString());
+    
     if (!errors.value && !errors.zunoValue) {
-      console.log('Saving form data:', formData);
       setHasChanges(false);
+      setShowNewCouponForm(false);
     }
+    setIsEditing(false);
+    const coupon  = {
+      ...formData,
+      title: formData.name,
+      company: formData.company,
+      value: Number(formData.value),
+      zunoValue: Number(formData.zunoValue),
+      theme: {
+        color: formData.color,
+        image: previewImage,
+        link: previewImage,
+      },
+      active: formData.status,
+    }
+    if (!selectedCouponId) {
+      couponApi.create(coupon).then(() => {
+        SuccessToast('Coupon created successfully');
+        setShowNewCouponForm(false);
+        fetchCoupons();
+      });
+    } else {
+      couponApi.update(selectedCouponId, coupon).then(() => {
+        setShowNewCouponForm(false);
+        SuccessToast('Coupon updated successfully');
+        fetchCoupons();
+      });
+    }
+  };
+
+  const handleCouponSelect = (coupon: Coupon) => {
+    setSelectedCouponId(coupon.id);
+    // Update preview data
+    setFormData({
+      company: coupon.company,
+      name: coupon.title,
+      value: coupon.value,
+      zunoValue: coupon.zunoValue,
+      color: coupon.theme.color,
+      status: coupon.active,
+    });
+    setPreviewImage(coupon.theme.image);
+  };
+
+  const handleUpdateCoupon = (coupon: Coupon) => {
+    setShowNewCouponForm(true);
+    setIsEditing(true);
+    setSelectedCouponId(coupon.id);
+    setFormData({
+      company: coupon.company,
+      name: coupon.title,
+      value: coupon.value,
+      zunoValue: coupon.zunoValue,
+      color: coupon.theme.color,
+      status: coupon.active,
+    });
+    setPreviewImage(coupon.theme.image);
+  };
+
+  const handleDeleteCoupon = (couponId: string) => {
+    // console.log('Deleting coupon with ID:', couponId);
+    couponApi.delete(couponId).then(() => {
+      SuccessToast('Coupon deleted successfully');
+      fetchCoupons();
+    });
+  };
+
+  const displayNewCouponForm = () => {
+    setSelectedCouponId(null);
+    setFormData({
+      company: '',
+      name: '',
+      value: 0,
+      zunoValue: 0,
+      color: '#FFFFFF',
+      status: true,
+    });
+    setShowNewCouponForm(true);
   };
 
   return (
@@ -123,29 +227,46 @@ const RewardsPage: React.FC = () => {
           <div className="space-y-1">
             <h1 className="container-title">Rewards setup</h1>
           </div>
+          <Button
+            onClick={() => displayNewCouponForm()}
+            variant="primary"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Coupon
+          </Button>
         </div>
 
-        <ActionContainer
-          title="New coupon"
-          onCancel={handleCancel}
-          onSave={handleSave}
-          saveDisabled={!hasChanges || Object.keys(errors).length > 0}
-        >
-          <div className="grid grid-cols-2 gap-12">
-            <CouponForm
-              formData={formData}
-              errors={errors}
-              onInputChange={handleInputChange}
-              onValidate={validateField}
-            />
-            <ImageUpload
-              onFileSelect={handleFileSelect}
-              previewImage={previewImage}
-              uploadProgress={uploadProgress}
-              onClear={handleClearImage}
-            />
-          </div>
-        </ActionContainer>
+        {showNewCouponForm ? (
+          <ActionContainer
+            title="New coupon"
+            onCancel={handleCancel}
+            onSave={handleSave}
+            saveDisabled={!hasChanges || Object.keys(errors).length > 0}
+          >
+            <div className="grid grid-cols-2 gap-12">
+              <CouponForm
+                formData={formData}
+                errors={errors}
+                onInputChange={handleInputChange}
+                onValidate={validateField}
+              />
+              <ImageUpload
+                onFileSelect={handleFileSelect}
+                previewImage={previewImage}
+                uploadProgress={uploadProgress}
+                onClear={handleClearImage}
+              />
+            </div>
+          </ActionContainer>
+        ) : (
+          <CouponList
+            coupons={coupons}
+            selectedCouponId={selectedCouponId}
+            onCouponSelect={handleCouponSelect}
+            onUpdateCoupon={handleUpdateCoupon}
+            onDeleteCoupon={handleDeleteCoupon}
+          />
+        )}
 
         <ConfirmDialog
           isOpen={showConfirmDialog}

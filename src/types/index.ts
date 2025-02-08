@@ -271,3 +271,19 @@ export interface Plan {
   enableMultipleBranches: boolean; // Indicates if multiple branches are enabled
   enableMFASupport: boolean; // Indicates if MFA support is enabled
 }
+
+export interface Coupon {
+  id: string;
+  company: string;
+  value: number;
+  title: string;
+  active: boolean;
+  zunoValue: number;
+  theme: {
+    color: string;
+    image: string;
+    link: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}

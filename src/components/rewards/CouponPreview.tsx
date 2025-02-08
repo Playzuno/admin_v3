@@ -3,8 +3,8 @@ import React from 'react';
 interface CouponPreviewProps {
   company: string;
   name: string;
-  value: string;
-  zunoValue: string;
+  value: number;
+  zunoValue: number;
   image: string | null;
 }
 
@@ -26,7 +26,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
           <div>
             <div className="text-gray-500 mb-2">Coupon</div>
             <h2 className="text-base font-medium text-brand">
-              {name || 'Amazon deal coupon'}
+              {name || 'Your coupon name'}
             </h2>
             <div className="h-[1px] bg-gray-200 mt-4" />
           </div>
@@ -36,13 +36,13 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
               <div className="text-gray-500 mb-2">Coupon value</div>
               <div className="text-base font-bold text-brand flex items-center">
                 <span className="text-lg mr-1">₹</span>
-                {value || '1000'}
+                {value || 0}
               </div>
             </div>
             <div>
               <div className="text-gray-500 mb-2">Zuno value</div>
               <div className="text-base font-bold text-brand">
-                {zunoValue || '100'}
+                {zunoValue || 0}
                 <span className="text-lg">zc</span>
               </div>
             </div>
@@ -70,8 +70,8 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
           <div className="mb-2">Coupon link:</div>
           <div className="text-sm break-all">
             {company
-              ? `${company.toLowerCase()}coupon.zono/redeem/28701803`
-              : 'Amazoncoupon.zono/redeem/28701803'}
+              ? `${company.toLowerCase() || 'your_company.'}coupon.zono/redeem/28701803`
+              : 'your_company.coupon.zono/redeem/28701803'}
           </div>
           <button className="w-full mt-6 py-4 bg-white text-brand rounded-lg font-medium hover:bg-gray-50 transition-colors">
             Create
