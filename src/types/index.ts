@@ -197,3 +197,25 @@ export interface BranchDashboardStats {
   totalProducts: number;
   totalFeedbacks: number;
 }
+
+export interface EndUserStats {
+  id: string;
+  endUser: EndUser;
+  totalUniqueBrands: number;
+}
+
+export interface EndUser {
+  id: string;
+  name: string;
+  mobile: string;
+  email: string;
+  gender: string;
+  address: string;
+  dateOfBirth: string;
+  profilePictureURL: string;
+  otpVerifiedAt: string;
+  totalCoinsEarned: number;
+  totalCoinsRedeemed: number;
+  createdAt: string;
+  updatedAt: string;
+}
