@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import Container from './Container';
+import CopyRights from './Copyrights';
 
 interface LayoutContextType {
   pageTitle: string;
@@ -58,10 +59,14 @@ const Layout = () => {
         )}
       </main>
       {!isPublicPage && (
+        <CopyRights/>
+      )}
+      {!isPublicPage && (
         <footer className="sticky bottom-0 left-0 right-0 bg-[#F7F7F7]">
            
             <Footer />
         </footer>
+        // </div>
       )}
     </div>
   );

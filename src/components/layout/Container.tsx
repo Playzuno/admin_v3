@@ -32,7 +32,7 @@ const Container = ({ title = 'Dashboard', children }: ContainerProps) => {
   }, [dimensions]);
 
   return (
-    <div className="bg-white rounded-t-3xl rounded-b-2xl border-[0.5px] border-[#909090] border-t-0 overflow-hidden p-0 relative mt-[3%]">
+    <div className="bg-white rounded-t-3xl rounded-b-2xl border-[0.5px] border-[#909090] border-t-0 overflow-hidden p-0 relative mt-[1%]">
       <div className="flex mb-8">
         <div className="h-10 w-full border-r border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
         <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center bg-[#F7F7F7] relative">

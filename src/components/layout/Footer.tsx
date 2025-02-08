@@ -40,7 +40,7 @@ function Footer() {
 
   return (
     <div className="bg-gray-100 flex flex-col">
-      {/* Main chat area */}
+      
       
       
       {/* Sticky chat input */}
