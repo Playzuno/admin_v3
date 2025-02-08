@@ -4,6 +4,7 @@ import {
   BranchMember,
   BranchMemberResponse,
   BranchStats,
+  Coupon,
   EndUserStats,
   FeedbackReport,
   FeedbackSummaryResponse,
@@ -1030,9 +1031,9 @@ export const redemptionApi = {
 export const couponApi = {
   create: async (
     data: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Coupon; status: number; headers?: Headers }> => {
     try {
-      const response = await api.post('/coupons', data);
+      const response = await api.post<Coupon>('/coupons', data);
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -1040,21 +1041,21 @@ export const couponApi = {
   },
   get: async (
     id: string
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Coupon; status: number; headers?: Headers }> => {
     try {
-      const response = await api.get(`/coupons/${id}`);
+      const response = await api.get<Coupon>(`/coupons/${id}`);
       return response;
     } catch (error) {
       throw handleRequestError(error);
     }
   },
   getAll: async (): Promise<{
-    data: any[];
+    data: Coupon[];
     status: number;
     headers?: Headers;
   }> => {
     try {
-      const response = await api.get('/coupons');
+      const response = await api.get<Coupon[]>('/coupons');
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -1063,9 +1064,9 @@ export const couponApi = {
   update: async (
     id: string,
     data: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Partial<Coupon>; status: number; headers?: Headers }> => {
     try {
-      const response = await api.put(`/coupons/${id}`, data);
+      const response = await api.put<Coupon>(`/coupons/${id}`, data);
       return response;
     } catch (error) {
       throw handleRequestError(error);
