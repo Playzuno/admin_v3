@@ -1242,3 +1242,18 @@ export const analyticsApi = {
     }
   },
 };
+
+export const assetsApi = {
+  getUserUploadUrl: async (
+    userId: string
+  ): Promise<{ data: { presignedURL: string }; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get<{ presignedURL: string }>(
+        `/assets/users/${userId}/upload/profile`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+};

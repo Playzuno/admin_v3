@@ -12,6 +12,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<LoggedInUser | null>(
     loggedInUser ? JSON.parse(loggedInUser) : null
   );
+  const [imageVersion, setImageVersion] = useState(1);
   const loggedInToken = localStorage.getItem('token');
 
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -47,13 +48,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (response.status === 200) {
       console.log('response', response.data);
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      setUser(response.data.user);
+      setUser({ ...response.data.user, imageVersion: 1 });
     }
+  };
+
+  const updateUserImageVersion = async () => {
+      setImageVersion(prev => prev + 1);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, updateUser, login, logout, isAuthenticated }}
+      value={{
+        user,
+        updateUser,
+        login,
+        logout,
+        isAuthenticated,
+        updateUserImageVersion,
+        imageVersion,
+      }}
     >
       {children}
     </AuthContext.Provider>

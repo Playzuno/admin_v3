@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Camera, Trash2 } from 'lucide-react';
 import Button from '../ui/Button';
 import ConfirmDialog from '../ui/ConfirmDialog';
+import { useAuth } from '@/context/AuthContext';
 
 interface ProfilePhotoProps {
   imageUrl: string;
@@ -20,10 +21,12 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
   const [showCropper, setShowCropper] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { user, imageVersion } = useAuth();
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = e => {
         setSelectedImage(e.target?.result as string);
@@ -38,12 +41,21 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
     setShowDeleteConfirm(false);
   };
 
+  const handleSave = () => {
+    if (selectedFile) {
+      onChangePhoto(selectedFile);
+    }
+    setShowCropper(false);
+    setSelectedImage(null);
+  };
+
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center space-x-4">
         <div className="w-24 h-24 rounded-full overflow-hidden">
           {imageUrl ? (
             <img
+              key={1 + imageVersion}
               src={imageUrl}
               alt="Profile"
               className="w-full h-full object-cover"
@@ -100,8 +112,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
                 <h2 className="text-xl font-bold">Adjust Profile Picture</h2>
                 <button
                   onClick={() => {
-                    setShowCropper(false);
-                    setSelectedImage(null);
+                    handleSave();
                   }}
                   className="text-gray-500 hover:text-gray-700"
                 >
@@ -130,10 +141,7 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
                 <Button
                   variant="primary"
                   onClick={() => {
-                    // Here you would typically get the cropped image data
-                    // and convert it to a File object before calling onChangePhoto
-                    setShowCropper(false);
-                    setSelectedImage(null);
+                    handleSave();
                   }}
                 >
                   Save
