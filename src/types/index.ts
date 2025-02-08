@@ -219,3 +219,55 @@ export interface EndUser {
   createdAt: string;
   updatedAt: string;
 }
+
+export enum SupportLevel {
+  BASIC = 1, // Basic support
+  PRIORITY = 2, // Priority support
+  TWENTY_FOUR_SEVEN = 3, // 24/7 support
+}
+
+export enum AnalyticsLevel {
+  BASIC = 1, // Basic analytics
+  PRO = 2, // Pro analytics
+  ADVANCED = 3, // Advanced analytics
+}
+
+export enum ExportDataLevel {
+  PREFILLED_TEMPLATES = 1, // Prefilled templates
+  CUSTOM_TEMPLATES = 2, // Custom templates
+  CUSTOM_TEMPLATES_WITH_AI = 3, // Custom templates with AI
+}
+
+export interface Plan {
+  id: string; // Unique identifier for the plan
+  name: string; // Name of the plan
+  description: string; // Description of the plan
+  infoText: string; // Additional information about the plan
+  price: number; // Price of the plan
+  status: string; // e.g., "active", "inactive"
+  isPopular: boolean; // Indicates if the plan is popular
+  createdAt: string; // Creation timestamp
+  updatedAt: string; // Last updated timestamp
+  ordinal: number;
+
+  // Usage Limits
+  maxBranches: number; // -1 indicates unlimited, 0 indicates disabled
+  maxUsers: number; // -1 indicates unlimited, 0 indicates disabled
+  maxProducts: number; // -1 indicates unlimited, 0 indicates disabled
+  maxQRcodes: number; // -1 indicates unlimited, 0 indicates disabled
+  maxStorage: number; // in GB, -1 indicates unlimited
+  maxAPIRequests: number; // -1 indicates unlimited, 0 indicates disabled
+  allowedFeatures: string[]; // List of features allowed in this plan
+  maxFeedbacks: number; // -1 indicates unlimited, 0 indicates disabled
+  maxCoupons: number; // -1 indicates unlimited, 0 indicates disabled
+  maxDiscounts: number; // -1 indicates unlimited, 0 indicates disabled
+  supportLevel: SupportLevel; // Support level using enum
+  analyticsLevel: AnalyticsLevel; // Analytics level using enum
+  exportDataLevel: ExportDataLevel; // Export data level using enum
+  // Feature Flags (boolean toggles for features)
+  themeCustomization: boolean; // Indicates if theme customization is enabled
+  enableRewards: boolean; // Indicates if rewards are enabled
+  enableOIDC: boolean; // Indicates if OIDC is enabled
+  enableMultipleBranches: boolean; // Indicates if multiple branches are enabled
+  enableMFASupport: boolean; // Indicates if MFA support is enabled
+}

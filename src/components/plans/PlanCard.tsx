@@ -1,23 +1,16 @@
+import { Plan } from '@/types';
 import React from 'react';
 
 interface PlanCardProps {
-  variant: 'starter' | 'professional';
-  title: string;
-  subtitle: string;
-  price: number;
-  isPopular?: boolean;
+  plan: Plan;
   onSubscribe?: () => void;
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({
-  variant,
-  title,
-  subtitle,
-  price,
-  isPopular = false,
+  plan,
   onSubscribe,
 }) => {
-  const isStarter = variant === 'starter';
+  const isStarter = !plan.isPopular;
 
   return (
     <div
@@ -27,7 +20,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
           : 'bg-gradient-to-b from-[#7616E0] to-brand'
       }`}
     >
-      {isPopular && (
+      {plan.isPopular && (
         <div className="absolute top-0 right-0">
           <div className="bg-[#FF6E01] text-2xs text-white px-8 py-1 transform translate-y-[0.5px] font-medium rounded-bl-[36px]">
             Most Popular
@@ -40,12 +33,12 @@ const PlanCard: React.FC<PlanCardProps> = ({
           <h3
             className={`text-sm font-bold ${isStarter ? 'text-[#9003DE]' : 'text-white'}`}
           >
-            {title}
+            {plan.name}
           </h3>
           <p
             className={`text-2xs ${isStarter ? 'text-gray-800' : 'text-white'}`}
           >
-            {subtitle}
+            {plan.description}
           </p>
         </div>
 
@@ -59,7 +52,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
             <span
               className={`text-2xl font-semibold ${isStarter ? 'text-brand' : 'text-white'}`}
             >
-              {price.toFixed(1)}
+              {plan.price.toFixed(1)}
             </span>
             <span
               className={`text-lg ${isStarter ? 'text-brand' : 'text-white'}`}
@@ -70,7 +63,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
           <p
             className={`text-2xs mt-1 ${isStarter ? 'text-gray-600' : 'text-white/80'}`}
           >
-            Auto-renewal can be canceled anytime.
+            {plan.infoText}
           </p>
         </div>
 
@@ -92,7 +85,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
           isStarter ? 'text-purple-200' : 'text-white/10'
         }`}
       >
-        {isPopular ? (
+        {plan.isPopular ? (
           <img src="/assets/images/un-dark-logo.svg" alt="un" />
         ) : (
           <img src="/assets/images/un-logo.svg" alt="un" />

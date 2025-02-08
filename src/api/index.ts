@@ -10,6 +10,7 @@ import {
   LoggedInUser,
   LoginResponse,
   OcrProcessingResponse,
+  Plan,
   Product,
   SseMenuInternalResponse,
   SseMenuParserData,
@@ -1136,12 +1137,12 @@ export const rewardsAndPlansApi = {
     }
   },
   getAllPlans: async (): Promise<{
-    data: any[];
+    data: Plan[];
     status: number;
     headers?: Headers;
   }> => {
     try {
-      const response = await api.get('/plans');
+      const response = await api.get<Plan[]>('/plans');
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -1160,9 +1161,9 @@ export const rewardsAndPlansApi = {
   updatePlan: async (
     planId: string,
     data: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+  ): Promise<{ data: Partial<Plan>; status: number; headers?: Headers }> => {
     try {
-      const response = await api.put(`/plans/${planId}`, data);
+      const response = await api.put<Plan>(`/plans/${planId}`, data);
       return response;
     } catch (error) {
       throw handleRequestError(error);
