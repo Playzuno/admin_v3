@@ -4,6 +4,7 @@ import {
   BranchMember,
   BranchMemberResponse,
   BranchStats,
+  EndUserStats,
   FeedbackReport,
   FeedbackSummaryResponse,
   LoggedInUser,
@@ -840,12 +841,12 @@ export const productApi = {
 // End User APIs
 export const endUserApi = {
   getAll: async (): Promise<{
-    data: any[];
+    data: EndUserStats[];
     status: number;
     headers?: Headers;
   }> => {
     try {
-      const response = await api.get('/endusers');
+      const response = await api.get<EndUserStats[]>('/endusers');
       return response;
     } catch (error) {
       throw handleRequestError(error);
