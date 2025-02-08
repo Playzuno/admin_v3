@@ -9,6 +9,7 @@ interface SecuritySettingsProps {
   editableUser: LoggedInUser;
   onUserUpdate: (user: LoggedInUser) => void;
   onFieldChange: (changed: boolean) => void;
+  refreshUser: () => void;
 }
 
 const SecuritySettings: React.FC<SecuritySettingsProps> = ({

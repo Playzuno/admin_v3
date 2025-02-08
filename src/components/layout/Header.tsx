@@ -61,7 +61,7 @@ const Header = () => {
     };
   };
 
-  const { user } = useAuth();
+  const { user, imageVersion } = useAuth();
 
   return (
     <header className="w-full">
@@ -118,6 +118,7 @@ const Header = () => {
               <div className="h-10 w-10 rounded-full overflow-hidden">
                 {user?.user?.metadata?.profilePictureURL ? (
                   <img
+                    key={1 + imageVersion}
                     src={user?.user?.metadata?.profilePictureURL}
                     alt="Profile"
                     className="h-full w-full object-cover"

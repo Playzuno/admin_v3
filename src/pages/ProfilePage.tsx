@@ -21,6 +21,10 @@ const ProfilePage: React.FC = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    updateUser();
+  }, []);
+
   const tabs = [
     { key: 'general', label: 'General' },
     { key: 'security', label: 'Security' },
@@ -99,12 +103,14 @@ const ProfilePage: React.FC = () => {
               editableUser={editableUser}
               onUserUpdate={setEditableUser}
               onFieldChange={handleChange}
+              refreshUser={updateUser}
             />
           ) : (
             <SecuritySettings
               editableUser={editableUser}
               onUserUpdate={setEditableUser}
               onFieldChange={handleChange}
+              refreshUser={updateUser}
             />
           )}
         </TabContainer>
