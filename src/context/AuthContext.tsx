@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       localStorage.setItem('orgId', orgId);
       refreshBranches();
+      return response;
     }
   };
 

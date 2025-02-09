@@ -66,7 +66,7 @@ export function UpdatePlanDialog({ isOpen, onClose, onUpdate, plans }: UpdatePla
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-4xl min-h-[300px]  max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h2 className="container-title font-bold text-brand">Update Plan</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">

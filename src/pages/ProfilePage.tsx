@@ -7,6 +7,7 @@ import { LogOut, Save } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { LoggedInUser, User } from '@/types';
 import { userApi } from '@/api';
+import { SuccessToast } from '@/components/ui/toast';
 
 const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'general' | 'security'>('general');
@@ -14,6 +15,10 @@ const ProfilePage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [editableUser, setEditableUser] = useState<LoggedInUser | null>(null);
   const { user, updateUser } = useAuth();
+  const [passwordData, setPasswordData] = useState({
+    new: '',
+    confirm: '',
+  });
   useEffect(() => {
     if (user) {
       console.log('user', user);
@@ -34,30 +39,56 @@ const ProfilePage: React.FC = () => {
     setHasChanges(changed);
   };
 
+  const handlePasswordChange = (password: string, confirmPassword: string) => {
+    setPasswordData({
+      new: password,
+      confirm: confirmPassword,
+    });
+    setHasChanges(password !== confirmPassword);
+  };
+
   const handleSave = async () => {
     console.log('editableUser', editableUser);
     setIsSaving(true);
     if (!editableUser) {
       return;
     }
-    try {
-      const response = await userApi.update(editableUser.user.id, {
-        username: editableUser.user.username,
-        email: editableUser.user.email,
-        fullName: editableUser.user.fullName,
-        mobile: editableUser.user.mobile,
-        metadata: {
-          ...editableUser.user.metadata,
-          profilePictureURL: editableUser.user.metadata.profilePictureURL,
-          designation: editableUser.user.metadata.designation,
-        },
-      });
-      console.log('response', response);
-      updateUser();
-    } catch (error) {
-      console.error('Error saving user', error);
-    } finally {
-      setIsSaving(false);
+    if (activeTab == 'general') {
+      try {
+        const response = await userApi.update(editableUser.user.id, {
+          username: editableUser.user.username,
+          email: editableUser.user.email,
+          fullName: editableUser.user.fullName,
+          mobile: editableUser.user.mobile,
+          metadata: {
+            ...editableUser.user.metadata,
+            profilePictureURL: editableUser.user.metadata.profilePictureURL,
+            designation: editableUser.user.metadata.designation,
+          },
+        });
+        updateUser();
+      } catch (error) {
+        console.error('Error saving user', error);
+      } finally {
+        setIsSaving(false);
+      }
+    } else if (activeTab == 'security') {
+      try {
+        const response = await userApi.forceUpdatePassword({
+          password: passwordData.new,
+          confirmPassword: passwordData.confirm,
+        });
+        SuccessToast('Password updated successfully');
+        updateUser();
+        setPasswordData({
+          new: '',
+          confirm: '',
+        });
+      } catch (error) {
+        console.error('Error saving user', error);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -111,6 +142,7 @@ const ProfilePage: React.FC = () => {
               onUserUpdate={setEditableUser}
               onFieldChange={handleChange}
               refreshUser={updateUser}
+              onPasswordChange={handlePasswordChange}
             />
           )}
         </TabContainer>

@@ -27,6 +27,15 @@ const TeamPage: React.FC = () => {
 
   const { branch} = useOrg();
   useEffect(() => {
+    fetchMembers();
+    if (branch) {
+      roleApi.getAll(branch.id).then(response => {
+        setRoles(response.data);
+      });
+    }
+  }, [branch]);
+
+  const fetchMembers = async () => {
     if (branch) {
       memberApi.getAll(branch.orgId, branch.id).then(response => {
         // console.log(response.data);
@@ -50,13 +59,10 @@ const TeamPage: React.FC = () => {
         }));
         setTeamMembers(members);
         setOriginalTeamMembers(members);
-      });
-
-      roleApi.getAll(branch.id).then(response => {
-        setRoles(response.data);
+        setEditingMember(null);
       });
     }
-  }, [branch]);
+  }
 
   const handleSelectMember = (memberId: string) => {
     setSelectedMembers(prev =>
@@ -83,11 +89,11 @@ const TeamPage: React.FC = () => {
         member.id === memberId ? { ...member, roleId: newRole } : member
       )
     );
-   setOriginalTeamMembers(prev =>
-    prev.map(member =>
-      member.id === memberId ? { ...member, roleId: newRole } : member
-    )
-  );
+  //  setOriginalTeamMembers(prev =>
+  //   prev.map(member =>
+  //     member.id === memberId ? { ...member, roleId: newRole } : member
+  //   )
+  // );
   };
 
   const handleDelete = (memberId: string) => {
@@ -163,6 +169,11 @@ const TeamPage: React.FC = () => {
       roleId: member.roleId,
       roleExpiresAt: member.accessExpiresAt,
       expireMode: member.expireMode,
+    }).then(response => {
+      SuccessToast('Member updated');
+      fetchMembers();
+    }).catch(error => {
+      ErrorToast('Failed to update member');
     });
     // console.log(updatedMembers);
   };

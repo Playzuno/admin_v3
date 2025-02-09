@@ -10,22 +10,31 @@ interface SecuritySettingsProps {
   onUserUpdate: (user: LoggedInUser) => void;
   onFieldChange: (changed: boolean) => void;
   refreshUser: () => void;
+  onPasswordChange: (password: string, confirmPassword: string) => void;
 }
 
 const SecuritySettings: React.FC<SecuritySettingsProps> = ({
   editableUser,
   onUserUpdate,
   onFieldChange,
+  onPasswordChange,
 }) => {
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
   });
   const [passwordData, setPasswordData] = useState({
-    current: 'MyCurrentPass123!',
+    current: 'xxxxxxxxxxx',
     new: '',
     confirm: '',
   });
+  useEffect(() => {
+    setPasswordData({
+      current: 'xxxxxxxxxxx',
+      new: '',
+      confirm: '',
+    });
+  }, [editableUser]);
   const [passwordError, setPasswordError] = useState<string>('');
   const lastPasswordChange = new Date('2024-02-15').toLocaleDateString();
   const daysSinceChange = Math.floor(
@@ -34,6 +43,7 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({
   );
 
   useEffect(() => {
+    onPasswordChange(passwordData.new, passwordData.confirm);
     if (passwordData.new && passwordData.confirm) {
       if (passwordData.new !== passwordData.confirm) {
         setPasswordError('Passwords do not match');

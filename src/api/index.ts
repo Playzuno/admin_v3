@@ -263,6 +263,21 @@ export const userApi = {
       throw handleRequestError(error);
     }
   },
+  forceUpdatePassword: async ({password, confirmPassword}: {password: string, confirmPassword: string}): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.post('/users/me/forceUpdatePassword', {
+        password,
+        confirmPassword,
+      });
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  forgotPassword: async ({email}: {email: string}): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post('/resetpassword', { email });
+    return response;
+  },
 };
 
 // Roles APIs

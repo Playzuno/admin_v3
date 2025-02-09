@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, User } from 'lucide-react';
 import Carousel from '../components/ui/Carousel';
+import { userApi } from '@/api';
+import { ErrorToast, SuccessToast } from '@/components/ui/toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface CarouselSlide {
   title: string;
@@ -27,12 +30,19 @@ const ForgotPassword = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle password reset logic here
+    userApi.forgotPassword({ email }).then(() => {
+      toast.success('Password reset link sent to email');
+      setEmail('');
+    }).catch((error) => {
+      // console.log(error, error.data.error);
+      toast.error(error?.data?.error);
+    });
   };
 
   return (
     <div className="min-h-screen flex">
       {/* Left Section */}
+      <Toaster />
       <div className="w-1/2 p-12 flex flex-col justify-center items-center">
         <Link to="/" className="flex items-center mb-12">
           <img
