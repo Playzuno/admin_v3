@@ -52,7 +52,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
             <span
               className={`text-2xl font-semibold ${isStarter ? 'text-brand' : 'text-white'}`}
             >
-              {plan.price.toFixed(1)}
+              {(plan.price && plan.price.toFixed(1)) || '0.0'}
             </span>
             <span
               className={`text-lg ${isStarter ? 'text-brand' : 'text-white'}`}

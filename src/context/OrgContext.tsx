@@ -6,7 +6,6 @@ const OrgContext = createContext<OrgContextType | null>(null);
 export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  //   const { user } = useAuth();
   const [branch, setBranch] = useState<Branch | null>(null);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -16,8 +15,14 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     const response = await branchApi.getAll(orgId);
     console.log(response.data);
     setBranches(response.data);
-    setBranch(response.data[0]);
-    setOrgId(orgId);
+    if (response.data && response.data.length > 0) {
+      setBranch(response.data[0]);
+      setOrgId(orgId);
+    } else {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
   };
 
   useEffect(() => {

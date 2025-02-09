@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { ActionContainer } from '../components/containers';
 import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
@@ -54,6 +54,7 @@ const ProductPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [originalCategories, setOriginalCategories] =
     useState<Category[]>(defaultCategories);
+  const inputRef = useRef<HTMLInputElement>(null);
   const fetchProducts = async () => {
     if (!branch) {
       return;
@@ -376,6 +377,20 @@ const ProductPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkForScroll);
   }, [categories]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setIsUploadModalOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const parseNewProducts = async (newProducts: string[]) => {
     const uniqueProducts = newProducts.filter(
       product => !products.find(p => p.name === product)
@@ -389,7 +404,7 @@ const ProductPage: React.FC = () => {
         name: p,
         categoryId: Math.min(1 + (count % 5), 5),
         isDeleted: false,
-        originalCategory: Math.min(1 + (count % 5), 5),
+        originalCategory: Math.min(1 + (count % 5), 5).toString(),
       };
     });
     setCategories(prev => {
@@ -410,7 +425,9 @@ const ProductPage: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 absolute top-10 right-10">
-        <div className="flex gap-2 justify-end relative">
+        <div
+          className="flex gap-2 justify-end relative"
+        >
           <Button
             variant="outline"
             onClick={() => setIsUploadModalOpen(true)}
@@ -422,7 +439,7 @@ const ProductPage: React.FC = () => {
             Add Products
           </Button>
           {isUploadModalOpen && (
-            <div className="absolute top-[60px] right-[25px] w-[410px] z-50">
+            <div className="absolute top-[60px] right-[25px] w-[410px] z-50" ref={inputRef}>
               <ProductParser
                 parseNewProducts={parseNewProducts}
                 setParserBatchId={setParserBatchId}

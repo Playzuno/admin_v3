@@ -28,19 +28,19 @@ const FeedbackStats = () => {
   const stats: StatItem[] = [
     {
       label: 'Total Feedback Submissions:',
-      value: feedbackSummaryData?.totalFeedbacks.toString() || '0',
+      value: feedbackSummaryData?.totalFeedbacks?.toString() || '0',
       percentage: 100,
       color: '#400C7A', // secondary color
     },
     {
       label: 'Average Feedback Score:',
-      value: feedbackSummaryData?.averageRating.toFixed(1) || '0',
+      value: feedbackSummaryData?.averageRating?.toFixed(1) || '0',
       percentage: gerPercentile(feedbackSummaryData?.averageRating || 0, 5),
       color: '#FF6E01', // primary color
     },
     {
       label: 'Percentage of Positive Feedback (4+ stars):',
-      value: feedbackSummaryData?.positiveFeedbacks.toString() || '0',
+      value: feedbackSummaryData?.positiveFeedbacks?.toString() || '0',
       percentage: gerPercentile(
         feedbackSummaryData?.positiveFeedbacks || 0,
         feedbackSummaryData?.totalFeedbacks || 0
@@ -49,7 +49,7 @@ const FeedbackStats = () => {
     },
     {
       label: 'Percentage of Negative Feedback (below 3 stars):',
-      value: feedbackSummaryData?.negativeFeedbacks.toString() || '0',
+      value: feedbackSummaryData?.negativeFeedbacks?.toString() || '0',
       percentage: gerPercentile(
         feedbackSummaryData?.negativeFeedbacks || 0,
         feedbackSummaryData?.totalFeedbacks || 0

@@ -15,7 +15,7 @@ interface FileUpload {
   batchId?: string;
 }
 interface ProductParserProps {
-  parseNewProducts: (newProducts: Product[]) => Promise<void>;
+  parseNewProducts: (newProducts: string[]) => Promise<void>;
   onClose: () => void;
   setParserBatchId: (batchId: string) => void;
 }
@@ -33,6 +33,9 @@ function ProductParser({
   useEffect(() => {
     if (branch) {
       productApi.getMenuParserQueues(branch.orgId, branch.id).then(res => {
+        if (!res.data) {
+          return;
+        }
         setQueues(res.data);
         const queues = res.data;
         for (const queue of queues) {
@@ -117,8 +120,9 @@ function ProductParser({
     productApi.getMenuParserStatus(
       batchId,
       (data: SseMenuParserData | SseMenuInternalResponse) => {
-        // console.log('sse message', data);
-        if (data.batchId) {
+        console.log('sse message', data);
+        if (isSseMenuParserData(data)) {
+
           setQueues(prev => {
             const exist = prev.find(q => q.batchId === batchId);
             if (exist) {
@@ -130,14 +134,12 @@ function ProductParser({
             }
           });
         }
-        if (data.Response) {
-          const resp = JSON.parse(data.Response);
-          const products = resp.products;
+        if (isSseMenuInternalResponse(data)) {
           //   console.log('products', products);
           setQueues(prev =>
             prev.map(q =>
               q.batchId === batchId
-                ? { ...q, status: resp.status, response: resp }
+                ? { ...q, status: 'completed', response: data }
                 : q
             )
           );
@@ -222,8 +224,10 @@ function ProductParser({
     // console.log('Applied:', file);
     const queue = queues.find(q => q.batchId === file.batchId);
     if (queue) {
+      console.log('queue', queue);
       const resp = JSON.parse(queue.response.Response);
-      const products = resp.products;
+      console.log('parsed products: ', resp);
+      const products: string[] = resp.products;
       setParserBatchId(queue.batchId);
       parseNewProducts(products);
     }
@@ -376,6 +380,14 @@ function ProductParser({
       {/* </div> */}
     </div>
   );
+}
+
+function isSseMenuParserData(data: SseMenuParserData | SseMenuInternalResponse): data is SseMenuParserData {
+  return (data as SseMenuParserData).batchId !== undefined;
+}
+
+function isSseMenuInternalResponse(data: SseMenuParserData | SseMenuInternalResponse): data is SseMenuInternalResponse {
+  return (data as SseMenuInternalResponse).Response !== undefined;
 }
 
 export default ProductParser;

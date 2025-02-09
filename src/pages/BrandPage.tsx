@@ -32,6 +32,9 @@ const BrandPage: React.FC = () => {
   
 const fetchBranchStats  = () => {
   organizationApi.getBranchDashboard(orgId).then(res => {
+    if (!res.data || !res.data.branches) {
+      return;
+    }
     res.data.branches.map(branch => {
       branch.initial = branch.branchName.charAt(0);
     });

@@ -835,12 +835,12 @@ export const productApi = {
     orgId: string,
     branchId: string
   ): Promise<{
-    data: SseMenuParserData[];
+    data: SseMenuParserData[] | undefined;
     status: number;
     headers?: Headers;
   }> => {
     try {
-      const response = await api.get<SseMenuParserData[]>(
+      const response = await api.get<SseMenuParserData[] | undefined>(
         `/organizations/${orgId}/branches/${branchId}/parser/list`
       );
       return response;
