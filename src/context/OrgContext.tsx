@@ -7,19 +7,21 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   //   const { user } = useAuth();
-  const orgId = localStorage.getItem('orgId');
   const [branch, setBranch] = useState<Branch | null>(null);
   const [branches, setBranches] = useState<Branch[]>([]);
-
+  const [orgId, setOrgId] = useState<string | null>(null);
   const refreshBranches = async () => {
+    const orgId = localStorage.getItem('orgId');
     if (!orgId) return;
     const response = await branchApi.getAll(orgId);
     console.log(response.data);
     setBranches(response.data);
     setBranch(response.data[0]);
+    setOrgId(orgId);
   };
 
   useEffect(() => {
+    const orgId = localStorage.getItem('orgId');
     if (!orgId) return;
     if (branches.length === 0) {
       refreshBranches();

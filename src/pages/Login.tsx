@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Carousel from '../components/ui/Carousel';
 import Checkbox from '../components/ui/Checkbox';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const slides = [
     {
       title: 'Connect with Zuno.',
@@ -31,16 +33,23 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password);
-      navigate(from, { replace: true });
+      setIsLoading(true);
+      const response = await login(email, password);
+      if (response?.status === 200) {
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error("Invalid email or password");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex">
       {/* Left Section */}
+      <Toaster />
       <div className="w-1/2 p-12 flex flex-col items-center justify-center">
         <Link to="/" className="flex items-center mb-10">
           <img
@@ -138,8 +147,9 @@ const Login = () => {
             <button
               type="submit"
               className="w-full py-3 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
+              disabled={isLoading}
             >
-              Log in
+              {isLoading ? "Logging in..." : "Log in"}
             </button>
           </form>
         </div>

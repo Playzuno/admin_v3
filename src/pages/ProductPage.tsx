@@ -349,11 +349,13 @@ const ProductPage: React.FC = () => {
         await productApi.bulkInsert(branch?.id, changes.insertedItems);
       }
       fetchProducts();
-      await productApi.markQueueAsProcessed(
-        branch?.orgId,
-        branch?.id,
-        parserBatchId
-      );
+      if (parserBatchId) {
+        await productApi.markQueueAsProcessed(
+          branch?.orgId,
+          branch?.id,
+          parserBatchId
+        );
+      }
     } catch (error) {
       fetchProducts();
       toast.error('Failed to save changes. Please try again.');
@@ -487,6 +489,8 @@ const ProductPage: React.FC = () => {
         title="Save Changes"
         message="Are you sure you want to save these changes? This action cannot be undone."
         onConfirm={confirmSave}
+        primaryButtonText="Save"
+        primaryButtonColor="brand"
         onCancel={() => setShowSaveConfirm(false)}
       />
 

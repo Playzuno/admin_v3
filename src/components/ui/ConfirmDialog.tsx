@@ -7,6 +7,8 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
   onCancel: () => void;
   isOpen: boolean;
+  primaryButtonText?: string;
+  primaryButtonColor?: 'brand' | 'danger';
 }
 
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -15,6 +17,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel,
   isOpen,
+  primaryButtonText = 'Confirm',
+  primaryButtonColor = 'danger',
 }) => {
   if (!isOpen) return null;
 
@@ -43,9 +47,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             </button>
             <button
               onClick={onConfirm}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              className={`px-4 py-2 rounded-md hover:bg-gray-300 transition-colors ${primaryButtonColor === 'brand' ? 'bg-brand-500 text-white' : 'bg-red-600 text-white'}`}
             >
-              Delete
+               {primaryButtonText}
             </button>
           </div>
         </div>

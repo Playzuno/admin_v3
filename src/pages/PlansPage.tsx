@@ -76,12 +76,14 @@ const PlansPage: React.FC = () => {
           </div>
         </div>
       </PlainContainer>
-      <UpdatePlanDialog
+      {isDialogOpen && (
+        <UpdatePlanDialog
           isOpen={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
           onUpdate={handleUpdatePlan}
           plans={plans}
         />
+      )}
     </div>
   );
 };
