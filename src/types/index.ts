@@ -154,7 +154,7 @@ export const ExpireMode = {
   FINITE: 'finite',
 } as const;
 
-export type ExpireMode = typeof ExpireMode[keyof typeof ExpireMode];
+export type ExpireMode = (typeof ExpireMode)[keyof typeof ExpireMode];
 
 export interface BranchMemberResponse {
   id: string;
@@ -287,4 +287,45 @@ export interface Coupon {
   };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Organization {
+  id: string;
+  orgId: string;
+  slug: string;
+  name: string;
+  type: string;
+  subdomain: string;
+  isSingleBranch: boolean;
+  noOfBranches: number;
+  address: string;
+  global_settings: {
+    id: string;
+    organizationId: string;
+  };
+  theme: {
+    id: string;
+    organizationId: string;
+    logo: string;
+  };
+  subscription: {
+    id: string;
+    organizationId: string;
+    planId: string;
+    plan: {
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    startDate: string;
+    endDate: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  plan_id: string;
+  owner_id: string;
+  gstin: string;
+  tin: string;
+  created_at: string;
+  updated_at: string;
 }

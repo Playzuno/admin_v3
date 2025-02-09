@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Trash2 } from 'lucide-react';
+import { Camera, Edit, Trash2 } from 'lucide-react';
 import Button from '../ui/Button';
 import ConfirmDialog from '../ui/ConfirmDialog';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +9,8 @@ interface ProfilePhotoProps {
   onChangePhoto: (file: File) => void;
   onDeletePhoto: () => void;
   initial?: string;
+  hideActions?: boolean;
+  imageVersionKey?: number;
 }
 
 const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
@@ -16,6 +18,8 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
   onChangePhoto,
   onDeletePhoto,
   initial,
+  hideActions = false,
+  imageVersionKey,
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
@@ -53,9 +57,10 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center space-x-4">
         <div className="w-24 h-24 rounded-full overflow-hidden">
+        <div className="relative w-full h-full cursor-pointer hover:opacity-80" onClick={() => fileInputRef.current?.click()}> {/*Added onClick to the parent div */}
           {imageUrl ? (
             <img
-              key={1 + imageVersion}
+              key={1 + (imageVersionKey || imageVersion)}
               src={imageUrl}
               alt="Profile"
               className="w-full h-full object-cover"
@@ -65,6 +70,17 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
               {initial}
             </div>
           )}
+           {/* <div className="absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2 "> Edit button remains the same */}
+           <div className="absolute right-2 top-2"> {/*Edit button remains the same */}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="text-white rounded-full p-1"
+              >
+                {hideActions && <Edit className="h-4 w-4" /> }
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -76,7 +92,8 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
           accept="image/*"
           onChange={handleFileSelect}
         />
-        <div className="flex items-center space-x-4 w-full justify-end">
+          {!hideActions && (
+        <div className="flex items-center space-x-4 w-full justify-end" >
           <Button
             variant="light"
             // icon={Camera}
@@ -89,9 +106,10 @@ const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
             icon={Trash2}
             onClick={() => setShowDeleteConfirm(true)}
           >
-            Delete
-          </Button>
-        </div>
+              Delete
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}
