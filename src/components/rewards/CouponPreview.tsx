@@ -17,12 +17,12 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
 }) => {
   return (
     <div className="w-full max-w-md mt-[5%]">
-      <div className="bg-white rounded-[32px] overflow-hidden shadow-lg relative">
+      <div className="bg-white rounded-[32px] overflow-hidden shadow-lg relative border-[3px] border-[#2982FE]">
         {/* Top notch */}
         <div className="absolute -left-4 top-[calc(100%-218px)] w-8 h-8 bg-gray-100 rounded-full" />
         <div className="absolute -right-4 top-[calc(100%-218px)] w-8 h-8 bg-gray-100 rounded-full" />
 
-        <div className="p-8 space-y-8">
+        <div className="p-8 mt-3">
           <div>
             <div className="text-gray-500 mb-2">Coupon</div>
             <h2 className="text-base font-medium text-brand">
@@ -31,7 +31,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
             <div className="h-[1px] bg-gray-200 mt-4" />
           </div>
 
-          <div className="grid grid-cols-2 gap-8">
+          <div className="mt-[0%] grid grid-cols-2 gap-8">
             <div>
               <div className="text-gray-500 mb-2">Coupon value</div>
               <div className="text-base font-bold text-brand flex items-center">
@@ -39,7 +39,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
                 {value || '1000'}
               </div>
             </div>
-            <div>
+            <div >
               <div className="text-gray-500 mb-2">Zuno value</div>
               <div className="text-base font-bold text-brand">
                 {zunoValue || '100'}
@@ -48,7 +48,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
             </div>
           </div>
 
-          <div>
+          <div className='mt-[0%]'>
             <div className="text-gray-500 mb-3">Coupon image</div>
             <div className="w-24 h-24 bg-black rounded-lg overflow-hidden">
               {image ? (

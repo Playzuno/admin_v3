@@ -44,7 +44,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       <p className="subtitle text-center">Upload your choice of image.</p>
 
       <div
-        className={`border-2 border-dashed border-brand rounded-lg p-12 ${
+        className={`border-2 border-dashed border-brand rounded-lg px-[15px] py-[25px] ${
           dragActive ? 'bg-brand-50' : 'bg-white'
         }`}
         onDragEnter={handleDrag}
