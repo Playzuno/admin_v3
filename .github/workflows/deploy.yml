@@ -23,11 +23,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build React App
-        run: npm run build
-
-      - name: Install Wrangler
-        run: npm install -g wrangler
 
       - name: Determine Deployment Environment
         id: set-env
@@ -35,13 +30,21 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
             echo "BRANCH_NAME=main" >> $GITHUB_ENV
+            echo "VITE_MODE=prod" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
             echo "ENVIRONMENT=staging" >> $GITHUB_ENV
             echo "BRANCH_NAME=staging" >> $GITHUB_ENV
+            echo "VITE_MODE=staging" >> $GITHUB_ENV
           else
             echo "No valid environment found!"
             exit 1
           fi
+
+      - name: Build React App
+        run: npm run build -- --mode ${{ env.VITE_MODE }}
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
 
       - name: Deploy to Cloudflare Pages
         run: |
