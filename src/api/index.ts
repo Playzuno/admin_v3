@@ -44,7 +44,7 @@ export class ApiError implements ApiErrorType {
 const getBearerToken = (): string | null => {
   return localStorage.getItem('token');
 };
-const baseURL = 'http://localhost:8080/api/v1';
+const baseURL = import.meta.env.VITE_API_URL + '/v1';
 // Create and export the default API client instance
 export const api = new ApiClient({
   baseURL,
