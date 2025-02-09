@@ -181,7 +181,7 @@ const FeedbackChart = () => {
           lowestRated: [],
         },
       };
-      resp.data.forEach(item => {
+      resp.data?.forEach((item: any) => {
         if (!report[period]) {
           report[period] = {
             topRated: [],
