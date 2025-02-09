@@ -44,7 +44,7 @@ function Footer() {
       
       
       {/* Sticky chat input */}
-      <div className="bg-white border-t border-gray-200 p-4 sticky bottom-0 left-0 right-0 shadow-lg">
+      <div className="bg-white border-t border-gray-200 p-2  bottom-0 left-0 right-0">
         <div className="max-w-7xl mx-auto px-4">
           <form onSubmit={handleSubmit} className="flex items-center gap-2 bg-gray-50 rounded-lg p-2">
             <button

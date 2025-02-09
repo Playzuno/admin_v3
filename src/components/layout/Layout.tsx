@@ -58,15 +58,17 @@ const Layout = () => {
           <Outlet />
         )}
       </main>
+  
       {!isPublicPage && (
-        <CopyRights/>
-      )}
-      {!isPublicPage && (
-        <footer className="sticky bottom-0 left-0 right-0 bg-[#F7F7F7]">
+        <footer className="bottom-0 left-0 right-0 bg-[#F7F7F7]">
            
             <Footer />
         </footer>
-        // </div>
+        
+      )}
+
+{!isPublicPage && (
+        <CopyRights/>
       )}
     </div>
   );
