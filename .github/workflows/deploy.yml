@@ -1,0 +1,51 @@
+name: Deploy Admin app to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main       # Production
+      - staging    # Staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Determine Deployment Environment
+        id: set-env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            echo "BRANCH_NAME=main" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+            echo "BRANCH_NAME=staging" >> $GITHUB_ENV
+          else
+            echo "No valid environment found!"
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        run: |
+          npx wrangler pages deploy ./dist --project-name=admin-${{ env.ENVIRONMENT }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
