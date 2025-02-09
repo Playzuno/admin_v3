@@ -11,6 +11,7 @@ import {
   LoggedInUser,
   LoginResponse,
   OcrProcessingResponse,
+  Organization,
   Plan,
   Product,
   SseMenuInternalResponse,
@@ -101,7 +102,7 @@ export const organizationApi = {
     data: any
   ): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
-      const response = await api.put(`/organization/${id}`, data);
+      const response = await api.put(`/organizations/${id}`, data);
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -243,6 +244,20 @@ export const userApi = {
   get: async (): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
       const response = await api.get<LoginResponse>(`/users/me/memberships`);
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  getOrganization: async (): Promise<{ data: Organization; status: number; headers?: Headers }> => {
+    try {
+      const token = getBearerToken();
+      if (!token) {
+        throw new ApiError('Unauthorized', 'UNAUTHORIZED');
+      }
+      const response = await api.get<Organization>('/users/me/organization', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -1250,6 +1265,30 @@ export const assetsApi = {
     try {
       const response = await api.get<{ presignedURL: string }>(
         `/assets/users/${userId}/upload/profile`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  getOrganizationLogoPresignedUrl: async (
+    orgId: string
+  ): Promise<{ data: { presignedURL: string }; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get<{ presignedURL: string }>(
+        `/assets/organizations/${orgId}/logo`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  refreshOrganizationLogo: async (
+    orgId: string
+  ): Promise<{ data: {presignedURL: string}; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.post<{presignedURL: string}>(
+        `/assets/organizations/${orgId}/logo/refresh`
       );
       return response;
     } catch (error) {
