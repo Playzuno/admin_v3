@@ -62,14 +62,14 @@ const Header = () => {
 
   return (
     <header className="w-full">
-      <div className="container mx-auto px-4">
-        <div className="flex h-[4.5rem] items-center justify-between">
+      <div className="container mx-auto px-4 mt-[1%]">
+        <div className="flex h-[4.2rem] items-center justify-between px-[3%]">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center ml=[2%]">
             <img
               src="/assets/images/logo.svg"
               alt="Zuno Logo"
-              style={{ height: '35px' }}
+              style={{ height: '23px' }}
             />
           </Link>
 

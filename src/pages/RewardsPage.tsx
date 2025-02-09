@@ -159,7 +159,10 @@ const RewardsPage: React.FC = () => {
         />
       </div>
 
-      <div className="w-[400px] flex-shrink-0 pt-[5.25rem]">
+      <div className="w-[400px] flex-shrink-0 ">
+      <div className="space-y-1">
+            <h1 className="container-title">Rewards setup</h1>
+          </div>
         <CouponPreview
           company={formData.company}
           name={formData.name}
