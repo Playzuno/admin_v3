@@ -159,7 +159,7 @@ const RewardsPage: React.FC = () => {
         />
       </div>
 
-      <div className="w-[400px] flex-shrink-0 ">
+      <div className="w-[350px] flex-shrink-0 ">
       <div className="space-y-1">
             <h1 className="container-title">Rewards setup</h1>
           </div>
