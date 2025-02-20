@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useOrg } from '@/context/OrgContext';
 import ReactDOM from 'react-dom';
+import { organizationApi } from '@/api';
+import { Organization } from '@/types';
 const QRCodePage: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [printCount, setPrintCount] = useState(3);
   const code = 'GQQQ-PJXNNU-EQAK-SNQJDB';
   const { orgId, branch } = useOrg();
+  const [org, setOrg] = useState<Organization>();
+  useEffect(() => {
+    organizationApi.get(orgId).then(res => {
+      setOrg(res.data);
+    });
+  }, [orgId]);
   const qrCodeUrl = `https://app.playzuno.com/scan/${orgId}/${branch?.id}`;
   // console.log('qrCodeUrl', qrCodeUrl);
   const handleCopyCode = async () => {
@@ -128,7 +136,7 @@ const QRCodePage: React.FC = () => {
       <div>
         <div className="text-base">
           Company Name:{' '}
-          <span className="text-brand font-medium pl-2">{branch?.name}</span>
+          <span className="text-brand font-medium pl-2">{org?.name}</span>
         </div>
       </div>
 

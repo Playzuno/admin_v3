@@ -8,7 +8,7 @@ import NewBranchDialog from '../components/brand/NewBranchDialog';
 import Button from '../components/ui/Button';
 import { branchApi, inviteApi, organizationApi } from '@/api';
 import { useOrg } from '@/context/OrgContext';
-import { Branch, BranchDashboardStats } from '@/types';
+import { Branch, BranchDashboardStats, Organization } from '@/types';
 import { ErrorToast } from '@/components/ui/toast';
 import { SuccessToast } from '@/components/ui/toast';
 const BrandPage: React.FC = () => {
@@ -26,13 +26,21 @@ const BrandPage: React.FC = () => {
 
   const {orgId} = useOrg();
   const [branches, setBranches] = useState<BranchDashboardStats[]>([]);
+  const [org, setOrg] = useState<Organization>();
   useEffect(() => {
     fetchBranchStats();
+    fetchOrganization();
   }, [orgId]);
-  
-const fetchBranchStats  = () => {
-  organizationApi.getBranchDashboard(orgId).then(res => {
-    if (!res.data || !res.data.branches) {
+
+  const fetchOrganization = () => {
+    organizationApi.get(orgId).then(res => {
+      setOrg(res.data);
+    });
+  };
+
+  const fetchBranchStats  = () => {
+    organizationApi.getBranchDashboard(orgId).then(res => {
+      if (!res.data || !res.data.branches) {
       return;
     }
     res.data.branches.map(branch => {
@@ -144,7 +152,7 @@ const fetchBranchStats  = () => {
         <div className="flex items-center space-x-2">
           <h1 className="text-sm">Company Name: </h1>
           <span className="text-sm font-medium text-brand">
-            Adayar Ananda Bhavan
+            {org?.name}            
           </span>
           <button
             onClick={handleEditProfile}
