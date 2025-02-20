@@ -57,7 +57,7 @@ const Dashboard = () => {
     },
     {
       title: '# of End Users',
-      count: branchStats?.totalCoinsGiven || 0,
+      count: branchStats?.rewardedEndUsers || 0,
       subtext: 'active users',
       growth: 4,
       icon: <Users className="w-6 h-6 text-primary" />,

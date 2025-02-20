@@ -4,6 +4,7 @@ import { Product, SseMenuInternalResponse, SseMenuParserData } from '@/types';
 import { useOrg } from '@/context/OrgContext';
 import { productApi } from '@/api';
 import Button from '../ui/Button';
+import { ErrorToast, SuccessToast } from '../ui/toast';
 interface FileUpload {
   id: string;
   name: string;
@@ -223,13 +224,21 @@ function ProductParser({
     // Handle apply action here
     // console.log('Applied:', file);
     const queue = queues.find(q => q.batchId === file.batchId);
-    if (queue) {
-      console.log('queue', queue);
-      const resp = JSON.parse(queue.response.Response);
-      console.log('parsed products: ', resp);
-      const products: string[] = resp.products;
-      setParserBatchId(queue.batchId);
-      parseNewProducts(products);
+    try {
+      if (queue) {
+        console.log('queue', queue);
+        const resp = JSON.parse(queue.response.Response);
+        console.log('parsed products: ', resp);
+        const products: string[] = resp.products;
+        setParserBatchId(queue.batchId);
+        parseNewProducts(products);
+        SuccessToast('Products parsed successfully');
+      }
+    } catch (error) {
+      console.log('error', error);
+      ErrorToast('PDF file is not valid');
+    } finally {
+      onClose();
     }
   };
 
