@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
-
+import { QRCodeSVG } from 'qrcode.react';
+import { useOrg } from '@/context/OrgContext';
+import ReactDOM from 'react-dom';
 const QRCodePage: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [printCount, setPrintCount] = useState(3);
   const code = 'GQQQ-PJXNNU-EQAK-SNQJDB';
-
+  const { orgId, branch } = useOrg();
+  const qrCodeUrl = `https://app.playzuno.com/scan/${orgId}/${branch?.id}`;
+  // console.log('qrCodeUrl', qrCodeUrl);
   const handleCopyCode = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -17,6 +21,7 @@ const QRCodePage: React.FC = () => {
   };
 
   const handleDownload = () => {
+    if (!orgId || !branch) return;
     // Create a canvas element to draw the QR code
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -29,27 +34,38 @@ const QRCodePage: React.FC = () => {
     // Draw white background
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Create a temporary QR code SVG element
+    const tempContainer = document.createElement('div');
+    const qrComponent = <QRCodeSVG value={qrCodeUrl} size={400} />;
+    ReactDOM.render(qrComponent, tempContainer);
 
-    // Draw QR code (simplified version for demo)
-    ctx.fillStyle = '#6B21A8';
-    ctx.fillRect(200, 200, 160, 160);
-    ctx.fillRect(480, 200, 160, 160);
-    ctx.fillRect(200, 480, 160, 160);
-    ctx.fillStyle = '#FF6E01';
-    ctx.fillRect(340, 340, 160, 160);
+    // Convert SVG to image and draw on canvas
+    const svgElement = tempContainer.querySelector('svg');
+    if (svgElement) {
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const img = new Image();
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgString);
 
-    // Convert to blob and download
-    canvas.toBlob(blob => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'zuno-qr-code.png';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
+      img.onload = () => {
+        // Center the QR code on the canvas
+        const x = (canvas.width - img.width) / 2;
+        const y = (canvas.height - img.height) / 2;
+        ctx.drawImage(img, x, y);
+
+        // Convert to blob and download
+        canvas.toBlob(blob => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'zuno-qr-code.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      };
+    }
   };
 
   const handlePrint = () => {
@@ -94,7 +110,7 @@ const QRCodePage: React.FC = () => {
               ${document.querySelector('.qr-code-svg')?.outerHTML}
             </div>
             <div class="code">${code}</div>
-            <div class="company">Adayar Ananda Bhavan</div>
+            <div class="company">${branch?.name}</div>
             <script>
               window.onload = () => {
                 window.print();
@@ -112,9 +128,7 @@ const QRCodePage: React.FC = () => {
       <div>
         <div className="text-base">
           Company Name:{' '}
-          <span className="text-brand font-medium pl-2">
-            Adayar Ananda Bhavan
-          </span>
+          <span className="text-brand font-medium pl-2">{branch?.name}</span>
         </div>
       </div>
 
@@ -126,19 +140,18 @@ const QRCodePage: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-[320px] h-[320px] bg-white rounded-3xl shadow-lg p-8 relative">
                 {/* QR Code Image */}
-                <div className="w-full h-full bg-white">
+                {/* <div className="w-full h-full bg-white">
                   <svg
                     viewBox="0 0 100 100"
                     className="w-full h-full qr-code-svg"
                   >
-                    {/* Purple squares */}
                     <rect x="20" y="20" width="20" height="20" fill="#6B21A8" />
                     <rect x="60" y="20" width="20" height="20" fill="#6B21A8" />
                     <rect x="20" y="60" width="20" height="20" fill="#6B21A8" />
-                    {/* Orange squares */}
                     <rect x="40" y="40" width="20" height="20" fill="#FF6E01" />
                   </svg>
-                </div>
+                </div> */}
+                <QRCodeSVG size={256} value={qrCodeUrl} />
 
                 {/* Arms and Legs */}
                 <div className="absolute -left-6 top-1/2 w-6 h-20 bg-white rounded-l-full -translate-y-1/2 shadow-md" />
@@ -147,7 +160,7 @@ const QRCodePage: React.FC = () => {
                 <div className="absolute -bottom-6 right-1/3 w-6 h-12 bg-white rounded-b-full shadow-md" />
 
                 {/* Smile */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-16 h-8 bg-[#FF6E01] rounded-[100%] rotate-[15deg]" />
+                {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-16 h-8 bg-[#FF6E01] rounded-[100%] rotate-[15deg]" /> */}
               </div>
             </div>
           </div>
