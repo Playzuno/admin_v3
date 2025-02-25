@@ -24,7 +24,7 @@ const Dashboard = () => {
   // console.log(branchStats);
   const statsCards = [
     {
-      title: '# of Feedback',
+      title: 'Feedback',
       count: branchStats?.totalFeedbacks || 0,
       subtext: 'feedbacks',
       growth: 20,
@@ -32,7 +32,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Reward User',
+      title: 'Reward User',
       count: branchStats?.rewardedEndUsers || 0,
       subtext: 'active users',
       growth: 6,
@@ -40,7 +40,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Branch/Brand',
+      title: 'Branch/Brand',
       count: branches.length || 1,
       subtext: 'active branch',
       growth: 2,
@@ -48,7 +48,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of Zuno Coins',
+      title: 'Zuno Coins',
       count: branchStats?.totalCoinsGiven || 0,
       subtext: 'zuno coins',
       growth: 15,
@@ -56,7 +56,7 @@ const Dashboard = () => {
       iconBgColor: 'bg-orange-50',
     },
     {
-      title: '# of End Users',
+      title: 'End Users',
       count: branchStats?.rewardedEndUsers || 0,
       subtext: 'active users',
       growth: 4,

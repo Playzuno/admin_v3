@@ -17,8 +17,8 @@ const ActionContainer: React.FC<ActionContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="bg-white rounded-lg zuno-border-dark overflow-hidden">
-      <div className="flex justify-between items-center px-6 py-4 bg-[#F2F2F2] border-b border-[#BBBBBB] border-[0.5px]">
+    <div className="bg-white rounded-[32px] zuno-border-dark overflow-hidden border-[3px] border-solid border-[#BBBBBB] transition-all duration-200 group hover:border-[#2982FE]">
+  <div className="flex justify-between items-center px-6 py-4 bg-[#F2F2F2] border-b-[0.5px] border-[#BBBBBB] transition-all duration-200 group-hover:border-b-[#2982FE]">
         {typeof title === 'string' ? (
           <h2 className="container-title-2">{title}</h2>
         ) : (

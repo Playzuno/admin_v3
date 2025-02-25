@@ -33,7 +33,7 @@ const CouponForm: React.FC<CouponFormProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-[13%]">
       <div className="flex items-center justify-between">
         <span className="text-gray-500">Status:</span>
         <label className="relative inline-flex items-center cursor-pointer">
