@@ -10,7 +10,7 @@ import { TabContainer } from '../components/containers';
 import Checkbox from '../components/ui/Checkbox';
 import { useOrg } from '@/context/OrgContext';
 import { memberApi, roleApi } from '@/api';
-import { BranchMember, BranchMemberResponse, ExpireMode, Role } from '@/types';
+import { BranchMemberResponse, ExpireMode, Role } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { ErrorToast, SuccessToast } from '@/components/ui/toast';
 
@@ -23,10 +23,46 @@ const TeamPage: React.FC = () => {
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [roles, setRoles] = useState<Role[]>([]);
-  const [originalTeamMembers, setOriginalTeamMembers] = useState<TeamMember[]>([]);
+  const [originalTeamMembers, setOriginalTeamMembers] = useState<TeamMember[]>(
+    []
+  );
 
-  const { branch} = useOrg();
+  const { branch } = useOrg();
   useEffect(() => {
+    const fetchMembers = async () => {
+      if (branch) {
+        memberApi.getAll(branch.orgId, branch.id).then(response => {
+          // console.log(response.data);
+          const members: TeamMember[] = response.data.map(
+            (member: BranchMemberResponse) => ({
+              id: member.id,
+              name: member.user.fullName,
+              initial: member.user.fullName.charAt(0),
+              role: member.role,
+              position: member.user.metadata.designation,
+              expiration: member.roleExpiresAt,
+              daysToExpire: countExpirationDays(member.roleExpiresAt),
+              accessExpires: new Date(member.roleExpiresAt).toLocaleDateString(
+                'en-GB',
+                {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                }
+              ),
+              accessExpiresAt: new Date(member.roleExpiresAt),
+              roles: [member.role.name],
+              roleId: member.roleId,
+              expireMode: member.expireMode,
+            })
+          );
+          setTeamMembers(members);
+          setOriginalTeamMembers(members);
+          setEditingMember(null);
+        });
+      }
+    };
+
     fetchMembers();
     if (branch) {
       roleApi.getAll(branch.id).then(response => {
@@ -34,35 +70,6 @@ const TeamPage: React.FC = () => {
       });
     }
   }, [branch]);
-
-  const fetchMembers = async () => {
-    if (branch) {
-      memberApi.getAll(branch.orgId, branch.id).then(response => {
-        // console.log(response.data);
-        const members: TeamMember[] = response.data.map((member: BranchMemberResponse) => ({
-          id: member.id,
-          name: member.user.fullName,
-          initial: member.user.fullName.charAt(0),
-          role: member.role,
-          position: member.user.metadata.designation,
-          expiration: member.roleExpiresAt,
-          daysToExpire: countExpirationDays(member.roleExpiresAt),
-          accessExpires: new Date(member.roleExpiresAt).toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-          }),
-          accessExpiresAt: new Date(member.roleExpiresAt),
-          roles: [member.role.name],
-          roleId: member.roleId,
-          expireMode: member.expireMode,
-        }));
-        setTeamMembers(members);
-        setOriginalTeamMembers(members);
-        setEditingMember(null);
-      });
-    }
-  }
 
   const handleSelectMember = (memberId: string) => {
     setSelectedMembers(prev =>
@@ -89,11 +96,11 @@ const TeamPage: React.FC = () => {
         member.id === memberId ? { ...member, roleId: newRole } : member
       )
     );
-  //  setOriginalTeamMembers(prev =>
-  //   prev.map(member =>
-  //     member.id === memberId ? { ...member, roleId: newRole } : member
-  //   )
-  // );
+    //  setOriginalTeamMembers(prev =>
+    //   prev.map(member =>
+    //     member.id === memberId ? { ...member, roleId: newRole } : member
+    //   )
+    // );
   };
 
   const handleDelete = (memberId: string) => {
@@ -103,18 +110,20 @@ const TeamPage: React.FC = () => {
   const confirmDelete = () => {
     if (!branch?.id) return;
     if (memberToDelete) {
-    memberApi.removeFromBranch(branch.id, memberToDelete).then(response => {
-      // console.log(response);
-      SuccessToast('Member removed from branch');
-      setTeamMembers(prev =>
-        prev.filter(member => member.id !== memberToDelete)
-      );
-      setMemberToDelete(null);
-    }).catch(error => {
-      console.log(error);
-      ErrorToast('Failed to remove member from branch');
-    });
-  }
+      memberApi
+        .removeFromBranch(branch.id, memberToDelete)
+        .then(() => {
+          SuccessToast('Member removed from branch');
+          setTeamMembers(prev =>
+            prev.filter(member => member.id !== memberToDelete)
+          );
+          setMemberToDelete(null);
+        })
+        .catch(error => {
+          console.log(error);
+          ErrorToast('Failed to remove member from branch');
+        });
+    }
   };
 
   const handleDateChange = (memberId: string, date: Date | null) => {
@@ -125,11 +134,17 @@ const TeamPage: React.FC = () => {
       setTeamMembers(prev =>
         prev.map(member =>
           member.id === memberId
-            ? { ...member, accessExpiresAt: new Date("0001-01-01T00:00:00Z"), daysToExpire: -1, accessExpires: 'No expiration', expireMode: ExpireMode.INFINITE }
+            ? {
+                ...member,
+                accessExpiresAt: new Date('0001-01-01T00:00:00Z'),
+                daysToExpire: -1,
+                accessExpires: 'No expiration',
+                expireMode: ExpireMode.INFINITE,
+              }
             : member
         )
       );
-      return
+      return;
     }
     setTeamMembers(prev =>
       prev.map(member => {
@@ -146,9 +161,8 @@ const TeamPage: React.FC = () => {
               }),
               expireMode: ExpireMode.FINITE,
             }
-          : member
-      }
-      )
+          : member;
+      })
     );
   };
 
@@ -165,16 +179,19 @@ const TeamPage: React.FC = () => {
     if (!branch?.id) return;
     const member = teamMembers.find(member => member.id === editingMember);
     if (!member) return;
-    const updatedMembers = memberApi.update(branch.id, member.id, {
-      roleId: member.roleId,
-      roleExpiresAt: member.accessExpiresAt,
-      expireMode: member.expireMode,
-    }).then(response => {
-      SuccessToast('Member updated');
-      fetchMembers();
-    }).catch(error => {
-      ErrorToast('Failed to update member');
-    });
+    // const updatedMembers = memberApi
+    //   .update(branch.id, member.id, {
+    //     roleId: member.roleId,
+    //     roleExpiresAt: member.accessExpiresAt,
+    //     expireMode: member.expireMode,
+    //   })
+    //   .then(response => {
+    //     SuccessToast('Member updated');
+    //     fetchMembers();
+    //   })
+    //   .catch(error => {
+    //     ErrorToast('Failed to update member');
+    //   });
     // console.log(updatedMembers);
   };
 
@@ -200,9 +217,9 @@ const TeamPage: React.FC = () => {
   const navigate = useNavigate();
   const openMemberForm = () => {
     navigate('/brand', {
-      state: {openMemberForm: true}
+      state: { openMemberForm: true },
     });
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -305,7 +322,10 @@ const TeamPage: React.FC = () => {
               </thead>
               <tbody className="divide-y">
                 {teamMembers.map(member => (
-                  <tr key={member.id} className={`hover:bg-gray-50 ${editingMember !== member.id && !!editingMember ? 'cursor-not-allowed pointer-events-none' : ''}`}>
+                  <tr
+                    key={member.id}
+                    className={`hover:bg-gray-50 ${editingMember !== member.id && !!editingMember ? 'cursor-not-allowed pointer-events-none' : ''}`}
+                  >
                     <td className="pl-6 py-4">
                       <Checkbox
                         bgColor="bg-brand"
@@ -344,7 +364,11 @@ const TeamPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <ExpirationDate
-                        date={member.daysToExpire === -1 ? null : member.accessExpiresAt}
+                        date={
+                          member.daysToExpire === -1
+                            ? null
+                            : member.accessExpiresAt
+                        }
                         expireMode={member.expireMode}
                         onClear={() => handleDateChange(member.id, null)}
                         onSelectDate={date => handleDateChange(member.id, date)}
