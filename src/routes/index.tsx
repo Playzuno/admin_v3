@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Layout, { LayoutProvider } from '../components/layout/Layout';
 import Login from '../pages/Login';
@@ -17,6 +16,8 @@ import BrandProfilePage from '../pages/BrandProfilePage';
 import ComponentSink from '../pages/ComponentSink';
 import NotFound from '../pages/NotFound';
 import PrivateRoute from '../components/auth/PrivateRoute';
+import EndUserPage from '../pages/EndUserPage';
+import BrandListPage from '@/pages/BrandListPage';
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'end-users',
+        element: (
+          <PrivateRoute title="End Users">
+            <EndUserPage />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: 'plans',
         element: (
           <PrivateRoute title="Plans">
@@ -112,6 +121,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute title="Brand">
             <BrandPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'brands',
+        element: (
+          <PrivateRoute title="Brand List">
+            <BrandListPage />
           </PrivateRoute>
         ),
       },
