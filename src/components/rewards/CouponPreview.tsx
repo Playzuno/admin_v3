@@ -17,10 +17,10 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
 }) => {
   return (
     <div className="w-full max-w-md mt-[5%]">
-     <div className="bg-white rounded-[32px] overflow-hidden shadow-lg relative border-[1px] border-[#BBBBBB] transition-all duration-200 hover:border-[#2982FE]">
+      <div className="bg-white rounded-[32px] overflow-visible shadow-lg relative border-[1px] border-[#BBBBBB] transition-all duration-200 hover:border-[#2982FE]">
         {/* Top notch */}
-        <div className="absolute -left-4 top-[calc(100%-218px)] w-8 h-8 bg-gray-100 rounded-full" />
-        <div className="absolute -right-4 top-[calc(100%-218px)] w-8 h-8 bg-gray-100 rounded-full" />
+        <div className="absolute z-[2] bg-white -left-[29px] top-[calc(100%-218px)] w-[42px] h-[34px] rounded-full" />
+        <div className="absolute z-[2] bg-white -right-[29px] top-[calc(100%-218px)] w-[42px] h-[34px] rounded-full" />
 
         <div className="p-8 mt-3">
           <div>
@@ -39,7 +39,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
                 {value || 0}
               </div>
             </div>
-            <div >
+            <div>
               <div className="text-gray-500 mb-2">Zuno value</div>
               <div className="text-base font-bold text-brand">
                 {zunoValue || 0}
@@ -48,7 +48,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
             </div>
           </div>
 
-          <div className='mt-[0%]'>
+          <div className="mt-[0%]">
             <div className="text-gray-500 mb-3">Coupon image</div>
             <div className="w-24 h-24 bg-black rounded-lg overflow-hidden">
               {image ? (
@@ -66,7 +66,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-brand p-8 text-white">
+        <div className="rounded-b-[32px] bg-brand p-8 text-white">
           <div className="mb-2">Coupon link:</div>
           <div className="text-sm break-all">
             {company
