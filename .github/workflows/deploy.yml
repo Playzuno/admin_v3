@@ -3,7 +3,7 @@ name: Deploy Admin app to Cloudflare Pages
 on:
   push:
     branches:
-      - main       # Production
+      - master       # Production
       - staging    # Staging
 
 jobs:
@@ -27,9 +27,9 @@ jobs:
       - name: Determine Deployment Environment
         id: set-env
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
-            echo "BRANCH_NAME=main" >> $GITHUB_ENV
+            echo "BRANCH_NAME=master" >> $GITHUB_ENV
             echo "VITE_MODE=prod" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
             echo "ENVIRONMENT=staging" >> $GITHUB_ENV
