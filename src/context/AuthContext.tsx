@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     const response = await authApi.signIn({ email, password });
     if (response.status === 200) {
-      console.log(response.data);
       setUser(response.data.user);
       setIsAuthenticated(true);
       const memberships = response.data.user.memberships;
@@ -47,14 +46,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const updateUser = async () => {
     const response = await userApi.get();
     if (response.status === 200) {
-      console.log('response', response.data);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       setUser({ ...response.data.user, imageVersion: 1 });
     }
   };
 
   const updateUserImageVersion = async () => {
-      setImageVersion(prev => prev + 1);
+    setImageVersion(prev => prev + 1);
   };
 
   return (
