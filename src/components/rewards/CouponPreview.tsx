@@ -17,7 +17,7 @@ const CouponPreview: React.FC<CouponPreviewProps> = ({
 }) => {
   return (
     <div className="w-full max-w-md mt-[5%]">
-      <div className="bg-white rounded-[32px] overflow-visible shadow-lg relative border-[1px] border-[#BBBBBB] transition-all duration-200 hover:border-[#2982FE]">
+      <div className="bg-white rounded-[32px] overflow-visible shadow-lg relative border-[1px] border-secondary-100 transition-all duration-200">
         {/* Top notch */}
         <div className="absolute z-[2] bg-white -left-[29px] top-[calc(100%-218px)] w-[42px] h-[34px] rounded-full" />
         <div className="absolute z-[2] bg-white -right-[29px] top-[calc(100%-218px)] w-[42px] h-[34px] rounded-full" />
