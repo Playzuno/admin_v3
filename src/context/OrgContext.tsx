@@ -13,7 +13,6 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     const orgId = localStorage.getItem('orgId');
     if (!orgId) return;
     const response = await branchApi.getAll(orgId);
-    console.log(response.data);
     setBranches(response.data);
     if (response.data && response.data.length > 0) {
       setBranch(response.data[0]);
@@ -21,7 +20,9 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -35,7 +36,13 @@ export const OrgProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <OrgContext.Provider
-      value={{ branch, setBranch, branches, refreshBranches, orgId: orgId || '' }}
+      value={{
+        branch,
+        setBranch,
+        branches,
+        refreshBranches,
+        orgId: orgId || '',
+      }}
     >
       {children}
     </OrgContext.Provider>
