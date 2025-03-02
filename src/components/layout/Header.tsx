@@ -10,6 +10,7 @@ import {
   QrCode,
   Briefcase,
   PaintBucket,
+  ListMinus,
   Store,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -21,7 +22,7 @@ const Header = () => {
     { path: '/products', icon: Package, label: 'Products' },
     { path: '/roles', icon: Briefcase, label: 'Roles' },
     { path: '/team', icon: Users, label: 'Team' },
-    { path: '/end-users', icon: Users, label: 'End users' },
+    { path: '/end-users', icon: ListMinus, label: 'End users' },
     { path: '/transactions', icon: Receipt, label: 'Transactions' },
     { path: '/plans', icon: CreditCard, label: 'Plans' },
     { path: '/brand', icon: PaintBucket, label: 'Brand' },
@@ -62,6 +63,7 @@ const Header = () => {
       transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
       zIndex: 10 - Math.abs(relativePosition),
       display,
+      border: '0.5px solid #E4E4E4',
     };
   };
 
