@@ -78,7 +78,7 @@ const Header = () => {
             <img
               src="/assets/images/logo.svg"
               alt="Zuno Logo"
-              style={{ height: '23px' }}
+              style={{ height: '32px' }}
             />
           </Link>
 
