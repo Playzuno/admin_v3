@@ -11,7 +11,9 @@ type ButtonVariant =
   | 'error'
   | 'zuno-light'
   | 'zuno-dark'
-  | 'zuno-dark-2';
+  | 'zuno-dark-2'
+  | 'zuno-light-outlined'
+  | 'zuno-orange-light';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -60,6 +62,10 @@ const Button: React.FC<ButtonProps> = ({
       'bg-[#400C7A]/25 text-[#400C7A] hover:bg-[#400C7A]/50 focus:ring-[#400C7A]/50 rounded-xl',
     'zuno-dark-2':
       'bg-[#EDEAFD] text-[#400C7A] hover:bg-[#400C7A]/50 focus:ring-[#400C7A]/50 font-semibold',
+    'zuno-light-outlined':
+      'text-[#D1D1D1]  focus:ring-[#400C7A]/50 border-gray-300 border',
+    'zuno-orange-light':
+      'bg-primary-100 rounded-xl text-primary-500 hover:bg-primary-500 hover:text-white focus:ring-primary-500/50',
   };
 
   const sizeStyles: Record<ButtonSize, string> = {
