@@ -257,7 +257,7 @@ const TeamPage: React.FC = () => {
                   onChange={e => setSearchQuery(e.target.value)}
                 />
               </div>
-              <div className="flex items-center space-x-4">
+              {/* <div className="flex items-center space-x-4">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -270,7 +270,7 @@ const TeamPage: React.FC = () => {
                   <span>Filter by role</span>
                   <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
-              </div>
+              </div> */}
               <div className="flex-1"></div>
               <div className="flex items-center space-x-4">
                 {editingMember && (
