@@ -77,13 +77,13 @@ const Dashboard = () => {
       )}
 
       {/* Feedback Section */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+      <div className="grid grid-cols-2 gap-6 p-3">
+        <div className="bg-white p-8 shadow-sm rounded-3xl zuno-border-dark">
           <h2 className="container-title mb-6">Feedback Reports</h2>
           <FeedbackChart />
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="flex flex-col justify-center align-center px-8 bg-white rounded-3xl shadow-sm zuno-border-dark">
           <h2 className="container-title mb-6">Feedback Summary Stats</h2>
           <FeedbackStats />
         </div>

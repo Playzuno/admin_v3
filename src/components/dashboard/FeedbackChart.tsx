@@ -103,7 +103,6 @@ const CustomTooltip = ({ active, payload, chartData }: any) => {
     const data = payload[0].payload;
     const index = chartData.findIndex((item: any) => item.label === data.label);
     const isRightSide = index >= chartData.length / 2;
-
     return (
       <div className="relative">
         <div
@@ -116,11 +115,11 @@ const CustomTooltip = ({ active, payload, chartData }: any) => {
                          : '-left-2 border-r-[8px] border-r-secondary'
                      }`}
         />
-        <div className="bg-secondary text-white px-4 py-3 rounded-lg">
-          <div className="text-sm font-medium">{data.name}</div>
+        <div className="bg-secondary text-white px-4 py-3 rounded-md">
+          <div className="text-xs">{data.label}</div>
           <div className="flex items-center mt-1">
             <Star className="w-4 h-4 text-yellow-300 fill-current" />
-            <span className="ml-1 text-sm">{data.value}/5</span>
+            <span className="ml-1 text-xs">{data.value}/5</span>
           </div>
         </div>
       </div>
@@ -206,22 +205,26 @@ const FeedbackChart = () => {
     <div className="space-y-6">
       <div className="flex space-x-4">
         <Button
-          variant={chartType === 'topRated' ? 'zuno-light' : 'light'}
+          variant={
+            chartType === 'topRated' ? 'zuno-light' : 'zuno-light-outlined'
+          }
           onClick={() => setChartType('topRated')}
           className={`px-4 py-2 rounded-full transition-colors ${
             chartType === 'topRated'
-              ? 'bg-secondary text-white'
+              ? 'bg-secondary-200 text-secondary-600'
               : 'text-gray-500 hover:bg-gray-100'
           }`}
         >
           Top-rated Food Items
         </Button>
         <Button
-          variant={chartType === 'lowestRated' ? 'zuno-light' : 'light'}
+          variant={
+            chartType === 'lowestRated' ? 'zuno-light' : 'zuno-light-outlined'
+          }
           onClick={() => setChartType('lowestRated')}
           className={`px-4 py-2 rounded-full transition-colors ${
             chartType === 'lowestRated'
-              ? 'bg-secondary text-white'
+              ? 'bg-secondary-200 text-secondary-600'
               : 'text-gray-500 hover:bg-gray-100'
           }`}
         >
@@ -230,14 +233,14 @@ const FeedbackChart = () => {
         <div className="relative ml-auto">
           <button
             onClick={() => setShowPeriodDropdown(!showPeriodDropdown)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-50 rounded-lg text-gray-700"
+            className="flex items-center space-x-2 px-4 py-2 bg-gray-50 rounded-full text-gray-700 border-gray-300 border"
           >
             <span className="capitalize">{period}</span>
             <ChevronDown className="w-4 h-4" />
           </button>
 
           {showPeriodDropdown && (
-            <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border py-1 z-10">
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border py-1 z-10 ">
               {(['daily', 'weekly', 'monthly', 'yearly'] as const).map(p => (
                 <button
                   key={p}
@@ -287,17 +290,17 @@ const FeedbackChart = () => {
               axisLine={false}
               tickLine={false}
               tick={{ fill: '#6B7280', fontSize: 12 }}
-              domain={chartType === 'topRated' ? [4.0, 4.8] : [3.0, 3.8]}
+              domain={chartType === 'topRated' ? [0, 5] : [0, 4]}
               ticks={
-                chartType === 'topRated'
-                  ? [4.0, 4.2, 4.4, 4.6, 4.8]
-                  : [3.0, 3.2, 3.4, 3.6, 3.8]
+                chartType === 'topRated' ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 4]
               }
               dx={-10}
             />
             <Tooltip
               content={<CustomTooltip chartData={currentData} />}
               cursor={false}
+              animationEasing="ease"
+              animationDuration={200}
             />
             <Bar dataKey="value" radius={[4, 4, 0, 0]}>
               {currentData.map((entry, index) => (
