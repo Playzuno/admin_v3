@@ -5,7 +5,7 @@ import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
-import { ChevronRightIcon, Plus } from 'lucide-react';
+import { ChevronRightIcon } from 'lucide-react';
 import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
 import { productApi } from '@/api';
@@ -425,21 +425,20 @@ const ProductPage: React.FC = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 absolute top-10 right-10">
-        <div
-          className="flex gap-2 justify-end relative"
-        >
+        <div className="flex gap-2 justify-end relative">
           <Button
-            variant="outline"
+            variant="primary"
             onClick={() => setIsUploadModalOpen(true)}
-            icon={Plus}
-            iconPosition="right"
             size="sm"
             bgColor="brand"
           >
             Add Products
           </Button>
           {isUploadModalOpen && (
-            <div className="absolute top-[60px] right-[25px] w-[410px] z-50" ref={inputRef}>
+            <div
+              className="absolute top-[60px] right-[25px] w-[410px] z-50"
+              ref={inputRef}
+            >
               <ProductParser
                 parseNewProducts={parseNewProducts}
                 setParserBatchId={setParserBatchId}

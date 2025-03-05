@@ -40,7 +40,11 @@ const PlansPage: React.FC = () => {
       <PlainContainer>
         <div className="flex items-center justify-between mb-6">
           <h2 className="container-title">Choose your plan</h2>
-          <Button variant="primary" size="sm" onClick={() => setIsDialogOpen(true)}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setIsDialogOpen(true)}
+          >
             Customize plan
           </Button>
         </div>
@@ -68,10 +72,7 @@ const PlansPage: React.FC = () => {
 
           <div className="grid grid-cols-3 gap-8 mt-12">
             {plans.map(plan => (
-              <PlanFeatures
-                key={plan.id}
-                plan={plan}
-              />
+              <PlanFeatures key={plan.id} plan={plan} />
             ))}
           </div>
         </div>

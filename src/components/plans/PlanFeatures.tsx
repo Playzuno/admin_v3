@@ -11,9 +11,7 @@ interface PlanFeaturesProps {
   plan: Plan;
 }
 
-const PlanFeatures: React.FC<PlanFeaturesProps> = ({
-  plan,
-}) => {
+const PlanFeatures: React.FC<PlanFeaturesProps> = ({ plan }) => {
   const isProfessional = plan.isPopular;
 
   const getSupportLevel = () => {
@@ -25,7 +23,7 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({
       case SupportLevel.TWENTY_FOUR_SEVEN:
         return '24/7 support';
     }
-  }
+  };
 
   const getAnalyticsLevel = () => {
     switch (plan.analyticsLevel) {
@@ -36,7 +34,7 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({
       case AnalyticsLevel.ADVANCED:
         return 'Advanced analytics';
     }
-  }
+  };
 
   const getExportDataLevel = () => {
     switch (plan.exportDataLevel) {
@@ -47,8 +45,8 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({
       case ExportDataLevel.CUSTOM_TEMPLATES_WITH_AI:
         return 'Custom templates with AI';
     }
-  }
-  const getApiRequests  = () => {
+  };
+  const getApiRequests = () => {
     if (!plan.maxAPIRequests) {
       return 'No api requests';
     }
@@ -56,10 +54,10 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({
       return `upto ${plan.maxAPIRequests} API requests/day`;
     }
     return 'API requests with higher rate limit';
-  }
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 border-r-2 border-secondary-500 last:border-r-0">
       <div className="space-y-4 text-center">
         <h3
           className={`text-base font-semibold ${isProfessional ? 'text-secondary' : 'text-secondary'}`}
@@ -78,57 +76,65 @@ const PlanFeatures: React.FC<PlanFeaturesProps> = ({
             feature={`${plan.maxStorage} GB Cloud Storage`}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
-            feature={plan.maxUsers != -1 ? `upto ${plan.maxUsers} team members` : 'Unlimited team members'}
+            feature={
+              plan.maxUsers != -1
+                ? `upto ${plan.maxUsers} team members`
+                : 'Unlimited team members'
+            }
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
-            feature={plan.maxProducts != -1 ? `upto ${plan.maxProducts} products` : 'Unlimited products'}
+            feature={
+              plan.maxProducts != -1
+                ? `upto ${plan.maxProducts} products`
+                : 'Unlimited products'
+            }
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={`${plan.maxQRcodes} QR codes`}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={`${plan.maxFeedbacks} feedbacks`}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={`${plan.maxCoupons} coupons`}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={getSupportLevel()}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={getAnalyticsLevel()}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={getExportDataLevel()}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={getApiRequests()}
             enabled={!!plan.maxAPIRequests}
             isProfessional={isProfessional}
-            />
+          />
           <PlanFeature
             feature={`${plan.maxDiscounts} discounts`}
             enabled={true}
             isProfessional={isProfessional}
-            />
+          />
         </div>
       </div>
     </div>
@@ -151,7 +157,7 @@ const PlanFeature: React.FC<PlanFeatureProps> = ({
       <div
         className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
           isProfessional ? 'bg-secondary' : 'bg-gray-200'
-    }`}
+        }`}
       >
         {enabled ? (
           <Check className="w-4 h-4 text-white" />

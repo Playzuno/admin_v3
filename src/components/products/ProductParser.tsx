@@ -123,7 +123,6 @@ function ProductParser({
       (data: SseMenuParserData | SseMenuInternalResponse) => {
         console.log('sse message', data);
         if (isSseMenuParserData(data)) {
-
           setQueues(prev => {
             const exist = prev.find(q => q.batchId === batchId);
             if (exist) {
@@ -246,7 +245,7 @@ function ProductParser({
     <div className="w-full h-full min-h-0 flex">
       {/* <div className="w-full h-full bg-gradient-to-br from-brand-50 to-white flex"> */}
       {/* <div className="w-full h-full max-h-full flex flex-col p-4"> */}
-      <div className="bg-white overflow-hidden rounded-2xl shadow-lg p-6 flex flex-col flex-1 min-h-0 bg-gradient-to-br from-brand-50 to-white">
+      <div className="bg-white overflow-hidden rounded-2xl shadow-lg p-6 flex flex-col flex-1 min-h-0 bg-gradient-to-b from-primary-100 to-white">
         <div className="absolute right-8 top-8">
           <button onClick={onClose}>
             <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
@@ -262,7 +261,7 @@ function ProductParser({
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-lg p-6 mb-6 transition-colors ${
+            className={`border-2 border-dashed rounded-lg p-6 mb-6 transition-colors bg-white ${
               isDragging ? 'border-brand-600 bg-brand-50' : 'border-gray-300'
             }`}
           >
@@ -391,11 +390,15 @@ function ProductParser({
   );
 }
 
-function isSseMenuParserData(data: SseMenuParserData | SseMenuInternalResponse): data is SseMenuParserData {
+function isSseMenuParserData(
+  data: SseMenuParserData | SseMenuInternalResponse
+): data is SseMenuParserData {
   return (data as SseMenuParserData).batchId !== undefined;
 }
 
-function isSseMenuInternalResponse(data: SseMenuParserData | SseMenuInternalResponse): data is SseMenuInternalResponse {
+function isSseMenuInternalResponse(
+  data: SseMenuParserData | SseMenuInternalResponse
+): data is SseMenuInternalResponse {
   return (data as SseMenuInternalResponse).Response !== undefined;
 }
 

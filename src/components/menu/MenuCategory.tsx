@@ -36,11 +36,11 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
     onUpdateItem?.(item.id, item.originalCategory, name);
   };
   return (
-    <div className="bg-[#F6F6F6] rounded-lg p-6 w-[330px]">
+    <div className="bg-primary-50 rounded-2xl p-6 w-[330px]">
       <div className="flex justify-between items-center">
         <h2 className="title-2">{title}</h2>
         <Button
-          variant="zuno-dark"
+          variant="zuno-orange-light"
           onClick={onEdit}
           style={{ padding: '8px 16px' }}
         >
@@ -49,7 +49,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         </Button>
       </div>
 
-      <div className="border-b border-[#400C7A]/50 h-2 mb-6"></div>
+      <div className="border-b border-primary-500 h-2 mb-6"></div>
 
       <div className="space-y-4">
         {items.map((item, index) => (
