@@ -1,27 +1,30 @@
 import React from 'react';
-import { CheckIcon, Search, XIcon } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { BranchDashboardStats } from '../../types';
 import UserList from './UserList';
 import { useState } from 'react';
 import Button from '../ui/Button';
 import PlainContainer from '../containers/PlainContainer';
 import { InviteFormData } from '@/types';
+import Toggle from '../ui/Toggle';
 interface BranchListProps {
   branches: BranchDashboardStats[];
   selectedBranch?: BranchDashboardStats;
-  onBranchSelect: (branch: BranchDashboardStats) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onInvite: (formData: InviteFormData) => void;
+  onToggleBranch: (branch: BranchDashboardStats) => void;
+  handleUnselectAll: () => void;
 }
 
 const BranchList: React.FC<BranchListProps> = ({
   branches,
   selectedBranch,
-  onBranchSelect,
   searchQuery,
   onSearchChange,
   onInvite,
+  onToggleBranch,
+  handleUnselectAll,
 }) => {
   const [showInviteForm, setShowInviteForm] = useState(false);
   const toggleShowInvite = () => {
@@ -47,7 +50,9 @@ const BranchList: React.FC<BranchListProps> = ({
             Invite Team Members
           </Button>
         </div>
-
+        <Button variant="light" size="sm" onClick={handleUnselectAll}>
+          Unselect All branches
+        </Button>
         <div className=" p-2">
           <div className="grid grid-cols-4 px-6 py-3">
             <div className="text-xs font-medium">Branch</div>
@@ -62,7 +67,7 @@ const BranchList: React.FC<BranchListProps> = ({
               className={`w-full grid grid-cols-4 px-6 py-4 items-center text-left hover:bg-gray-50 transition-colors ${
                 selectedBranch?.id === branch.id ? 'bg-purple-50' : ''
               }`}
-              onClick={() => onBranchSelect(branch)}
+              onClick={() => onToggleBranch(branch)}
             >
               <div className="flex items-center space-x-3">
                 <div
@@ -84,7 +89,10 @@ const BranchList: React.FC<BranchListProps> = ({
                 </div>
                 <div className="ml-4">
                   <div className="text-xs">{branch.branchName}</div>
-                  <div className="text-3xs text-gray-400 truncate max-w-[100px]" title={branch.branchId}>
+                  <div
+                    className="text-3xs text-gray-400 truncate max-w-[100px]"
+                    title={branch.branchId}
+                  >
                     Branch ID: {branch.branchId}
                   </div>
                 </div>
@@ -94,15 +102,10 @@ const BranchList: React.FC<BranchListProps> = ({
                 {branch.totalFeedbacks}
               </div>
               <div className="flex items-center gap-2 pl-6">
-                {branch.isActive ? (
-                  <div className="w-5 h-5 rounded-full bg-[#FF6E01] flex items-center justify-center">
-                    <CheckIcon className="w-3 h-3 text-white" />
-                  </div>
-                ) : (
-                  <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
-                    <XIcon className="w-3 h-3 text-gray-400" />
-                  </div>
-                )}
+                <Toggle
+                  enabled={branch.isDisplayed}
+                  onChange={() => onToggleBranch(branch)}
+                />
               </div>
             </button>
           ))}

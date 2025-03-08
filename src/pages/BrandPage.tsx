@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InviteFormData } from '../types/brand';
 import BranchCard from '../components/brand/BranchCard';
 import BranchList from '../components/brand/BranchList';
-import InviteModal from '../components/brand/InviteModal';
 import NewBranchDialog from '../components/brand/NewBranchDialog';
 import Button from '../components/ui/Button';
 import { branchApi, inviteApi, organizationApi } from '@/api';
 import { useOrg } from '@/context/OrgContext';
-import { Branch, BranchDashboardStats, Organization } from '@/types';
+import { BranchDashboardStats, Organization } from '@/types';
 import { ErrorToast } from '@/components/ui/toast';
 import { SuccessToast } from '@/components/ui/toast';
 const BrandPage: React.FC = () => {
   const navigate = useNavigate();
   const [showNewBranchDialog, setShowNewBranchDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState<BranchDashboardStats | undefined>();
+  const [selectedBranch, setSelectedBranch] = useState<
+    BranchDashboardStats | undefined
+  >();
   const [formData, setFormData] = useState<InviteFormData>({
     username: '',
     email: '',
@@ -24,7 +25,7 @@ const BrandPage: React.FC = () => {
     role: '',
   });
 
-  const {orgId} = useOrg();
+  const { orgId } = useOrg();
   const [branches, setBranches] = useState<BranchDashboardStats[]>([]);
   const [org, setOrg] = useState<Organization>();
   useEffect(() => {
@@ -38,20 +39,62 @@ const BrandPage: React.FC = () => {
     });
   };
 
-  const fetchBranchStats  = () => {
+  const fetchBranchStats = () => {
     organizationApi.getBranchDashboard(orgId).then(res => {
       if (!res.data || !res.data.branches) {
-      return;
-    }
-    res.data.branches.map(branch => {
-      branch.initial = branch.branchName.charAt(0);
+        return;
+      }
+      res.data.branches.map((branch, i) => {
+        branch.initial = branch.branchName.charAt(0);
+        if (i < 5) {
+          branch.isDisplayed = true;
+        } else {
+          branch.isDisplayed = false;
+        }
+      });
+      setBranches(res.data.branches);
+      if (res.data.branches.length > 0) {
+        setSelectedBranch(res.data.branches[0]);
+      }
     });
-    setBranches(res.data.branches);
-    if (res.data.branches.length > 0) {
-      setSelectedBranch(res.data.branches[0]);
-    }
-  });
-}
+  };
+
+  const onToggleBranch = (branch: BranchDashboardStats) => {
+    setBranches(prev => {
+      // If turning off, just toggle the branch
+      if (branch.isDisplayed) {
+        return prev.map(p => ({
+          ...p,
+          isDisplayed: p.branchId === branch.branchId ? false : p.isDisplayed,
+        }));
+      }
+
+      // If turning on and already 5 displayed, turn off the first displayed one
+      const displayedCount = prev.filter(b => b.isDisplayed).length;
+      if (displayedCount >= 5) {
+        const firstDisplayedBranch = prev.find(b => b.isDisplayed);
+        return prev.map(p => ({
+          ...p,
+          isDisplayed: (() => {
+            if (p.branchId === branch.branchId) return true;
+            if (p.branchId === firstDisplayedBranch?.branchId) return false;
+            return p.isDisplayed;
+          })(),
+        }));
+      }
+
+      // Otherwise just toggle on the selected branch
+      return prev.map(p => ({
+        ...p,
+        isDisplayed: p.branchId === branch.branchId ? true : p.isDisplayed,
+      }));
+    });
+  };
+
+  const handleUnselectAll = () => {
+    setBranches(prev => prev.map(p => ({ ...p, isDisplayed: false })));
+  };
+
   // const branches: Branch[] = [
   //   {
   //     id: '1',
@@ -114,17 +157,20 @@ const BrandPage: React.FC = () => {
     address: string;
   }) => {
     // Handle adding new branch
-    branchApi.create(orgId, {
-      name: branchData.name,
-      phone: [branchData.contact],
-      address: branchData.address,
-    }).then(res => {
-      SuccessToast('Branch created successfully');
-      setShowNewBranchDialog(false);
-      fetchBranchStats();
-    }).catch(err => {
-      ErrorToast('Failed to create branch');
-    });
+    branchApi
+      .create(orgId, {
+        name: branchData.name,
+        phone: [branchData.contact],
+        address: branchData.address,
+      })
+      .then(res => {
+        SuccessToast('Branch created successfully');
+        setShowNewBranchDialog(false);
+        fetchBranchStats();
+      })
+      .catch(err => {
+        ErrorToast('Failed to create branch');
+      });
   };
 
   const handleEditProfile = () => {
@@ -132,17 +178,20 @@ const BrandPage: React.FC = () => {
   };
   const handleInvite = (formData: InviteFormData) => {
     // console.log('invite', formData);
-    inviteApi.inviteUser(orgId, formData.branch, {
-      email: formData.email,
-      role: formData.role,
-      username: formData.username,
-      branchId: formData.branch,
-      mobile: formData.contact,
-    }).then(res => {
-      console.log('res', res);
-    }).catch(err => {
-      console.log('err', err);
-    });
+    inviteApi
+      .inviteUser(orgId, formData.branch, {
+        email: formData.email,
+        role: formData.role,
+        username: formData.username,
+        branchId: formData.branch,
+        mobile: formData.contact,
+      })
+      .then(res => {
+        console.log('res', res);
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
   };
 
   return (
@@ -151,9 +200,7 @@ const BrandPage: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <h1 className="text-sm">Company Name: </h1>
-          <span className="text-sm font-medium text-brand">
-            {org?.name}            
-          </span>
+          <span className="text-sm font-medium text-brand">{org?.name}</span>
           <button
             onClick={handleEditProfile}
             className="text-gray-400 hover:text-gray-600"
@@ -185,23 +232,27 @@ const BrandPage: React.FC = () => {
 
       {/* Branch Cards */}
       <div className="grid grid-cols-5 gap-4">
-        {branches.map(branch => (
-          <BranchCard
-            key={branch.id}
-            branch={branch}
-            isSelected={selectedBranch?.id === branch.id}
-          />
-        ))}
+        {branches.map(
+          branch =>
+            branch.isDisplayed && (
+              <BranchCard
+                key={branch.id}
+                branch={branch}
+                isSelected={selectedBranch?.id === branch.id}
+              />
+            )
+        )}
       </div>
 
       {/* Branch List */}
       <BranchList
         branches={branches}
         selectedBranch={selectedBranch}
-        onBranchSelect={setSelectedBranch}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onInvite={handleInvite}
+        onToggleBranch={onToggleBranch}
+        handleUnselectAll={handleUnselectAll}
       />
 
       {/* Invite Modal */}
