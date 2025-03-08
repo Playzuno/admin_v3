@@ -197,6 +197,7 @@ export interface BranchDashboardStats {
   totalUsers: number;
   totalProducts: number;
   totalFeedbacks: number;
+  isDisplayed: boolean;
 }
 
 export interface EndUserStats {
