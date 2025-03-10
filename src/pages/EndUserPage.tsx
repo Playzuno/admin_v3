@@ -15,6 +15,8 @@ export default function EndUserPage() {
     value: 'date',
   });
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const sortOptions: SortOption[] = [
     { label: 'Date', value: 'date' },
     { label: 'Name', value: 'name' },
@@ -42,6 +44,7 @@ export default function EndUserPage() {
           endUserObj.endUser.name.toLowerCase().includes(query) ||
           endUserObj.endUser.id.toLowerCase().includes(query)
       );
+      setCurrentPage(1); // Reset to first page when searching
     }
 
     // Apply sorting
@@ -74,8 +77,18 @@ export default function EndUserPage() {
     return result;
   }, [searchQuery, selectedSort, sortOrder, endUsers]);
 
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredAndSortedEndUsers.slice(
+      startIndex,
+      startIndex + itemsPerPage
+    );
+  }, [filteredAndSortedEndUsers, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredAndSortedEndUsers.length / itemsPerPage);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-6">
       <div className="flex justify-between items-center">
         <h1 className="title-2">End Users</h1>
         <div className="flex space-x-4">
@@ -125,7 +138,7 @@ export default function EndUserPage() {
             </tr>
           </thead>
           <tbody className="divide-y">
-            {filteredAndSortedEndUsers.map(({ endUser, totalUniqueBrands }) => {
+            {paginatedUsers.map(({ endUser, totalUniqueBrands }) => {
               const [createdAt, createdAtTime] = formatDateTime(
                 endUser.createdAt
               );
@@ -180,6 +193,43 @@ export default function EndUserPage() {
             })}
           </tbody>
         </table>
+
+        <div className="flex items-center justify-between mt-4 px-6">
+          <select
+            className="border rounded-md px-2 py-1"
+            value={itemsPerPage}
+            onChange={e => {
+              setItemsPerPage(Number(e.target.value));
+              setCurrentPage(1); // Reset to first page when changing items per page
+            }}
+          >
+            <option value={5}>5 per page</option>
+            <option value={10}>10 per page</option>
+            <option value={15}>15 per page</option>
+          </select>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <span className="text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </PlainContainer>
     </div>
   );
