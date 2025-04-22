@@ -11,7 +11,7 @@ import { Product } from '@/types';
 import { productApi } from '@/api';
 import Button from '@/components/ui/Button';
 import ProductParser from '@/components/products/ProductParser';
-
+import { objectDetectionApi } from '@/api';
 interface Category {
   id: string;
   name: string;
@@ -123,10 +123,14 @@ const ProductPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>(
     JSON.parse(JSON.stringify(originalCategories))
   );
-  // console.log('categories', categories);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [sessionUrl, setSessionUrl] = useState('');
+
   const [editingCategory, setEditingCategory] = useState<{
     id: string;
     name: string;
@@ -145,6 +149,14 @@ const ProductPage: React.FC = () => {
         )
     );
   }, [categories, originalCategories, products]);
+
+  const startSession = async () => {
+    const resp = await objectDetectionApi.startSession(branch?.id || '');
+    console.log('resp', resp);
+    if (resp.status === 200) {
+      setSessionUrl(resp.data.url);
+    }
+  };
 
   const handleDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -428,6 +440,14 @@ const ProductPage: React.FC = () => {
         <div className="flex gap-2 justify-end relative">
           <Button
             variant="primary"
+            onClick={() => setIsScanModalOpen(true)}
+            size="sm"
+            bgColor="purple-100"
+          >
+            Scan Products
+          </Button>
+          <Button
+            variant="primary"
             onClick={() => setIsUploadModalOpen(true)}
             size="sm"
             bgColor="brand"
@@ -444,6 +464,67 @@ const ProductPage: React.FC = () => {
                 setParserBatchId={setParserBatchId}
                 onClose={() => setIsUploadModalOpen(false)}
               />
+            </div>
+          )}
+          {isScanModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+              <div className="bg-gradient-to-b to-white from-secondary-50 border-secondary-500 border rounded-xl p-12 w-[500px] relative shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+                <button
+                  onClick={() => {
+                    setIsScanModalOpen(false);
+                    setPhoneNumber('');
+                  }}
+                  className="absolute -top-3 -right-3 bg-orange-500 rounded-full w-8 h-8 flex items-center justify-center text-white hover:bg-orange-600"
+                >
+                  <span className="sr-only">Close</span>✕
+                </button>
+                <div className="text-center">
+                  <h2 className="text-lg font-semibold mb-2">
+                    Upload your Product
+                  </h2>
+                  <p
+                    style={{ fontSize: '12px' }}
+                    className="text-gray-600 mb-6"
+                  >
+                    Get your product 3D scanned and train your model
+                  </p>
+                  <div className="bg-gray-50 rounded-full flex items-center p-1 border border-secondary-500">
+                    <div className="px-4 text-gray-600  border-r">+91</div>
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={e => setPhoneNumber(e.target.value)}
+                      className="flex-1 bg-transparent px-3 py-2 focus:outline-none"
+                      placeholder="Enter phone number"
+                      maxLength={10}
+                      pattern="[0-9]*"
+                      inputMode="numeric"
+                    />
+                    <button
+                      onClick={() => {
+                        startSession();
+                        setIsScanModalOpen(false);
+                      }}
+                      style={{ fontSize: '12px' }}
+                      className="text-orange-500 px-4 hover:text-orange-600 underline"
+                    >
+                      Send Link
+                    </button>
+                  </div>
+                  {sessionUrl && (
+                    <div className="mt-4">
+                      <a
+                        href={sessionUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 px-4 hover:text-orange-600 underline"
+                      >
+                        Open Session
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
