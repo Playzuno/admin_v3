@@ -177,7 +177,11 @@ export const organizationApi = {
   },
   getBranchDashboard: async (
     orgId: string
-  ): Promise<{ data: { branches: BranchDashboardStats[] }; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: { branches: BranchDashboardStats[] };
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
       const token = getBearerToken();
       if (!token) {
@@ -249,7 +253,11 @@ export const userApi = {
       throw handleRequestError(error);
     }
   },
-  getOrganization: async (): Promise<{ data: Organization; status: number; headers?: Headers }> => {
+  getOrganization: async (): Promise<{
+    data: Organization;
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
       const token = getBearerToken();
       if (!token) {
@@ -263,7 +271,13 @@ export const userApi = {
       throw handleRequestError(error);
     }
   },
-  forceUpdatePassword: async ({password, confirmPassword}: {password: string, confirmPassword: string}): Promise<{ data: any; status: number; headers?: Headers }> => {
+  forceUpdatePassword: async ({
+    password,
+    confirmPassword,
+  }: {
+    password: string;
+    confirmPassword: string;
+  }): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
       const response = await api.post('/users/me/forceUpdatePassword', {
         password,
@@ -274,7 +288,11 @@ export const userApi = {
       throw handleRequestError(error);
     }
   },
-  forgotPassword: async ({email}: {email: string}): Promise<{ data: any; status: number; headers?: Headers }> => {
+  forgotPassword: async ({
+    email,
+  }: {
+    email: string;
+  }): Promise<{ data: any; status: number; headers?: Headers }> => {
     const response = await api.post('/resetpassword', { email });
     return response;
   },
@@ -452,9 +470,13 @@ export const branchApi = {
       if (!token) {
         throw new ApiError('Unauthorized', 'UNAUTHORIZED');
       }
-      const response = await api.post(`/organizations/${orgId}/branches`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.post(
+        `/organizations/${orgId}/branches`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response;
     } catch (error) {
       throw handleRequestError(error);
@@ -505,7 +527,11 @@ export const memberApi = {
   getAll: async (
     orgId: string,
     branchId: string
-  ): Promise<{ data: BranchMemberResponse[]; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: BranchMemberResponse[];
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
       const response = await api.get<BranchMemberResponse[]>(
         `/organizations/${orgId}/branches/${branchId}/members`
@@ -1276,7 +1302,11 @@ export const analyticsApi = {
 export const assetsApi = {
   getUserUploadUrl: async (
     userId: string
-  ): Promise<{ data: { presignedURL: string }; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: { presignedURL: string };
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
       const response = await api.get<{ presignedURL: string }>(
         `/assets/users/${userId}/upload/profile`
@@ -1288,7 +1318,11 @@ export const assetsApi = {
   },
   getOrganizationLogoPresignedUrl: async (
     orgId: string
-  ): Promise<{ data: { presignedURL: string }; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: { presignedURL: string };
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
       const response = await api.get<{ presignedURL: string }>(
         `/assets/organizations/${orgId}/logo`
@@ -1300,11 +1334,32 @@ export const assetsApi = {
   },
   refreshOrganizationLogo: async (
     orgId: string
-  ): Promise<{ data: {presignedURL: string}; status: number; headers?: Headers }> => {
+  ): Promise<{
+    data: { presignedURL: string };
+    status: number;
+    headers?: Headers;
+  }> => {
     try {
-      const response = await api.post<{presignedURL: string}>(
+      const response = await api.post<{ presignedURL: string }>(
         `/assets/organizations/${orgId}/logo/refresh`
       );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+};
+
+export const objectDetectionApi = {
+  startSession: async (
+    branchId: string
+  ): Promise<{
+    data: any;
+    status: number;
+    headers?: Headers;
+  }> => {
+    try {
+      const response = await api.get(`/od/branches/${branchId}/sessions/start`);
       return response;
     } catch (error) {
       throw handleRequestError(error);
