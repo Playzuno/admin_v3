@@ -62,7 +62,6 @@ const ProductPage: React.FC = () => {
     const resp = await productApi.getAll(branch.id);
     if (resp.status === 200) {
       setProducts(resp.data);
-      // console.log('resp products', products);
     }
   };
   useEffect(() => {
@@ -70,7 +69,6 @@ const ProductPage: React.FC = () => {
   }, [branch]);
 
   useEffect(() => {
-    // console.log('products', products);
     setOriginalCategories(orgCategories => {
       const newCategories = orgCategories.map(v => {
         return {
@@ -93,7 +91,6 @@ const ProductPage: React.FC = () => {
       });
       return newCategories;
     });
-    // console.log(originalCategories);
   }, [products]);
 
   const onUpdateItem = (
@@ -152,7 +149,6 @@ const ProductPage: React.FC = () => {
 
   const startSession = async () => {
     const resp = await objectDetectionApi.startSession(branch?.id || '');
-    console.log('resp', resp);
     if (resp.status === 200) {
       setSessionUrl(resp.data.url);
     }
@@ -307,7 +303,6 @@ const ProductPage: React.FC = () => {
           }
         });
       });
-      // console.log(changes);
       await saveChanges(changes);
 
       // Update original state after successful save
@@ -330,7 +325,6 @@ const ProductPage: React.FC = () => {
   };
 
   const saveChanges = async (changes: any) => {
-    console.log('changes', changes);
     if (!branch?.id) {
       toast.error('Branch not found');
       return;
@@ -503,7 +497,6 @@ const ProductPage: React.FC = () => {
                     <button
                       onClick={() => {
                         startSession();
-                        setIsScanModalOpen(false);
                       }}
                       style={{ fontSize: '12px' }}
                       className="text-orange-500 px-4 hover:text-orange-600 underline"
