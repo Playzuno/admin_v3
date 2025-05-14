@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { MoreHorizontal, Edit2, Trash2, RotateCcw } from 'lucide-react';
+import { Edit2, MoreVertical } from 'lucide-react';
 import Button from '../ui/Button';
+// import Scan from '/assets/icons/svg/scan.svg';
+// import Check from '/assets/icons/svg/check.svg';
+import { useNavigate } from 'react-router-dom';
 
 export interface MenuItem {
   id: string;
@@ -22,6 +25,7 @@ interface MenuCategoryProps {
     originalCategory: string,
     name: string
   ) => void;
+  isModalOpen?: boolean;
 }
 
 const MenuCategory: React.FC<MenuCategoryProps> = ({
@@ -31,10 +35,74 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
   onEdit,
   onDeleteItem,
   onUpdateItem,
+  isModalOpen = false,
 }) => {
   const updateItem = (item: MenuItem, name: string) => {
     onUpdateItem?.(item.id, item.originalCategory, name);
   };
+
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setOpenMenuId(null);
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        openMenuId &&
+        menuRefs.current[openMenuId] &&
+        !menuRefs.current[openMenuId]?.contains(event.target as Node)
+      ) {
+        setOpenMenuId(null);
+      }
+    }
+    if (openMenuId) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuId]);
+  const onMenuActionClick = (
+    action: string,
+    itemId: string,
+    branchId: string
+  ) => {
+    switch (action) {
+      case 'edit':
+        document.getElementById(`input-${itemId}`)?.focus();
+        setOpenMenuId(null);
+        break;
+      case 'delete':
+        onDeleteItem?.(itemId);
+        setOpenMenuId(null);
+        break;
+      case 'frames':
+        console.log('frames', itemId, branchId);
+        setOpenMenuId(null);
+        break;
+      case 'train-model':
+        navigate(`/train/${branchId}/${itemId}`);
+        break;
+      case 'marketing':
+        console.log('marketing', itemId);
+        setOpenMenuId(null);
+        break;
+      case 'view-gallery':
+        console.log('view-gallery', itemId);
+        setOpenMenuId(null);
+        break;
+      default:
+        setOpenMenuId(null);
+    }
+  };
+
   return (
     <div className="bg-primary-50 rounded-2xl p-6 w-[330px]">
       <div className="flex justify-between items-center">
@@ -73,12 +141,83 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                 }}
               >
                 <div
-                  className="flex items-center space-x-3"
+                  className="flex items-center space-x-3 relative"
                   onClick={() =>
                     document.getElementById(`input-${item.id}`)?.focus()
                   }
                 >
-                  <MoreHorizontal className="w-4 h-4 text-gray-400 cursor-grab" />
+                  <MoreVertical
+                    className="w-4 h-4 text-gray-400 cursor-pointer"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === item.id ? null : item.id);
+                    }}
+                  />
+                  {openMenuId === item.id && (
+                    <div
+                      ref={el => (menuRefs.current[item.id] = el)}
+                      className="dropdown-menu absolute right-0 top-8 mt-2 w-48 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                    >
+                      <div className="py-1 flex flex-col gap-2">
+                        <button
+                          onClick={() =>
+                            onMenuActionClick('frames', item.id, item.branchId!)
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Frames
+                        </button>
+                        <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'train-model',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Train model
+                        </button>
+                        <button
+                          onClick={() => onMenuActionClick('edit', item.id)}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => onMenuActionClick('delete', item.id)}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'marketing',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Marketing
+                        </button>
+                        <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'view-gallery',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          View Gallery
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   <span
                     className={`text-gray-700 ${item.isDeleted ? 'line-through' : ''}`}
                   >
@@ -92,7 +231,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                     />
                   </span>
                 </div>
-                <button
+                {/* <button
                   className={`${
                     item.isDeleted
                       ? 'text-green-500 hover:text-green-600'
@@ -105,7 +244,11 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   ) : (
                     <Trash2 className="w-4 h-4" />
                   )}
-                </button>
+                </button> */}
+                <div>
+                  <img src="/assets/icons/svg/scan.svg" alt="scan" />
+                  {/* <img src="/assets/icons/svg/tick.svg" alt="check" /> */}
+                </div>
               </div>
             )}
           </Draggable>

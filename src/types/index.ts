@@ -91,6 +91,7 @@ export interface Product {
   categoryId: number;
   branchId: string;
   originalCategory: string;
+  videoURL?: string;
 }
 
 export interface OcrProcessingResponse {
@@ -329,4 +330,18 @@ export interface Organization {
   tin: string;
   created_at: string;
   updated_at: string;
+}
+export interface Dot {
+  red: { x: number; y: number }[];
+  green: { x: number; y: number }[];
+}
+export interface Frame {
+  id: string;
+  productId: string;
+  frameName: string;
+  frameURL: string;
+  dirty: boolean;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
 }

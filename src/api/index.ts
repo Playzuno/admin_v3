@@ -1,14 +1,12 @@
 import {
   Branch,
   BranchDashboardStats,
-  BranchMember,
   BranchMemberResponse,
   BranchStats,
   Coupon,
   EndUserStats,
   FeedbackReport,
   FeedbackSummaryResponse,
-  LoggedInUser,
   LoginResponse,
   OcrProcessingResponse,
   Organization,
@@ -192,6 +190,24 @@ export const organizationApi = {
         {
           headers: { Authorization: `Bearer ${token}` },
         }
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  getActiveJobs: async (
+    branchId: string,
+    filters: {
+      jobType?: string;
+      entityId?: string;
+      entityType?: string;
+    }
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.post<any>(
+        `/branches/${branchId}/jobs/active`,
+        filters
       );
       return response;
     } catch (error) {
@@ -669,6 +685,19 @@ export const productApi = {
       throw handleRequestError(error);
     }
   },
+  getById: async (
+    branchId: string,
+    productId: string
+  ): Promise<{ data: Product; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get<Product>(
+        `/branches/${branchId}/products/${productId}`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
   create: async (
     branchId: string,
     data: any
@@ -893,6 +922,66 @@ export const productApi = {
     } catch (error) {
       throw handleRequestError(error);
     }
+  },
+  getProductFrames: async (
+    branchId: string,
+    productId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get(
+        `/od/branches/${branchId}/products/${productId}/frames`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  extractFrames: async (
+    branchId: string,
+    productId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get(
+        `/od/branches/${branchId}/products/${productId}/video/extractFrames`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  uploadAnnotatedImage: async (
+    branchId: string,
+    productId: string,
+    data: any
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post(
+      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
+      data
+    );
+
+    return response;
+  },
+  deleteFrames: async (
+    branchId: string,
+    productId: string,
+    frameIds: string[]
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.delete(
+      `/od/branches/${branchId}/products/${productId}/frames`,
+      { body: JSON.stringify({ frames: frameIds }) }
+    );
+    return response;
+  },
+  saveAnnotation: async (
+    branchId: string,
+    productId: string,
+    annotationData: any
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post(
+      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
+      { body: JSON.stringify(annotationData) }
+    );
+    return response;
   },
 };
 
