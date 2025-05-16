@@ -5,7 +5,7 @@ import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
-import { ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon, Copy, ExternalLink } from 'lucide-react';
 import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
 import { productApi } from '@/api';
@@ -505,15 +505,25 @@ const ProductPage: React.FC = () => {
                     </button>
                   </div>
                   {sessionUrl && (
-                    <div className="mt-4">
+                    <div className="mt-4 flex items-center justify-center gap-2">
                       <a
                         href={sessionUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-orange-500 px-4 hover:text-orange-600 underline"
+                        className="text-orange-500 px-4 hover:text-orange-600 underline flex items-center gap-1"
                       >
                         Open Session
+                        <ExternalLink className="w-4 h-4" />
                       </a>
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(sessionUrl);
+                          toast.success('Session link copied to clipboard');
+                        }}
+                      >
+                        <Copy className="w-5 h-5" strokeWidth={2} />
+                      </span>
                     </div>
                   )}
                 </div>

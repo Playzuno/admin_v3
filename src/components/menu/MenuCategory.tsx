@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { Edit2, MoreVertical } from 'lucide-react';
+import { Edit2, MoreVertical, CheckCircle } from 'lucide-react';
 import Button from '../ui/Button';
-// import Scan from '/assets/icons/svg/scan.svg';
-// import Check from '/assets/icons/svg/check.svg';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export interface MenuItem {
   id: string;
@@ -12,6 +11,7 @@ export interface MenuItem {
   isDeleted?: boolean;
   originalCategory: string;
   branchId?: string;
+  videoURL?: string;
 }
 
 interface MenuCategoryProps {
@@ -180,13 +180,25 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                           Train model
                         </button>
                         <button
-                          onClick={() => onMenuActionClick('edit', item.id)}
+                          onClick={() =>
+                            onMenuActionClick(
+                              'edit',
+                              item.id,
+                              item.branchId || ''
+                            )
+                          }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => onMenuActionClick('delete', item.id)}
+                          onClick={() =>
+                            onMenuActionClick(
+                              'delete',
+                              item.id,
+                              item.branchId || ''
+                            )
+                          }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
                           Delete
@@ -246,8 +258,20 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   )}
                 </button> */}
                 <div>
-                  <img src="/assets/icons/svg/scan.svg" alt="scan" />
-                  {/* <img src="/assets/icons/svg/tick.svg" alt="check" /> */}
+                  {item.videoURL ? (
+                    <CheckCircle
+                      className="w-6 h-6 text-green-500 cursor-pointer"
+                      strokeWidth={1}
+                      onClick={() => {
+                        if (item.videoURL) {
+                          navigator.clipboard.writeText(item.videoURL);
+                          toast.success('URL copied to clipboard');
+                        }
+                      }}
+                    />
+                  ) : (
+                    <img src="/assets/icons/svg/scan.svg" alt="scan" />
+                  )}
                 </div>
               </div>
             )}
