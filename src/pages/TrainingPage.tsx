@@ -66,11 +66,11 @@ const TrainingPage = () => {
     }
   };
 
-  const getCurrentJobs = async (branchId: string) => {
+  const getCurrentJobs = async (branchId: string, jobType: string) => {
     try {
       setLoading(true);
       const { data, status } = await organizationApi.getActiveJobs(branchId, {
-        jobType: 'extract_frames',
+        jobType,
         entityId: productId,
         entityType: 'product',
       });
@@ -103,7 +103,6 @@ const TrainingPage = () => {
       productId,
       frames
     );
-    console.log('da', data);
     if (status === 200) {
       fetchTrainingImages(branchId, productId);
     }
@@ -118,7 +117,7 @@ const TrainingPage = () => {
       alert(
         'The frames are currently extracted from the provided video please wait pateintly'
       );
-      getCurrentJobs(branchId);
+      getCurrentJobs(branchId, 'extract_frames');
     }
   };
 
@@ -137,22 +136,15 @@ const TrainingPage = () => {
       positive_points: dots.green,
       negative_points: dots.red,
     };
-    console.log('annotationData', annotationData);
     const response = await productApi.saveAnnotation(
       branchId,
       productId,
       annotationData
     );
-    console.log('response', response);
+    if (response.status === 200) {
+      getCurrentJobs(branchId, 'sam2_process_frames');
+    }
   };
-
-  const currentStatusOfProduct = useMemo(() => {
-    return currentJobs.status;
-  }, [currentJobs]);
-
-  useEffect(() => {
-    console.log('dots', dots);
-  }, [dots]);
 
   if (!branchId || !productId) {
     return navigate('/products');
@@ -380,7 +372,7 @@ const TrainingPage = () => {
                         <ExtractFrames
                           product={product}
                           branchId={branchId}
-                          currentStatusOfProduct={currentStatusOfProduct}
+                          currentJob={currentJobs}
                           extractFrames={extractFrames}
                         />
                       )}
@@ -427,18 +419,31 @@ const TrainingPage = () => {
 
 const ExtractFrames = ({
   product,
-  currentStatusOfProduct,
   extractFrames,
+  currentJob,
 }: {
   product: Product;
   branchId: string;
-  currentStatusOfProduct: 'success' | 'pending';
   extractFrames: () => Promise<void>;
+  currentJob: any;
 }) => {
-  if (currentStatusOfProduct === 'pending') {
+  if (
+    currentJob.status === 'pending' &&
+    currentJob.jobType === 'extract_frames'
+  ) {
     return (
       <div>
-        Your frames are being process This might take some time. kindly wait
+        Your frames are being process This might take a while. kindly wait
+      </div>
+    );
+  }
+  if (
+    currentJob.status === 'pending' &&
+    currentJob.jobType === 'sam2_process_frames'
+  ) {
+    return (
+      <div>
+        Your model is being trained. This might take a while. kindly wait
       </div>
     );
   }
