@@ -18,7 +18,7 @@ import NotFound from '../pages/NotFound';
 import PrivateRoute from '../components/auth/PrivateRoute';
 import EndUserPage from '../pages/EndUserPage';
 import BrandListPage from '@/pages/BrandListPage';
-import TrainingPage from '@/pages/TrainingPage';
+import ProductFramesPage from '@/pages/ProductFramesPage';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -61,10 +61,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'train/:branchId/:productId',
+        path: 'frames/:branchId/:productId',
         element: (
-          <PrivateRoute title="Training">
-            <TrainingPage />
+          <PrivateRoute title="Frames">
+            <ProductFramesPage />
           </PrivateRoute>
         ),
       },

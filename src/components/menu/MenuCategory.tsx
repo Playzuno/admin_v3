@@ -84,11 +84,11 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         setOpenMenuId(null);
         break;
       case 'frames':
-        console.log('frames', itemId, branchId);
+        navigate(`/frames/${branchId}/${itemId}`);
         setOpenMenuId(null);
         break;
       case 'train-model':
-        navigate(`/train/${branchId}/${itemId}`);
+        // navigate(`/train/${branchId}/${itemId}`);
         break;
       case 'marketing':
         console.log('marketing', itemId);

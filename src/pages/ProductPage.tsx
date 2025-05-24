@@ -428,6 +428,15 @@ const ProductPage: React.FC = () => {
     });
   };
 
+  const trainModel = async () => {
+    if (!branch) return;
+    const resp = await objectDetectionApi.trainModel(branch.id, {
+      branchId: branch?.id || '',
+    });
+
+    console.log('train', train);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 absolute top-10 right-10">
@@ -439,6 +448,14 @@ const ProductPage: React.FC = () => {
             bgColor="purple-100"
           >
             Scan Products
+          </Button>
+          <Button
+            variant="primary"
+            onClick={trainModel}
+            size="sm"
+            bgColor="purple-100"
+          >
+            Train models
           </Button>
           <Button
             variant="primary"

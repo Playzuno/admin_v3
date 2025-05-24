@@ -923,66 +923,6 @@ export const productApi = {
       throw handleRequestError(error);
     }
   },
-  getProductFrames: async (
-    branchId: string,
-    productId: string
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
-    try {
-      const response = await api.get(
-        `/od/branches/${branchId}/products/${productId}/frames`
-      );
-      return response;
-    } catch (error) {
-      throw handleRequestError(error);
-    }
-  },
-  extractFrames: async (
-    branchId: string,
-    productId: string
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
-    try {
-      const response = await api.get(
-        `/od/branches/${branchId}/products/${productId}/video/extractFrames`
-      );
-      return response;
-    } catch (error) {
-      throw handleRequestError(error);
-    }
-  },
-  uploadAnnotatedImage: async (
-    branchId: string,
-    productId: string,
-    data: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
-    const response = await api.post(
-      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
-      data
-    );
-
-    return response;
-  },
-  deleteFrames: async (
-    branchId: string,
-    productId: string,
-    frameIds: string[]
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
-    const response = await api.delete(
-      `/od/branches/${branchId}/products/${productId}/frames`,
-      { body: JSON.stringify({ frames: frameIds }) }
-    );
-    return response;
-  },
-  saveAnnotation: async (
-    branchId: string,
-    productId: string,
-    annotationData: any
-  ): Promise<{ data: any; status: number; headers?: Headers }> => {
-    const response = await api.post(
-      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
-      { body: JSON.stringify(annotationData) }
-    );
-    return response;
-  },
 };
 
 // End User APIs
@@ -1453,5 +1393,75 @@ export const objectDetectionApi = {
     } catch (error) {
       throw handleRequestError(error);
     }
+  },
+  getProductFrames: async (
+    branchId: string,
+    productId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get(
+        `/od/branches/${branchId}/products/${productId}/frames`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  extractFrames: async (
+    branchId: string,
+    productId: string
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    try {
+      const response = await api.get(
+        `/od/branches/${branchId}/products/${productId}/video/extractFrames`
+      );
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  uploadAnnotatedImage: async (
+    branchId: string,
+    productId: string,
+    data: any
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post(
+      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
+      data
+    );
+
+    return response;
+  },
+  deleteFrames: async (
+    branchId: string,
+    productId: string,
+    frameIds: string[]
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.delete(
+      `/od/branches/${branchId}/products/${productId}/frames`,
+      { body: JSON.stringify({ frames: frameIds }) }
+    );
+    return response;
+  },
+  saveAnnotation: async (
+    branchId: string,
+    productId: string,
+    annotationData: any
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post(
+      `/od/branches/${branchId}/products/${productId}/frames/sam2_process`,
+      JSON.stringify(annotationData)
+    );
+    return response;
+  },
+  trainModel: async (
+    branchId: string,
+    data: any
+  ): Promise<{ data: any; status: number; headers?: Headers }> => {
+    const response = await api.post(
+      `/od/branches/${branchId}/model/train`,
+      data
+    );
+    return response;
   },
 };

@@ -39,7 +39,7 @@ const ImageAnnotator: React.FC<ImageAnnotatorProps> = ({
       red: [...dots.red],
       green: [...dots.green],
     };
-    newDots[color].push({ x, y });
+    newDots[color].push({ x: Math.floor(x), y: Math.floor(y) });
     setDots(newDots);
     onDotsChange?.(newDots);
   };
