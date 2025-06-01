@@ -91,10 +91,7 @@ const FrameGrid = ({ frames, onFrameSelect }: FrameGridProps) => {
   };
 
   const imageOnClick = (frame: FrameWithLabels) => {
-    console.log('frame', frame);
-    if (!frame.labels) {
-      onFrameSelect(frame);
-    }
+    onFrameSelect(frame);
   };
 
   return (
