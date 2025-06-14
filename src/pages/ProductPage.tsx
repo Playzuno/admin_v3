@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 import { ChevronRightIcon, Copy, ExternalLink } from 'lucide-react';
 import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
-import { productApi } from '@/api';
+import { organizationApi, productApi } from '@/api';
 import Button from '@/components/ui/Button';
 import ProductParser from '@/components/products/ProductParser';
 import { objectDetectionApi } from '@/api';
@@ -66,6 +66,9 @@ const ProductPage: React.FC = () => {
   };
   useEffect(() => {
     fetchProducts();
+    if (branch?.id) {
+      getCurrentJobs(branch.id, 'train_model');
+    }
   }, [branch]);
 
   useEffect(() => {
@@ -323,6 +326,24 @@ const ProductPage: React.FC = () => {
       setIsSaving(false);
     }
   };
+  const [currentJobs, setCurrentJobs] = useState<any>({});
+  const getCurrentJobs = async (branchId: string, jobType: string) => {
+    try {
+      const { data, status } = await organizationApi.getActiveJobs(branchId, {
+        jobType,
+        entityType: 'product',
+      });
+      if (status === 200) {
+        setCurrentJobs(data);
+      }
+
+      if (status === 204) {
+        setCurrentJobs({});
+      }
+    } catch (error) {
+      console.error('Error fetching training images:', error);
+    }
+  };
 
   const saveChanges = async (changes: any) => {
     if (!branch?.id) {
@@ -433,8 +454,9 @@ const ProductPage: React.FC = () => {
     const resp = await objectDetectionApi.trainModel(branch.id, {
       branchId: branch?.id || '',
     });
-
-    console.log('train', train);
+    if (resp.status === 200) {
+      getCurrentJobs(branch.id, 'train_model');
+    }
   };
 
   return (
@@ -449,11 +471,13 @@ const ProductPage: React.FC = () => {
           >
             Scan Products
           </Button>
+
           <Button
             variant="primary"
             onClick={trainModel}
             size="sm"
             bgColor="purple-100"
+            disabled={currentJobs && currentJobs.length > 0}
           >
             Train models
           </Button>
