@@ -33,24 +33,16 @@ const Container = ({ title = 'Dashboard', children }: ContainerProps) => {
 
   return (
     <div className="bg-white rounded-t-3xl rounded-b-2xl border-[0.5px] border-[#909090] border-t-0 overflow-hidden p-0 relative mt-[1%]">
-      {/* <div className="flex mb-8">
-        <div className="h-10 w-full border-r border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
-        <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center bg-[#F7F7F7] relative">
-          <h1 className="text-base font-medium">{title}</h1>
-          <div className="absolute top-0 left-0 w-full h-full bg-[#F7F7F7] -z-10"></div>
-        </div>
-        <div className="h-10 w-full border-r border-l border-t border-[#ff6e01]/50 rounded-t-3xl"></div>
-      </div> */}
-
-      <div className="flex mb-8 bg-[#F7F7F7]">
-        <div className="relative bg-white h-10 w-full border-r border-t border-[#ff6e01]/50 rounded-t-3xl">
+      
+      <div className="flex mb-14 bg-[#F7F7F7]">
+        <div className="relative bg-white h-10 w-full border-r-[2px] border-t border-[#ff6e01]/50 rounded-t-3xl">
           <div className="h-5 bg-white w-full absolute -bottom-5"></div>
         </div>
-        <div className="w-[34rem] mt-5 h-10 border-r border-l border-b border-[#ff6e01]/50 rounded-b-3xl text-center bg-[#F7F7F7] relative">
-          <h1 className="text-base font-medium">{title}</h1>
-          <div className="absolute top-0 left-0 w-full h-full bg-[#F7F7F7] -z-10"></div>
+        <div className="w-[32rem] h-0 bg-white relative">
+          {/* <h1 className="text-base font-medium">{title}</h1> */}
+          <div className="absolute h-10 w-[11.5rem] md:w-[12.1rem] lg:w-[207px] xl:w-[13.5rem] 2xl:w-[13.7rem] 3xl:w-[13.7rem] border-r-[2px] border-l-[2px] border-b-[2px] border-[#ff6e01]/50 rounded-b-3xl text-center bg-[#F7F7F7] -left-[2px] top-5 z-10"><h1 className="text-base font-medium">{title}</h1></div>
         </div>
-        <div className="relative bg-white h-10 w-full border-r border-l border-t border-[#ff6e01]/50 rounded-t-3xl">
+        <div className="relative bg-white h-10 w-full border-r border-l-[2px] border-t border-[#ff6e01]/50 rounded-t-3xl">
           <div className="h-5 bg-white w-full absolute -bottom-5"></div>
         </div>
       </div>
