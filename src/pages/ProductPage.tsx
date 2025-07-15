@@ -461,12 +461,12 @@ const ProductPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 absolute top-10 right-10">
+      <div className="flex flex-col gap-4 absolute top-10 right-6">
         <div className="flex gap-2 justify-end relative">
           <Button
             variant="primary"
             onClick={() => setIsScanModalOpen(true)}
-            size="sm"
+            size="xs"
             bgColor="purple-100"
           >
             Scan Products
@@ -475,7 +475,7 @@ const ProductPage: React.FC = () => {
           <Button
             variant="primary"
             onClick={trainModel}
-            size="sm"
+            size="xs"
             bgColor="purple-100"
             disabled={currentJobs && currentJobs.length > 0}
           >
@@ -484,7 +484,7 @@ const ProductPage: React.FC = () => {
           <Button
             variant="primary"
             onClick={() => setIsUploadModalOpen(true)}
-            size="sm"
+            size="xs"
             bgColor="brand"
           >
             Add Products
