@@ -81,6 +81,7 @@ export default {
         xs: '16px',
         sm: '18px',
         base: '20px',
+        md: '22px',
         lg: '24px',
         xl: '28px',
         '2xl': '32px',

@@ -39,6 +39,7 @@ const Header = () => {
 
   // Calculate positions based on active index
   const getItemStyle = (index: number) => {
+    const ITEM_SPACING = 72; 
     const totalItems = navItems.length;
     const centerOffset = Math.floor(totalItems / 2);
     let relativePosition = index - activeIndex;
@@ -51,7 +52,7 @@ const Header = () => {
     }
 
     // Calculate the transform and opacity based on position
-    const translateX = relativePosition * 60; // Base spacing
+    const translateX = relativePosition * ITEM_SPACING; // Base spacing
     // change 1 to 0 for applying reduced opacity from center to end
     const opacity = Math.max(1, 1 - Math.abs(relativePosition) * 0.3);
     const scale = index === activeIndex ? 1.3 : 1.1;
@@ -116,8 +117,8 @@ const Header = () => {
           {/* User Profile */}
           <div className="flex items-center">
             <div className="mr-3 text-right">
-              <div className="text-sm">Welcome,</div>
-              <div className="font-medium text-secondary">
+              <div className="text-2xs font-regular">Welcome,</div>
+              <div className="text-md font-semibold text-secondary">
                 {user?.user?.fullName}
               </div>
             </div>
