@@ -30,6 +30,7 @@ const Dashboard = () => {
       growth: 20,
       icon: <MessageSquare className="w-6 h-6 text-primary" />,
       iconBgColor: 'bg-orange-50',
+      redirectUrl: "/feedbacks"
     },
     {
       title: 'Reward User',
@@ -38,6 +39,7 @@ const Dashboard = () => {
       growth: 6,
       icon: <Gift className="w-6 h-6 text-primary" />,
       iconBgColor: 'bg-orange-50',
+      redirectUrl: "/end-users"
     },
     {
       title: 'Branch/Brand',
@@ -46,6 +48,7 @@ const Dashboard = () => {
       growth: 2,
       icon: <Store className="w-6 h-6 text-primary" />,
       iconBgColor: 'bg-orange-50',
+      redirectUrl: "/brands"
     },
     {
       title: 'Zuno Coins',
@@ -54,6 +57,7 @@ const Dashboard = () => {
       growth: 15,
       icon: <Coins className="w-6 h-6 text-primary" />,
       iconBgColor: 'bg-orange-50',
+      redirectUrl: "/zuno-coins"
     },
     {
       title: 'End Users',
@@ -62,6 +66,7 @@ const Dashboard = () => {
       growth: 4,
       icon: <Users className="w-6 h-6 text-primary" />,
       iconBgColor: 'bg-orange-50',
+      redirectUrl: "/end-users"
     },
   ];
 
