@@ -90,6 +90,23 @@ const ProductPage: React.FC = () => {
             newCategories.find(c => c.id === category.id)?.items.push(product);
             return newCategories;
           });
+
+          // setOriginalCategories(prev => {
+          //   const newCategories = [...prev];
+          //   const targetCategory = newCategories.find(
+          //     c => c.id === category.id
+          //   );
+
+          //   if (targetCategory) {
+          //     // Update the category name in case it changed
+          //     targetCategory.name = category.name;
+
+          //     // Push the product into the category's items
+          //     targetCategory.items.push(product);
+          //   }
+
+          //   return newCategories;
+          // });
         }
       });
       return newCategories;
