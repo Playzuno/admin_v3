@@ -452,13 +452,13 @@ const ProductFramesPage = () => {
                   <ChevronLeft />
                   Back to Category
                 </button>
-                <button
+                {/* <button
                   className="flex items-center gap-2 px-6 py-2 rounded-lg bg-[#4B2994] text-white font-medium hover:bg-[#3a186d] transition"
                   onClick={() => setShowAnnotator(true)}
                 >
                   Next
                   <ChevronRight />
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
