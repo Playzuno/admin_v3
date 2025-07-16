@@ -90,8 +90,8 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
       case 'train-model':
         // navigate(`/train/${branchId}/${itemId}`);
         break;
-      case 'marketing':
-        console.log('marketing', itemId);
+      case 'marking':
+        console.log('marking', itemId);
         setOpenMenuId(null);
         break;
       case 'view-gallery':
@@ -206,14 +206,14 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                         <button
                           onClick={() =>
                             onMenuActionClick(
-                              'marketing',
+                              'marking',
                               item.id,
                               item.branchId!
                             )
                           }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
-                          Marketing
+                          Marking
                         </button>
                         <button
                           onClick={() =>
