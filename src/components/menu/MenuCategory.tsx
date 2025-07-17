@@ -107,14 +107,14 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
     <div className="bg-neutral-100 rounded-2xl p-6 w-[330px]">
       <div className="flex justify-between items-center">
         <h2 className="title-2">{title}</h2>
-        <Button
+        {/* <Button
           variant="zuno-dark"
           onClick={onEdit}
           style={{ padding: '8px 16px' }}
         >
           <Edit2 className="w-4 h-4 pr-1" />
           <span>edit</span>
-        </Button>
+        </Button> */}
       </div>
 
       <div className="border-b border-secondary-500 h-2 mb-6"></div>
