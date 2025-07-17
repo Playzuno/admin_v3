@@ -79,7 +79,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         onDeleteItem?.(itemId);
         setOpenMenuId(null);
         break;
-      case 'frames':
+      case 'add-frames':
         navigate(`/frames/${branchId}/${itemId}`);
         setOpenMenuId(null);
         break;
@@ -154,11 +154,11 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                       <div className="py-1 flex flex-col gap-2">
                         <button
                           onClick={() =>
-                            onMenuActionClick('frames', item.id, item.branchId!)
+                            onMenuActionClick('add-frames', item.id, item.branchId!)
                           }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
-                          Frames
+                          Add Frames
                         </button>
                         <button
                           onClick={() =>
