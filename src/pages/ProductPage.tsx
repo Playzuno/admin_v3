@@ -81,7 +81,6 @@ const ProductPage: React.FC = () => {
       if(product?.videoURL && product?.videoURL != "") {
           trainedProdsCount += 1;
         }
-        console.log("product?.videoURL >>", product?.videoURL)
     })
     setTrainedProductsCount(trainedProdsCount);
 
@@ -501,7 +500,7 @@ const ProductPage: React.FC = () => {
     <div className="space-y-8 mb-5">
       <div className="flex flex-col absolute top-[1.6rem] right-12">
         <div className="flex justify-end relative w-[24rem]">
-          <ScanProgress label="Product Trained" progress={Math.trunc(trainedProductsCount / products.length * 100)} />
+          <ScanProgress label="Product Trained" progress={products?.length ? Math.trunc(trainedProductsCount / products.length * 100) : 0} />
           </div>
           </div>
       { !hasChanges && <div className="flex flex-col gap-4 absolute top-[4.6rem] right-10">
@@ -520,7 +519,7 @@ const ProductPage: React.FC = () => {
             onClick={trainModel}
             size="xs"
             bgColor="purple-100"
-            disabled={currentJobs && currentJobs.length > 0}
+            disabled={currentJobs && Object.keys(currentJobs)?.length > 0}
           >
             Train models
           </Button>
