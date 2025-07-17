@@ -230,7 +230,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                         >
                           Marking
                         </button>
-                        <button
+                        {/* <button
                           onClick={() =>
                             onMenuActionClick(
                               'view-gallery',
@@ -239,6 +239,22 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                             )
                           }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          View Gallery
+                        </button> */}
+
+                         {/* If your are removing below View Gallery button means, consider above commented View Gallery button code also. */}
+
+                        <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'view-gallery',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          disabled={true}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed"
                         >
                           View Gallery
                         </button>
