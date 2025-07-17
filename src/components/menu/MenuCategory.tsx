@@ -110,9 +110,9 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         </Button> */}
       </div>
 
-      <div className="border-b border-secondary-500 h-2 mb-6"></div>
+      <div className="border-b border-secondary-500 h-2 mb-3"></div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {items.map((item, index) => (
           <Draggable key={item.id} draggableId={item.id} index={index}>
             {(provided, snapshot) => (
@@ -120,7 +120,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                className={`bg-white rounded-lg p-4 flex items-center justify-between shadow-sm select-none ${
+                className={`bg-white rounded-lg pl-3 pr-4 py-4 flex items-center justify-between shadow-sm select-none ${
                   snapshot.isDragging
                     ? 'shadow-lg bg-white cursor-grabbing'
                     : ''
@@ -134,7 +134,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                 }}
               >
                 <div
-                  className="flex items-center space-x-3 relative"
+                  className="flex items-center space-x-1 relative"
                   onClick={() =>
                     document.getElementById(`input-${item.id}`)?.focus()
                   }
@@ -149,14 +149,14 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   {openMenuId === item.id && (
                     <div
                       ref={el => (menuRefs.current[item.id] = el)}
-                      className="dropdown-menu absolute right-0 top-8 mt-2 w-48 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                      className="dropdown-menu absolute -left-2 top-5 mt-2 w-46 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
                     >
-                      <div className="py-1 flex flex-col gap-2">
+                      <div className="flex flex-col">
                         <button
                           onClick={() =>
                             onMenuActionClick('add-frames', item.id, item.branchId!)
                           }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                          className="w-full text-left px-4 py-2 text-xs text-gray-500 hover:bg-purple-50 hover:text-purple-900 rounded-t-xl"
                         >
                           Add Frames
                         </button>
@@ -223,7 +223,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                             )
                           }
                           disabled={true}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed rounded-b-xl"
                         >
                           View Gallery
                         </button>
@@ -238,8 +238,8 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                       type="text"
                       value={item.name}
                       onChange={e => updateItem(item, e.target.value)}
-                      style={{ color: !item.branchId ? 'green' : '' }}
-                      className={`border-b border-transparent focus:outline-none focus:border-orange-500`}
+                      style={{ color: !item.branchId ? 'green' : 'black' }}
+                      className={`border-b border-transparent text-xs font-medium focus:outline-none focus:border-orange-500`}
                     />
                   </span>
                 </div>
@@ -259,16 +259,12 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                 </button> */}
                 <div>
                   {item.videoURL ? (
-                    <CheckCircle
-                      className="w-6 h-6 text-green-500 cursor-pointer"
-                      strokeWidth={1}
-                      onClick={() => {
+                    <img src="/assets/icons/svg/tick.svg" alt="tick" className="w-5 h-5 cursor-pointer" onClick={() => {
                         if (item.videoURL) {
                           navigator.clipboard.writeText(item.videoURL);
                           toast.success('URL copied to clipboard');
                         }
-                      }}
-                    />
+                      }} />
                   ) : (
                     <img src="/assets/icons/svg/scan.svg" alt="scan" />
                   )}
