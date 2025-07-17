@@ -78,7 +78,7 @@ const Container = ({ title = 'Dashboard', children }: ContainerProps) => {
           />
         </div>
       </div> */}
-      <div className="px-6">{children}</div>
+      <div className="px-6 mb-6">{children}</div>
     </div>
   );
 };
