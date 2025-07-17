@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { ActionContainer } from '../components/containers';
 import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
+import ScanProgress from '@/components/ui/ScanProgress';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
 import { ChevronRightIcon, Copy, ExternalLink } from 'lucide-react';
@@ -52,9 +53,12 @@ const defaultCategories: Category[] = [
 const ProductPage: React.FC = () => {
   const { branch } = useOrg();
   const [products, setProducts] = useState<Product[]>([]);
+  const [trainedProductsCount, setTrainedProductsCount] = useState<number>(0);
   const [originalCategories, setOriginalCategories] =
     useState<Category[]>(defaultCategories);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+
   const fetchProducts = async () => {
     if (!branch) {
       return;
@@ -72,6 +76,19 @@ const ProductPage: React.FC = () => {
   }, [branch]);
 
   useEffect(() => {
+    let trainedProdsCount  = 0;
+    products?.map((product) => {
+      if(product?.videoURL && product?.videoURL != "") {
+          trainedProdsCount += 1;
+        }
+        console.log("product?.videoURL >>", product?.videoURL)
+    })
+    setTrainedProductsCount(trainedProdsCount);
+
+  }, [products])
+
+  useEffect(() => {
+    
     setOriginalCategories(orgCategories => {
       const newCategories = orgCategories.map(v => {
         return {
@@ -79,7 +96,9 @@ const ProductPage: React.FC = () => {
           items: [],
         };
       });
+      
       products.forEach(product => {
+
         const category = newCategories.find(
           c => c.id === product.categoryId.toString()
         );
@@ -111,6 +130,7 @@ const ProductPage: React.FC = () => {
       });
       return newCategories;
     });
+    
   }, [products]);
 
   const onUpdateItem = (
@@ -476,9 +496,15 @@ const ProductPage: React.FC = () => {
     }
   };
 
+
   return (
     <div className="space-y-8 mb-5">
-      { !hasChanges && <div className="flex flex-col gap-4 absolute top-[6.6rem] right-10">
+      <div className="flex flex-col absolute top-[1.6rem] right-12">
+        <div className="flex justify-end relative w-[24rem]">
+          <ScanProgress label="Product Trained" progress={Math.trunc(trainedProductsCount / products.length * 100)} />
+          </div>
+          </div>
+      { !hasChanges && <div className="flex flex-col gap-4 absolute top-[4.6rem] right-10">
         <div className="flex gap-2 justify-end relative">
           <Button
             variant="primary"
