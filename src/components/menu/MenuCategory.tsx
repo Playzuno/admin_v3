@@ -75,10 +75,6 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
     branchId: string
   ) => {
     switch (action) {
-      case 'edit':
-        document.getElementById(`input-${itemId}`)?.focus();
-        setOpenMenuId(null);
-        break;
       case 'delete':
         onDeleteItem?.(itemId);
         setOpenMenuId(null);
@@ -163,18 +159,6 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
                           Frames
-                        </button>
-                        <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'edit',
-                              item.id,
-                              item.branchId || ''
-                            )
-                          }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
-                        >
-                          Edit
                         </button>
                         <button
                           onClick={() =>
