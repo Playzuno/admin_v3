@@ -193,8 +193,11 @@ const ProductFramesPage = () => {
   };
 
   const handleFrameSelect = async (frame: Frame) => {
-    setselectedFrame(frame);
-    setShowAnnotator(true);
+
+    // Remove below comments if you want to show the marking page.
+
+    // setselectedFrame(frame);
+    // setShowAnnotator(true);
   };
 
   const deleteFrames = async (
@@ -433,7 +436,7 @@ const ProductFramesPage = () => {
               )}
               {/* Navigation buttons */}
               <div className="flex justify-center gap-4 mt-6">
-                <button
+                { frames?.length > 0 && <button
                   className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                   onClick={() =>
                     deleteFrames(
@@ -444,7 +447,7 @@ const ProductFramesPage = () => {
                   }
                 >
                   Clear all frames
-                </button>
+                </button> }
                 <button
                   className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                   onClick={() => navigate('/products')}
