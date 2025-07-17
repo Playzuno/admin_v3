@@ -18,7 +18,7 @@ const ActionContainer: React.FC<ActionContainerProps> = ({
 }) => {
   return (
     <div className="bg-white rounded-[32px] zuno-border-dark h-[calc(100vh)] overflow-hidden border-[3px] border-solid border-[#BBBBBB] transition-all duration-200 group">
-      <div className="flex justify-between items-center px-6 py-4 bg-[#F2F2F2] border-b-[0.5px] border-[#BBBBBB] transition-all duration-200">
+      <div className={`flex justify-between items-center px-6 ${ onSave ? 'py-2' : 'py-4' } bg-[#F2F2F2] border-b-[0.5px] border-[#BBBBBB] transition-all duration-200`}>
         {typeof title === 'string' ? (
           <h2 className="container-title-2">{title}</h2>
         ) : (

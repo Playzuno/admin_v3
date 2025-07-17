@@ -478,7 +478,7 @@ const ProductPage: React.FC = () => {
 
   return (
     <div className="space-y-8 mb-5">
-      <div className="flex flex-col gap-4 absolute top-10 right-6">
+      { !hasChanges && <div className="flex flex-col gap-4 absolute top-[6.6rem] right-10">
         <div className="flex gap-2 justify-end relative">
           <Button
             variant="primary"
@@ -589,7 +589,8 @@ const ProductPage: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> }
+      
       <ActionContainer
         title="Menu Category Plan"
         onCancel={hasChanges ? handleCancel : undefined}
