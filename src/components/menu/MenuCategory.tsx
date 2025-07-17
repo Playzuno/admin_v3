@@ -203,7 +203,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                         >
                           Delete
                         </button>
-                        <button
+                        {/* <button
                           onClick={() =>
                             onMenuActionClick(
                               'marking',
@@ -212,6 +212,21 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                             )
                           }
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Marking
+                        </button> */}
+
+                        {/* If your are removing below Marking button means, consider above commented Marking button code also. */}
+                        <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'marking',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          disabled={true}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed"
                         >
                           Marking
                         </button>
