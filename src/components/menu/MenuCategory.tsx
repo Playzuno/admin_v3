@@ -174,7 +174,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                     }
                   >
                     <MoreVertical
-                      className="w-4 h-4 text-gray-400 cursor-pointer"
+                      className={`w-4 h-4 ${ openMenuId === item.id ? 'text-brand-500': 'text-gray-400' } cursor-pointer`}
                       onClick={e => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === item.id ? null : item.id);

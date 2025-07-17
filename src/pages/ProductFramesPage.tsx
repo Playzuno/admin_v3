@@ -291,7 +291,7 @@ const ProductFramesPage = () => {
             <Button variant="secondary">Images</Button>
           </div>
           <div className="w-1/3">
-            <ScanProgress progress={60} />
+            <ScanProgress label="Images Selected" progress={60} />
           </div>
         </div>
         {showAnnotator && selectedFrame ? (
