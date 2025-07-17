@@ -283,7 +283,7 @@ const ProductFramesPage = () => {
   return (
     <>
       <ActionContainer
-        title="Menu Category Plan"
+        title="Train Model"
         onCancel={undefined}
         onSave={undefined}
         saveDisabled={false}
