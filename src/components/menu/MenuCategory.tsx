@@ -143,6 +143,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         height: 0;
         width: 0;
       }
+        
     `}
         </style>
         <div className="space-y-3">
