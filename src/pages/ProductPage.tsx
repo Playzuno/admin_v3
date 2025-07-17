@@ -621,6 +621,7 @@ const ProductPage: React.FC = () => {
         onCancel={hasChanges ? handleCancel : undefined}
         onSave={hasChanges ? handleSave : undefined}
         saveDisabled={!hasChanges || isSaving}
+        heightVal={100}
       >
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="flex flex-nowrap -mx-3 justify-between overflow-x-auto">

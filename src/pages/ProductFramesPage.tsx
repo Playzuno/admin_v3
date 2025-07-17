@@ -5,7 +5,7 @@ import ImageAnnotator from '@/components/ui/ImageAnnotator';
 import { objectDetectionApi, organizationApi, productApi } from '@/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Product } from '@/types';
-import PlainContainer from '@/components/containers/PlainContainer';
+import { ActionContainer } from '../components/containers';
 import { ChevronRight, ChevronLeft, Brush, Eraser } from 'lucide-react';
 import { Dot, Frame } from '@/types';
 
@@ -95,11 +95,11 @@ const FrameGrid = ({ frames, onFrameSelect }: FrameGridProps) => {
   };
 
   return (
-    <div className="grid grid-cols-4 overflow-y-auto max-h-96 gap-1 pb-2">
+    <div className="grid grid-cols-4 xl:grid-cols-7 2xl:grid-cols-8 overflow-y-auto max-h-96 gap-1">
       {frames.map(frame => (
         <div
           key={frame.id}
-          className="w-42 h-42 cursor-pointer relative group"
+          className="w-[8.6rem] h-[6.8rem] cursor-pointer relative group mb-2"
           onClick={() => imageOnClick(frame)}
           title={frame.labels?.map(l => l.class).join(', ')}
         >
@@ -193,9 +193,7 @@ const ProductFramesPage = () => {
   };
 
   const handleFrameSelect = async (frame: Frame) => {
-
     // Remove below comments if you want to show the marking page.
-
     // setselectedFrame(frame);
     // setShowAnnotator(true);
   };
@@ -284,7 +282,12 @@ const ProductFramesPage = () => {
 
   return (
     <>
-      <PlainContainer>
+      <ActionContainer
+        title="Menu Category Plan"
+        onCancel={undefined}
+        onSave={undefined}
+        saveDisabled={false}
+      >
         <div className="flex flex-row gap-4 justify-between">
           <div className="flex gap-2">
             <Button variant="zuno-light">View video</Button>
@@ -436,18 +439,20 @@ const ProductFramesPage = () => {
               )}
               {/* Navigation buttons */}
               <div className="flex justify-center gap-4 mt-6">
-                { frames?.length > 0 && <button
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
-                  onClick={() =>
-                    deleteFrames(
-                      branchId,
-                      productId,
-                      frames.map(({ id }) => id)
-                    )
-                  }
-                >
-                  Clear all frames
-                </button> }
+                {frames?.length > 0 && (
+                  <button
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
+                    onClick={() =>
+                      deleteFrames(
+                        branchId,
+                        productId,
+                        frames.map(({ id }) => id)
+                      )
+                    }
+                  >
+                    Clear all frames
+                  </button>
+                )}
                 <button
                   className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                   onClick={() => navigate('/products')}
@@ -466,7 +471,7 @@ const ProductFramesPage = () => {
             </div>
           </div>
         )}
-      </PlainContainer>
+      </ActionContainer>
     </>
   );
 };
