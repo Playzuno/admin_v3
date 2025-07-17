@@ -87,9 +87,6 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
         navigate(`/frames/${branchId}/${itemId}`);
         setOpenMenuId(null);
         break;
-      case 'train-model':
-        // navigate(`/train/${branchId}/${itemId}`);
-        break;
       case 'marking':
         console.log('marking', itemId);
         setOpenMenuId(null);
@@ -166,18 +163,6 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                           className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
                         >
                           Frames
-                        </button>
-                        <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'train-model',
-                              item.id,
-                              item.branchId!
-                            )
-                          }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
-                        >
-                          Train model
                         </button>
                         <button
                           onClick={() =>
