@@ -97,7 +97,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
   };
 
   return (
-    <div className="bg-neutral-100 rounded-2xl p-6 w-[330px]">
+    <div className="bg-neutral-100 rounded-2xl p-6 w-[330px] mb-3">
       <div className="flex justify-between items-center">
         <h2 className="title-2">{title}</h2>
         {/* <Button
@@ -112,138 +112,175 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
 
       <div className="border-b border-secondary-500 h-2 mb-3"></div>
 
-      <div className="space-y-3">
-        {items.map((item, index) => (
-          <Draggable key={item.id} draggableId={item.id} index={index}>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                className={`bg-white rounded-lg pl-3 pr-4 py-4 flex items-center justify-between shadow-sm select-none ${
-                  snapshot.isDragging
-                    ? 'shadow-lg bg-white cursor-grabbing'
-                    : ''
-                } ${item.isDeleted ? 'opacity-50' : ''} `}
-                style={{
-                  ...provided.draggableProps.style,
-                  userSelect: 'none',
-                  WebkitUserSelect: 'none',
-                  MozUserSelect: 'none',
-                  msUserSelect: 'none',
-                }}
-              >
+      <div
+        className=" h-[calc(100vh-15rem)] overflow-y-auto pr-2"
+        style={{
+          scrollbarWidth: 'thin', // For Firefox
+          scrollbarColor: '#400C7A #D9D9D9', // For Firefox (thumb track)
+        }}
+      >
+        <style>
+          {`
+      /* Chrome, Edge, Safari */
+      div::-webkit-scrollbar {
+        width: 3px;
+        height: 6px;
+        border-radius: 5px;
+      }
+
+      div::-webkit-scrollbar-track {
+        background: #D9D9D9;
+      }
+
+      div::-webkit-scrollbar-thumb {
+        background-color: #400C7A;
+        border-radius: 5px;
+      }
+
+      /* Hides the up/down buttons (arrows) */
+      div::-webkit-scrollbar-button:single-button {
+        display: none;
+        height: 0;
+        width: 0;
+      }
+    `}
+        </style>
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <Draggable key={item.id} draggableId={item.id} index={index}>
+              {(provided, snapshot) => (
                 <div
-                  className="flex items-center space-x-1 relative"
-                  onClick={() =>
-                    document.getElementById(`input-${item.id}`)?.focus()
-                  }
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  className={`bg-white rounded-lg pl-3 pr-4 py-4 flex items-center justify-between shadow-sm select-none ${
+                    snapshot.isDragging
+                      ? 'shadow-lg bg-white cursor-grabbing'
+                      : ''
+                  } ${item.isDeleted ? 'opacity-50' : ''} `}
+                  style={{
+                    ...provided.draggableProps.style,
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    MozUserSelect: 'none',
+                    msUserSelect: 'none',
+                  }}
                 >
-                  <MoreVertical
-                    className="w-4 h-4 text-gray-400 cursor-pointer"
-                    onClick={e => {
-                      e.stopPropagation();
-                      setOpenMenuId(openMenuId === item.id ? null : item.id);
-                    }}
-                  />
-                  {openMenuId === item.id && (
-                    <div
-                      ref={el => (menuRefs.current[item.id] = el)}
-                      className="dropdown-menu absolute -left-2 top-5 mt-2 w-46 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
-                    >
-                      <div className="flex flex-col">
-                        <button
-                          onClick={() =>
-                            onMenuActionClick('add-frames', item.id, item.branchId!)
-                          }
-                          className="w-full text-left px-4 py-2 text-xs text-gray-500 hover:bg-purple-50 hover:text-purple-900 rounded-t-xl"
-                        >
-                          Add Frames
-                        </button>
-                        <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'delete',
-                              item.id,
-                              item.branchId || ''
-                            )
-                          }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
-                        >
-                          Delete
-                        </button>
-                        {/* <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'marking',
-                              item.id,
-                              item.branchId!
-                            )
-                          }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
-                        >
-                          Marking
-                        </button> */}
-
-                        {/* If your are removing below Marking button means, consider above commented Marking button code also. */}
-                        <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'marking',
-                              item.id,
-                              item.branchId!
-                            )
-                          }
-                          disabled={true}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed"
-                        >
-                          Marking
-                        </button>
-                        {/* <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'view-gallery',
-                              item.id,
-                              item.branchId!
-                            )
-                          }
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
-                        >
-                          View Gallery
-                        </button> */}
-
-                         {/* If your are removing below View Gallery button means, consider above commented View Gallery button code also. */}
-
-                        <button
-                          onClick={() =>
-                            onMenuActionClick(
-                              'view-gallery',
-                              item.id,
-                              item.branchId!
-                            )
-                          }
-                          disabled={true}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed rounded-b-xl"
-                        >
-                          View Gallery
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  <span
-                    className={`text-gray-700 ${item.isDeleted ? 'line-through' : ''}`}
+                  <div
+                    className="flex items-center space-x-1 relative"
+                    onClick={() =>
+                      document.getElementById(`input-${item.id}`)?.focus()
+                    }
                   >
-                    <input
-                      id={`input-${item.id}`}
-                      type="text"
-                      value={item.name}
-                      onChange={e => updateItem(item, e.target.value)}
-                      style={{ color: !item.branchId ? 'green' : 'black' }}
-                      className={`border-b border-transparent text-xs font-medium focus:outline-none focus:border-orange-500`}
+                    <MoreVertical
+                      className="w-4 h-4 text-gray-400 cursor-pointer"
+                      onClick={e => {
+                        e.stopPropagation();
+                        setOpenMenuId(openMenuId === item.id ? null : item.id);
+                      }}
                     />
-                  </span>
-                </div>
-                {/* <button
+                    {openMenuId === item.id && (
+                      <div
+                        ref={el => (menuRefs.current[item.id] = el)}
+                        className="dropdown-menu absolute -left-2 top-5 mt-2 w-46 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                      >
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() =>
+                              onMenuActionClick(
+                                'add-frames',
+                                item.id,
+                                item.branchId!
+                              )
+                            }
+                            className="w-full text-left px-4 pb-2 pt-3 text-xs text-gray-500 hover:bg-purple-50 hover:text-purple-900 rounded-t-xl"
+                          >
+                            Add Frames
+                          </button>
+                          <button
+                            onClick={() =>
+                              onMenuActionClick(
+                                'delete',
+                                item.id,
+                                item.branchId || ''
+                              )
+                            }
+                            className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                          >
+                            Delete
+                          </button>
+                          {/* <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'marking',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          Marking
+                        </button> */}
+
+                          {/* If your are removing below Marking button means, consider above commented Marking button code also. */}
+                          <button
+                            onClick={() =>
+                              onMenuActionClick(
+                                'marking',
+                                item.id,
+                                item.branchId!
+                              )
+                            }
+                            disabled={true}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed"
+                          >
+                            Marking
+                          </button>
+                          {/* <button
+                          onClick={() =>
+                            onMenuActionClick(
+                              'view-gallery',
+                              item.id,
+                              item.branchId!
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-purple-50 hover:text-purple-900"
+                        >
+                          View Gallery
+                        </button> */}
+
+                          {/* If your are removing below View Gallery button means, consider above commented View Gallery button code also. */}
+
+                          <button
+                            onClick={() =>
+                              onMenuActionClick(
+                                'view-gallery',
+                                item.id,
+                                item.branchId!
+                              )
+                            }
+                            disabled={true}
+                            className="w-full text-left px-4 pt-2 pb-3 text-sm text-gray-500 hover:text-purple-900 disabled:text-gray-300 disabled:cursor-not-allowed rounded-b-xl"
+                          >
+                            View Gallery
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    <span
+                      className={`text-gray-700 ${item.isDeleted ? 'line-through' : ''}`}
+                    >
+                      <input
+                        id={`input-${item.id}`}
+                        type="text"
+                        value={item.name}
+                        onChange={e => updateItem(item, e.target.value)}
+                        style={{ color: !item.branchId ? 'green' : 'black' }}
+                        className={`border-b border-transparent text-xs font-medium focus:outline-none focus:border-orange-500 w-48`}
+                      />
+                    </span>
+                  </div>
+                  {/* <button
                   className={`${
                     item.isDeleted
                       ? 'text-green-500 hover:text-green-600'
@@ -257,22 +294,32 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                     <Trash2 className="w-4 h-4" />
                   )}
                 </button> */}
-                <div>
-                  {item.videoURL ? (
-                    <img src="/assets/icons/svg/tick.svg" alt="tick" className="w-5 h-5 cursor-pointer" onClick={() => {
-                        if (item.videoURL) {
-                          navigator.clipboard.writeText(item.videoURL);
-                          toast.success('URL copied to clipboard');
-                        }
-                      }} />
-                  ) : (
-                    <img src="/assets/icons/svg/scan.svg" alt="scan" />
-                  )}
+                  <div>
+                    {item.videoURL ? (
+                      <img
+                        src="/assets/icons/svg/tick.svg"
+                        alt="tick"
+                        className="w-4 h-4 cursor-pointer"
+                        onClick={() => {
+                          if (item.videoURL) {
+                            navigator.clipboard.writeText(item.videoURL);
+                            toast.success('URL copied to clipboard');
+                          }
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="/assets/icons/svg/scan.svg"
+                        alt="scan"
+                        className="w-4 h-4"
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </Draggable>
-        ))}
+              )}
+            </Draggable>
+          ))}
+        </div>
       </div>
     </div>
   );
