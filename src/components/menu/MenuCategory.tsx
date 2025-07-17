@@ -183,7 +183,12 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                     {openMenuId === item.id && (
                       <div
                         ref={el => (menuRefs.current[item.id] = el)}
-                        className="dropdown-menu absolute -left-2 top-5 mt-2 w-46 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                        className={`dropdown-menu absolute -left-2 ${
+                          items.length > Math.floor(window.innerHeight / (60 + 90)) &&
+                          index >= Math.floor(items.length * 0.7)
+                            ? 'bottom-8'
+                            : 'top-5'
+                        } mt-2 w-46 rounded-xl border border-brand-400 shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50`}
                       >
                         <div className="flex flex-col">
                           <button
