@@ -9,8 +9,8 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { Product } from '@/types';
 import { ActionContainer } from '../components/containers';
 import {
-  ChevronRight,
-  ChevronLeft,
+  MoveRight,
+  MoveLeft,
   Brush,
   Eraser,
   Clapperboard,
@@ -506,7 +506,7 @@ const ProductFramesPage = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-8 border-dashed border-2 border-[#D1B6F3] rounded-2xl p-6">
+          <div className="mt-8 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
             <div className="text-base mb-4">
               Select one or multiple images to train model
             </div>
@@ -550,7 +550,7 @@ const ProductFramesPage = () => {
               <div className="flex justify-center gap-4 mt-6">
                 {frames?.length > 0 && (
                   <button
-                    className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                     onClick={() =>
                       deleteFrames(
                         branchId,
@@ -563,10 +563,10 @@ const ProductFramesPage = () => {
                   </button>
                 )}
                 <button
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
+                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                   onClick={() => navigate('/products')}
                 >
-                  <ChevronLeft />
+                  <MoveLeft />
                   Back to Category
                 </button>
                 {/* <button
@@ -574,7 +574,7 @@ const ProductFramesPage = () => {
                   onClick={() => setShowAnnotator(true)}
                 >
                   Next
-                  <ChevronRight />
+                  <MoveRight />
                 </button> */}
               </div>
             </div>
