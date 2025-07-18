@@ -372,12 +372,12 @@ const ProductFramesPage = () => {
         onSave={deletedIds?.length > 0 ? handleSave : undefined}
         saveDisabled={!deletedIds?.length || isSaving}
       >
-        <div className="flex flex-row gap-4 justify-between">
-          <div className="flex gap-2">
-            <Button icon={Clapperboard} variant="zuno-light">
+        <div className="flex flex-row gap-4 mt-5 justify-between mx-16">
+          <div className="flex gap-6">
+            <Button size="hmd" icon={Clapperboard} variant="zuno-light">
               View video
             </Button>
-            <Button icon={Images} variant="secondary">
+            <Button size="hmd" icon={Images} variant="secondary">
               Images
             </Button>
           </div>
@@ -506,7 +506,7 @@ const ProductFramesPage = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-8 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
+          <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
             <div className="text-base mb-4">
               Select one or multiple images to train model
             </div>
