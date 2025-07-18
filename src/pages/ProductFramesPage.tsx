@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import ScanProgress from '@/components/ui/ScanProgress';
 import ImageAnnotator from '@/components/ui/ImageAnnotator';
@@ -16,8 +16,10 @@ import {
   Clapperboard,
   Images,
   X,
+  Cog
 } from 'lucide-react';
 import { Dot, Frame } from '@/types';
+import CustomVideoPlayer from '../components/ui/CustomVideoPlayer';
 
 interface Label {
   id: string;
@@ -179,6 +181,7 @@ const ProductFramesPage = () => {
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showPlayVideo, setShowPlayVideo] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -373,13 +376,16 @@ const ProductFramesPage = () => {
         saveDisabled={!deletedIds?.length || isSaving}
       >
         <div className="flex flex-row gap-4 mt-5 justify-between mx-16">
-          <div className="flex gap-6">
-            <Button size="hmd" icon={Clapperboard} variant="zuno-light">
+          <div className="flex gap-6 relative">
+            <Button size="hmd" icon={Clapperboard} onClick={() => setShowPlayVideo(!showPlayVideo)} variant={`${ showPlayVideo ? 'secondary' : 'zuno-light' }`}>
               View video
             </Button>
-            <Button size="hmd" icon={Images} variant="secondary">
+            <Button size="hmd" onClick={() => { setShowPlayVideo(false) }} icon={Images} variant="secondary">
               Images
             </Button>
+            { showPlayVideo && <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
+              <CustomVideoPlayer product={product || {}} />
+            </div> }
           </div>
           <div className="w-1/3">
             <ScanProgress
@@ -389,16 +395,12 @@ const ProductFramesPage = () => {
                   ? 100
                   : isNaN(
                         Math.trunc(
-                          ((frames?.length - deletedIds?.length) /
-                            50) *
-                            100
+                          ((frames?.length - deletedIds?.length) / 50) * 100
                         )
                       )
                     ? 0
                     : Math.trunc(
-                        ((frames?.length - deletedIds?.length) /
-                          50) *
-                          100
+                        ((frames?.length - deletedIds?.length) / 50) * 100
                       )
               }
             />
