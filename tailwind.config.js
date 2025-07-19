@@ -10,9 +10,17 @@ export default {
         md: '768px',
         lg: '1024px',
         xl: '1280px',
-        '2xl': '1400px',
+        '2xl': '1400px'
       },
     },
+    screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1400px',
+        '3xl': '1536px'
+      },
     extend: {
       colors: {
         secondary: {
@@ -81,6 +89,7 @@ export default {
         xs: '16px',
         sm: '18px',
         base: '20px',
+        md: '22px',
         lg: '24px',
         xl: '28px',
         '2xl': '32px',
@@ -113,3 +122,4 @@ export default {
   },
   plugins: [],
 };
+

@@ -1,13 +1,25 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Button from '@/components/ui/Button';
 import ScanProgress from '@/components/ui/ScanProgress';
 import ImageAnnotator from '@/components/ui/ImageAnnotator';
 import { objectDetectionApi, organizationApi, productApi } from '@/api';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { Product } from '@/types';
-import PlainContainer from '@/components/containers/PlainContainer';
-import { ChevronRight, ChevronLeft, Brush, Eraser } from 'lucide-react';
+import { ActionContainer } from '../components/containers';
+import {
+  MoveRight,
+  MoveLeft,
+  Brush,
+  Eraser,
+  Clapperboard,
+  Images,
+  X,
+  Cog
+} from 'lucide-react';
 import { Dot, Frame } from '@/types';
+import CustomVideoPlayer from '../components/ui/CustomVideoPlayer';
 
 interface Label {
   id: string;
@@ -29,9 +41,33 @@ interface FrameWithLabels extends Frame {
 interface FrameGridProps {
   frames: FrameWithLabels[];
   onFrameSelect: (frame: FrameWithLabels) => void;
+  deletedIds: string[];
+  setDeletedIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const FrameGrid = ({ frames, onFrameSelect }: FrameGridProps) => {
+const MIN_REQUIRED_IMAGES = 30;
+
+const FrameGrid = ({
+  frames,
+  onFrameSelect,
+  deletedIds,
+  setDeletedIds,
+}: FrameGridProps) => {
+  // Filter out deleted frames from view
+  const visibleFrames = frames?.filter(f => !deletedIds.includes(f.id)) || [];
+
+  const handleDelete = (frameId: string) => {
+    if (visibleFrames.length <= MIN_REQUIRED_IMAGES) {
+      alert(`Minimum ${MIN_REQUIRED_IMAGES} images required.`);
+      return;
+    }
+    setDeletedIds(prev => [...prev, frameId]);
+  };
+
+  const handleSelect = (frameId: string) => {
+    setDeletedIds(prev => prev.filter(id => id !== frameId));
+  };
+
   const drawBoundingBoxes = (
     canvas: HTMLCanvasElement,
     frame: FrameWithLabels
@@ -95,18 +131,36 @@ const FrameGrid = ({ frames, onFrameSelect }: FrameGridProps) => {
   };
 
   return (
-    <div className="grid grid-cols-4 overflow-y-auto max-h-96 gap-1 pb-2">
-      {frames.map(frame => (
+    <div className="grid grid-cols-4 xl:grid-cols-7 2xl:grid-cols-8 overflow-y-auto max-h-96 gap-1 mt-3">
+      {frames?.map(frame => (
         <div
           key={frame.id}
-          className="w-42 h-42 cursor-pointer relative group"
-          onClick={() => imageOnClick(frame)}
+          className="w-[8.6rem] h-[6.8rem] relative cursor-pointer group my-2"
+          // onClick={() => imageOnClick(frame)}
+          onClick={e => {
+            e.stopPropagation();
+            handleSelect(frame.id);
+          }}
           title={frame.labels?.map(l => l.class).join(', ')}
         >
           <canvas
             ref={canvas => canvas && drawBoundingBoxes(canvas, frame)}
             className="w-full h-full object-cover hover:opacity-60"
           />
+          {!deletedIds?.includes(frame.id) && (
+            <div onClick={e => e.stopPropagation()}>
+              <div className="absolute w-[8.6rem] h-[6.8rem] cursor-default bg-stroke-dark/40 top-0 left-0"></div>
+              <div
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDelete(frame.id);
+                }}
+                className="absolute -top-2 -right-2 bg-[#F44336] cursor-pointer h-[1rem] w-[1rem] p-1 rounded-full"
+              >
+                <X className="font-bold h-2 w-2 text-white" />
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -124,6 +178,10 @@ const ProductFramesPage = () => {
   const [frames, setFrames] = useState<Frame[]>([]);
   const [currentJobs, setCurrentJobs] = useState({});
   const [product, setProduct] = useState<Product | null>(null);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showPlayVideo, setShowPlayVideo] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -193,8 +251,9 @@ const ProductFramesPage = () => {
   };
 
   const handleFrameSelect = async (frame: Frame) => {
-    setselectedFrame(frame);
-    setShowAnnotator(true);
+    // Remove below comments if you want to show the marking page.
+    // setselectedFrame(frame);
+    // setShowAnnotator(true);
   };
 
   const deleteFrames = async (
@@ -279,16 +338,72 @@ const ProductFramesPage = () => {
     return <div>Loading...</div>;
   }
 
+  const handleCancel = () => {
+    setDeletedIds([]);
+  };
+
+  const handleSave = () => {
+    setShowSaveConfirm(true);
+  };
+
+  const confirmSave = async () => {
+    try {
+      setIsSaving(true);
+      setShowSaveConfirm(false);
+
+      if (frames.length - deletedIds.length < 50) {
+        toast.error(
+          'Needs miminum of 50 images to train, Please select more images'
+        );
+      } else {
+        deleteFrames(branchId, productId, deletedIds);
+        setDeletedIds([]);
+        toast.success('Deleted unselected images successfully');
+      }
+    } catch (error) {
+      toast.error('Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
-      <PlainContainer>
-        <div className="flex flex-row gap-4 justify-between">
-          <div className="flex gap-2">
-            <Button variant="zuno-light">View video</Button>
-            <Button variant="secondary">Images</Button>
+      <ActionContainer
+        title="Train Model"
+        onCancel={deletedIds?.length > 0 ? handleCancel : undefined}
+        onSave={deletedIds?.length > 0 ? handleSave : undefined}
+        saveDisabled={!deletedIds?.length || isSaving}
+      >
+        <div className="flex flex-row gap-4 mt-5 justify-between mx-16">
+          <div className="flex gap-6 relative">
+            <Button size="hmd" icon={Clapperboard} onClick={() => setShowPlayVideo(!showPlayVideo)} variant={`${ showPlayVideo ? 'secondary' : 'zuno-light' }`}>
+              View video
+            </Button>
+            <Button size="hmd" onClick={() => { setShowPlayVideo(false) }} icon={Images} variant="secondary">
+              Images
+            </Button>
+            { showPlayVideo && <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
+              <CustomVideoPlayer product={product || {}} />
+            </div> }
           </div>
           <div className="w-1/3">
-            <ScanProgress progress={60} />
+            <ScanProgress
+              label="Images Selected"
+              progress={
+                frames.length - deletedIds.length > 50
+                  ? 100
+                  : isNaN(
+                        Math.trunc(
+                          ((frames?.length - deletedIds?.length) / 50) * 100
+                        )
+                      )
+                    ? 0
+                    : Math.trunc(
+                        ((frames?.length - deletedIds?.length) / 50) * 100
+                      )
+              }
+            />
           </div>
         </div>
         {showAnnotator && selectedFrame ? (
@@ -393,9 +508,9 @@ const ProductFramesPage = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-8 border-dashed border-2 border-[#D1B6F3] rounded-2xl p-6">
-            <div className="text-lg font-semibold mb-4">
-              Select images to annotate
+          <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
+            <div className="text-base mb-4">
+              Select one or multiple images to train model
             </div>
             <div className="flex flex-col gap-4">
               {isLoading ? (
@@ -406,13 +521,42 @@ const ProductFramesPage = () => {
                     <>
                       {currentJobs?.status === 'pending' &&
                       currentJobs?.jobType === 'sam2_process_frames' ? (
-                        <div>
-                          The annotated objects are being detected. This might
-                          take a while. kindly wait
+                        <div className="flex flex-col items-center justify-center p-4 text-center">
+                          <div className="flex items-center space-x-2">
+                            <svg
+                              className="animate-spin h-5 w-5 text-blue-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8H4z"
+                              ></path>
+                            </svg>
+                            <span className="text-sm text-gray-700">
+                              Hang tight! We’re working on your image...
+                            </span>
+                          </div>
+                          <p className="mt-2 text-xs text-gray-500">
+                            This process may take a few moments depending on the
+                            image size and complexity.
+                          </p>
                         </div>
                       ) : (
                         <FrameGrid
                           frames={frames}
+                          deletedIds={deletedIds}
+                          setDeletedIds={setDeletedIds}
                           onFrameSelect={handleFrameSelect}
                         />
                       )}
@@ -433,37 +577,48 @@ const ProductFramesPage = () => {
               )}
               {/* Navigation buttons */}
               <div className="flex justify-center gap-4 mt-6">
+                {frames?.length > 0 && (
+                  <button
+                    className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
+                    onClick={() =>
+                      deleteFrames(
+                        branchId,
+                        productId,
+                        frames.map(({ id }) => id)
+                      )
+                    }
+                  >
+                    Clear all frames
+                  </button>
+                )}
                 <button
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
-                  onClick={() =>
-                    deleteFrames(
-                      branchId,
-                      productId,
-                      frames.map(({ id }) => id)
-                    )
-                  }
-                >
-                  Clear all frames
-                </button>
-                <button
-                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#D1B6F3] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
+                  className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                   onClick={() => navigate('/products')}
                 >
-                  <ChevronLeft />
+                  <MoveLeft />
                   Back to Category
                 </button>
-                <button
+                {/* <button
                   className="flex items-center gap-2 px-6 py-2 rounded-lg bg-[#4B2994] text-white font-medium hover:bg-[#3a186d] transition"
                   onClick={() => setShowAnnotator(true)}
                 >
                   Next
-                  <ChevronRight />
-                </button>
+                  <MoveRight />
+                </button> */}
               </div>
             </div>
           </div>
         )}
-      </PlainContainer>
+      </ActionContainer>
+      <ConfirmDialog
+        isOpen={showSaveConfirm}
+        title="Save Changes"
+        message="Are you sure you want to delete unselected images? This action cannot be undone."
+        onConfirm={confirmSave}
+        primaryButtonText="Save"
+        primaryButtonColor="brand"
+        onCancel={() => setShowSaveConfirm(false)}
+      />
     </>
   );
 };

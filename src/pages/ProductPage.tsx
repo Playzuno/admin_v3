@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { ActionContainer } from '../components/containers';
 import MenuCategory, { MenuItem } from '../components/menu/MenuCategory';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
+import ScanProgress from '@/components/ui/ScanProgress';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
 import { ChevronRightIcon, Copy, ExternalLink } from 'lucide-react';
@@ -52,9 +53,12 @@ const defaultCategories: Category[] = [
 const ProductPage: React.FC = () => {
   const { branch } = useOrg();
   const [products, setProducts] = useState<Product[]>([]);
+  const [trainedProductsCount, setTrainedProductsCount] = useState<number>(0);
   const [originalCategories, setOriginalCategories] =
     useState<Category[]>(defaultCategories);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+
   const fetchProducts = async () => {
     if (!branch) {
       return;
@@ -72,6 +76,18 @@ const ProductPage: React.FC = () => {
   }, [branch]);
 
   useEffect(() => {
+    let trainedProdsCount  = 0;
+    products?.map((product) => {
+      if(product?.videoURL && product?.videoURL != "") {
+          trainedProdsCount += 1;
+        }
+    })
+    setTrainedProductsCount(trainedProdsCount);
+
+  }, [products])
+
+  useEffect(() => {
+    
     setOriginalCategories(orgCategories => {
       const newCategories = orgCategories.map(v => {
         return {
@@ -79,7 +95,9 @@ const ProductPage: React.FC = () => {
           items: [],
         };
       });
+      
       products.forEach(product => {
+
         const category = newCategories.find(
           c => c.id === product.categoryId.toString()
         );
@@ -90,10 +108,28 @@ const ProductPage: React.FC = () => {
             newCategories.find(c => c.id === category.id)?.items.push(product);
             return newCategories;
           });
+
+          // setOriginalCategories(prev => {
+          //   const newCategories = [...prev];
+          //   const targetCategory = newCategories.find(
+          //     c => c.id === category.id
+          //   );
+
+          //   if (targetCategory) {
+          //     // Update the category name in case it changed
+          //     targetCategory.name = category.name;
+
+          //     // Push the product into the category's items
+          //     targetCategory.items.push(product);
+          //   }
+
+          //   return newCategories;
+          // });
         }
       });
       return newCategories;
     });
+    
   }, [products]);
 
   const onUpdateItem = (
@@ -459,14 +495,20 @@ const ProductPage: React.FC = () => {
     }
   };
 
+
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 absolute top-10 right-10">
+    <div className="space-y-8 mb-5">
+      <div className="flex flex-col absolute top-[1.6rem] right-12">
+        <div className="flex justify-end relative w-[24rem]">
+          <ScanProgress label="Product Trained" progress={products?.length ? Math.trunc(trainedProductsCount / products.length * 100) : 0} />
+          </div>
+          </div>
+      { !hasChanges && <div className="flex flex-col gap-4 absolute top-[4.6rem] right-10">
         <div className="flex gap-2 justify-end relative">
           <Button
             variant="primary"
             onClick={() => setIsScanModalOpen(true)}
-            size="sm"
+            size="xs"
             bgColor="purple-100"
           >
             Scan Products
@@ -475,16 +517,16 @@ const ProductPage: React.FC = () => {
           <Button
             variant="primary"
             onClick={trainModel}
-            size="sm"
+            size="xs"
             bgColor="purple-100"
-            disabled={currentJobs && currentJobs.length > 0}
+            disabled={currentJobs && Object.keys(currentJobs)?.length > 0}
           >
             Train models
           </Button>
           <Button
             variant="primary"
             onClick={() => setIsUploadModalOpen(true)}
-            size="sm"
+            size="xs"
             bgColor="brand"
           >
             Add Products
@@ -572,12 +614,14 @@ const ProductPage: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> }
+      
       <ActionContainer
         title="Menu Category Plan"
         onCancel={hasChanges ? handleCancel : undefined}
         onSave={hasChanges ? handleSave : undefined}
         saveDisabled={!hasChanges || isSaving}
+        heightVal={100}
       >
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="flex flex-nowrap -mx-3 justify-between overflow-x-auto">
