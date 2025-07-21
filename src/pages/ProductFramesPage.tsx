@@ -149,7 +149,7 @@ const FrameGrid = ({
           />
           {!deletedIds?.includes(frame.id) && (
             <div onClick={e => e.stopPropagation()}>
-              <div className="absolute w-[8.6rem] h-[6.8rem] cursor-default bg-stroke-dark/40 top-0 left-0"></div>
+              <div className="absolute w-[9.1rem] h-[7.3rem] cursor-default border-[4px] border-stroke-dark/40 -top-[4px] -left-[4px]"></div>
               <div
                 onClick={e => {
                   e.stopPropagation();
