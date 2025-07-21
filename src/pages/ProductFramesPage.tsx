@@ -16,7 +16,7 @@ import {
   Clapperboard,
   Images,
   X,
-  Cog
+  Cog,
 } from 'lucide-react';
 import { Dot, Frame } from '@/types';
 import CustomVideoPlayer from '../components/ui/CustomVideoPlayer';
@@ -180,6 +180,8 @@ const ProductFramesPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [showClearAllFramesConfirm, setShowClearAllFramesConfirm] =
+    useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showPlayVideo, setShowPlayVideo] = useState(false);
 
@@ -367,6 +369,15 @@ const ProductFramesPage = () => {
     }
   };
 
+  const confirmClearAllFrames = () => {
+    setShowClearAllFramesConfirm(false);
+    deleteFrames(
+      branchId,
+      productId,
+      frames.map(({ id }) => id)
+    );
+  };
+
   return (
     <>
       <ActionContainer
@@ -377,15 +388,29 @@ const ProductFramesPage = () => {
       >
         <div className="flex flex-row gap-4 mt-5 justify-between mx-16">
           <div className="flex gap-6 relative">
-            <Button size="hmd" icon={Clapperboard} onClick={() => setShowPlayVideo(!showPlayVideo)} variant={`${ showPlayVideo ? 'secondary' : 'zuno-light' }`}>
+            <Button
+              size="hmd"
+              icon={Clapperboard}
+              onClick={() => setShowPlayVideo(!showPlayVideo)}
+              variant={`${showPlayVideo ? 'secondary' : 'zuno-light'}`}
+            >
               View video
             </Button>
-            <Button size="hmd" onClick={() => { setShowPlayVideo(false) }} icon={Images} variant="secondary">
+            <Button
+              size="hmd"
+              onClick={() => {
+                setShowPlayVideo(false);
+              }}
+              icon={Images}
+              variant="secondary"
+            >
               Images
             </Button>
-            { showPlayVideo && <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
-              <CustomVideoPlayer product={product || {}} />
-            </div> }
+            {showPlayVideo && (
+              <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
+                <CustomVideoPlayer product={product || {}} />
+              </div>
+            )}
           </div>
           <div className="w-1/3">
             <ScanProgress
@@ -581,11 +606,7 @@ const ProductFramesPage = () => {
                   <button
                     className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
                     onClick={() =>
-                      deleteFrames(
-                        branchId,
-                        productId,
-                        frames.map(({ id }) => id)
-                      )
+                      setShowClearAllFramesConfirm(true)
                     }
                   >
                     Clear all frames
@@ -619,6 +640,15 @@ const ProductFramesPage = () => {
         primaryButtonColor="brand"
         onCancel={() => setShowSaveConfirm(false)}
       />
+      <ConfirmDialog
+        isOpen={showClearAllFramesConfirm}
+        title="Save Changes"
+        message="Are you sure you want to clear all frames? This action cannot be undone."
+        onConfirm={confirmClearAllFrames}
+        primaryButtonText="Sure"
+        primaryButtonColor="brand"
+        onCancel={() => setShowClearAllFramesConfirm(false)}
+      />
     </>
   );
 };
@@ -640,36 +670,36 @@ const ExtractFrames = ({
   ) {
     return (
       <div className="flex flex-col items-center justify-center p-4 text-center">
-  <div className="flex items-center space-x-2">
-    <svg
-      className="animate-spin h-5 w-5 text-blue-500"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      ></circle>
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v8H4z"
-      ></path>
-    </svg>
-    <span className="text-sm text-gray-700">
-      Hang tight! We’re working on your image
-    </span>
-  </div>
-  <p className="mt-2 text-xs text-gray-500">
-    This process may take a few moments depending on the image size and complexity.
-  </p>
-</div>
-
+        <div className="flex items-center space-x-2">
+          <svg
+            className="animate-spin h-5 w-5 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"
+            ></path>
+          </svg>
+          <span className="text-sm text-gray-700">
+            Hang tight! We’re working on your image
+          </span>
+        </div>
+        <p className="mt-2 text-xs text-gray-500">
+          This process may take a few moments depending on the image size and
+          complexity.
+        </p>
+      </div>
     );
   }
 
