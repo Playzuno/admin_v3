@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Cog } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 
-
-export default function CustomVideoPlayer({ product }) {
+export default function CustomVideoPlayer({ product, extractFrames }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTryingToPlay, setIsTryingToPlay] = useState(false);
@@ -215,6 +215,15 @@ export default function CustomVideoPlayer({ product }) {
                   )}
                 </div>
               </div>
+              {product.videoURL ? (
+                  <div className="flex">
+                    <Button variant="secondary" onClick={extractFrames}>
+                      Extract frames from video
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-brand-500">Please upload a video for this product</div>
+                )}
             </div>
           </>
         ) : (

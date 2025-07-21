@@ -274,14 +274,12 @@ const ProductFramesPage = () => {
   };
   const extractFrames = async () => {
     if (!branchId || !productId) return;
+    setShowPlayVideo(false);
     const { data, status } = await objectDetectionApi.extractFrames(
       branchId,
       productId
     );
     if (status === 200 && data.success) {
-      alert(
-        'The frames are currently extracted from the provided video please wait pateintly'
-      );
       getCurrentJobs(branchId, 'extract_frames');
     }
   };
@@ -404,6 +402,8 @@ const ProductFramesPage = () => {
     );
   };
 
+  console.log('currentJobs, frames >>', currentJobs, frames);
+
   return (
     <>
       <ActionContainer
@@ -434,7 +434,10 @@ const ProductFramesPage = () => {
             </Button>
             {showPlayVideo && (
               <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
-                <CustomVideoPlayer product={product || {}} />
+                <CustomVideoPlayer
+                  product={product || {}}
+                  extractFrames={extractFrames}
+                />
               </div>
             )}
           </div>
@@ -561,7 +564,10 @@ const ProductFramesPage = () => {
         ) : (
           <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
             <div className="text-base mb-4">
-              Exclude unqualified images from the training model
+              {currentJobs.status === 'pending' &&
+                currentJobs.jobType === 'extract_frames' &&
+                frames.length !== 0 &&
+                'Exclude unqualified images from the training model'}
             </div>
             <div className="flex flex-col gap-4">
               {isLoading ? (
@@ -596,37 +602,10 @@ const ProductFramesPage = () => {
                     <>
                       {currentJobs?.status === 'pending' &&
                       currentJobs?.jobType === 'sam2_process_frames' ? (
-                        <div className="flex flex-col items-center justify-center p-4 text-center">
-                          <div className="flex items-center space-x-2">
-                            <svg
-                              className="animate-spin h-5 w-5 text-blue-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8v8H4z"
-                              ></path>
-                            </svg>
-                            <span className="text-sm text-gray-700">
-                              Hang tight! We’re working on your image...
-                            </span>
-                          </div>
-                          <p className="mt-2 text-xs text-gray-500">
-                            This process may take a few moments depending on the
-                            image size and complexity.
-                          </p>
-                        </div>
+                        <ExtractFrames
+                          branchId={branchId}
+                          currentJob={currentJobs}
+                        />
                       ) : (
                         <FrameGrid
                           frames={frames}
@@ -638,12 +617,31 @@ const ProductFramesPage = () => {
                     </>
                   ) : (
                     <>
-                      {product && (
+                      {product && Object.keys(currentJobs).length == 0 ? (
+                        <div className="flex flex-col items-center justify-center text-center py-10 px-4 bg-secondary-50 rounded-xl border border-secondary-100 text-brand-purple-dark shadow-sm">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-8 w-8 mb-3 text-brand-purple-dark"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                            />
+                          </svg>
+                          <p className="text-lg font-medium">No frames found</p>
+                          <p className="text-sm text-brand-purple-dark/70 mt-1">
+                            Please click the 'Extract frames from video' button in video player to extract images.
+                          </p>
+                        </div>
+                      ) : (
                         <ExtractFrames
-                          product={product}
                           branchId={branchId}
                           currentJob={currentJobs}
-                          extractFrames={extractFrames}
                         />
                       )}
                     </>
@@ -702,63 +700,46 @@ const ProductFramesPage = () => {
 };
 
 const ExtractFrames = ({
-  product,
-  extractFrames,
+  branchId,
   currentJob,
 }: {
-  product: Product;
   branchId: string;
-  extractFrames: () => Promise<void>;
   currentJob: any;
 }) => {
   console.log('rr', currentJob);
-  if (
-    currentJob.status === 'pending' &&
-    currentJob.jobType === 'extract_frames'
-  ) {
-    return (
-      <div className="flex flex-col items-center justify-center p-4 text-center">
-        <div className="flex items-center space-x-2">
-          <svg
-            className="animate-spin h-5 w-5 text-blue-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            ></path>
-          </svg>
-          <span className="text-sm text-gray-700">
-            Hang tight! We’re working on your image
-          </span>
-        </div>
-        <p className="mt-2 text-xs text-gray-500">
-          This process may take a few moments depending on the image size and
-          complexity.
-        </p>
-      </div>
-    );
-  }
 
-  return product.videoURL ? (
-    <div className="flex">
-      <Button variant="secondary" onClick={extractFrames}>
-        Extract frames from video
-      </Button>
+  return (
+    <div className="flex flex-col items-center justify-center p-4 text-center">
+      <div className="flex items-center space-x-2">
+        <svg
+          className="animate-spin h-5 w-5 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+        <span className="text-sm text-gray-700">
+          Hang tight! We’re working on your image
+        </span>
+      </div>
+      <p className="mt-2 text-xs text-gray-500">
+        This process may take a few moments depending on the image size and
+        complexity.
+      </p>
     </div>
-  ) : (
-    <div className="text-brand-500">Please upload a video for this product</div>
   );
 };
 
