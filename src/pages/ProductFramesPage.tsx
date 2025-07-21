@@ -337,7 +337,33 @@ const ProductFramesPage = () => {
     return navigate('/products');
   }
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-[80vh] w-full">
+        <div className="flex items-center gap-4 text-brand-purple-dark">
+          <svg
+            className="animate-spin h-8 w-8 text-brand-purple-dark"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
+          {/* <span className="text-xl font-semibold"></span> */}
+        </div>
+      </div>
+    );
   }
 
   const handleCancel = () => {
@@ -539,7 +565,31 @@ const ProductFramesPage = () => {
             </div>
             <div className="flex flex-col gap-4">
               {isLoading ? (
-                <div className="text-center py-8">Loading images...</div>
+                <div className="flex items-center justify-center gap-2 py-8 text-brand-purple-dark">
+                  <svg
+                    className="animate-spin h-5 w-5 text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>
+                  <span className="text-gray-700 text-sm font-medium">
+                    Loading images...
+                  </span>
+                </div>
               ) : (
                 <>
                   {frames.length > 0 ? (
@@ -605,9 +655,7 @@ const ProductFramesPage = () => {
                 {frames?.length > 0 && (
                   <button
                     className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#EDEDED] text-[#4B2994] font-medium bg-white hover:bg-[#F3EFFF] transition"
-                    onClick={() =>
-                      setShowClearAllFramesConfirm(true)
-                    }
+                    onClick={() => setShowClearAllFramesConfirm(true)}
                   >
                     Clear all frames
                   </button>
