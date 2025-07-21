@@ -510,7 +510,7 @@ const ProductFramesPage = () => {
         ) : (
           <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
             <div className="text-base mb-4">
-              Select one or multiple images to train model
+              Exclude unqualified images from the training model
             </div>
             <div className="flex flex-col gap-4">
               {isLoading ? (
