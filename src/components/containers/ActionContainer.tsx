@@ -39,7 +39,7 @@ const ActionContainer: React.FC<ActionContainerProps> = ({
           )}
         </div>
       </div>
-      <div className="p-6 min-h-[50vh]">{children}</div>
+      <div className="p-6 min-h-[88vh]">{children}</div>
     </div>
   );
 };

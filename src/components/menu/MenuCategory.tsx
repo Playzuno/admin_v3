@@ -174,7 +174,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                     }
                   >
                     <MoreVertical
-                      className={`w-4 h-4 ${ openMenuId === item.id ? 'text-brand-500': 'text-gray-400' } cursor-pointer`}
+                      className={`w-4 h-4 ${openMenuId === item.id ? 'text-brand-500' : 'text-gray-400'} cursor-pointer`}
                       onClick={e => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === item.id ? null : item.id);
@@ -184,7 +184,8 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                       <div
                         ref={el => (menuRefs.current[item.id] = el)}
                         className={`dropdown-menu absolute -left-2 ${
-                          items.length > Math.floor(window.innerHeight / (60 + 90)) &&
+                          items.length >
+                            Math.floor(window.innerHeight / (60 + 90)) &&
                           index >= Math.floor(items.length * 0.7)
                             ? 'bottom-8'
                             : 'top-5'
@@ -307,10 +308,21 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                         alt="tick"
                         className="w-4 h-4 cursor-pointer"
                         onClick={() => {
-                          if (item.videoURL) {
-                            navigator.clipboard.writeText(item.videoURL);
-                            toast.success('URL copied to clipboard');
-                          }
+                          toast.custom(t => (
+                            <div
+                              className={`${
+                                t.visible ? 'animate-enter' : 'animate-leave'
+                              } max-w-md w-full bg-secondary-50 text-brand-500 px-4 py-3 rounded-xl shadow-lg border border-secondary-200`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="text-xl mt-0.5">ℹ️</div>
+                                <div className="text-sm font-medium leading-snug">
+                                  Please open the scanner app, select the
+                                  required product, and initiate the scan again.
+                                </div>
+                              </div>
+                            </div>
+                          ));
                         }}
                       />
                     ) : (
