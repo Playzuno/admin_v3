@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Cog } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
-
-export default function CustomVideoPlayer({ product, extractFrames }) {
+export default function CustomVideoPlayer({ product }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isTryingToPlay, setIsTryingToPlay] = useState(false);
@@ -27,7 +26,7 @@ export default function CustomVideoPlayer({ product, extractFrames }) {
       video
         .play()
         .then(() => setIsPlaying(true))
-        .catch((err) => {
+        .catch(err => {
           console.error('Video play error:', err);
           setIsPlaying(false);
         })
@@ -39,8 +38,12 @@ export default function CustomVideoPlayer({ product, extractFrames }) {
   };
 
   const formatTime = (time: number) => {
-    const mins = Math.floor(time / 60).toString().padStart(2, '0');
-    const secs = Math.floor(time % 60).toString().padStart(2, '0');
+    const mins = Math.floor(time / 60)
+      .toString()
+      .padStart(2, '0');
+    const secs = Math.floor(time % 60)
+      .toString()
+      .padStart(2, '0');
     return `${mins}:${secs}`;
   };
 
@@ -188,14 +191,14 @@ export default function CustomVideoPlayer({ product, extractFrames }) {
                     type="button"
                     className="ml-2"
                     aria-label="Settings"
-                    onClick={() => setShowSettings((prev) => !prev)}
+                    onClick={() => setShowSettings(prev => !prev)}
                   >
                     <Cog size={14} />
                   </button>
 
                   {showSettings && (
                     <div className="absolute bottom-8 right-0 bg-black text-white text-[10px] rounded border border-white/10 p-1 shadow-md z-50 min-w-[60px] settings-menu">
-                      {[0.5, 1, 1.25, 1.5, 2].map((rate) => (
+                      {[0.5, 1, 1.25, 1.5, 2].map(rate => (
                         <button
                           key={rate}
                           onClick={() => {
@@ -215,15 +218,6 @@ export default function CustomVideoPlayer({ product, extractFrames }) {
                   )}
                 </div>
               </div>
-              {product.videoURL ? (
-                  <div className="flex">
-                    <Button variant="secondary" onClick={extractFrames}>
-                      Extract frames from video
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="text-brand-500">Please upload a video for this product</div>
-                )}
             </div>
           </>
         ) : (

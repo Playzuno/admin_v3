@@ -402,8 +402,6 @@ const ProductFramesPage = () => {
     );
   };
 
-  console.log('currentJobs, frames >>', currentJobs, frames);
-
   return (
     <>
       <ActionContainer
@@ -436,8 +434,18 @@ const ProductFramesPage = () => {
               <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
                 <CustomVideoPlayer
                   product={product || {}}
-                  extractFrames={extractFrames}
                 />
+                {product?.videoURL ? (
+                  <div className="flex items-center justify-center mt-2">
+                    <Button variant="secondary" fullWidth={true} onClick={extractFrames}>
+                      Extract frames from video
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-brand-500">
+                    Please upload a video for this product to extract
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -562,7 +570,7 @@ const ProductFramesPage = () => {
             </div>
           </div>
         ) : (
-          <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6">
+          <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6 min-h-[60vh]">
             <div className="text-base mb-4">
               {currentJobs.status === 'pending' &&
                 currentJobs.jobType === 'extract_frames' &&
@@ -635,7 +643,8 @@ const ProductFramesPage = () => {
                           </svg>
                           <p className="text-lg font-medium">No frames found</p>
                           <p className="text-sm text-brand-purple-dark/70 mt-1">
-                            Please click the 'Extract frames from video' button in video player to extract images.
+                            Please click the 'Extract frames from video' button
+                            in video player to extract images.
                           </p>
                         </div>
                       ) : (
