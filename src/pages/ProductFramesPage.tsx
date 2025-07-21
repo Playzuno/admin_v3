@@ -413,15 +413,6 @@ const ProductFramesPage = () => {
         <div className="flex flex-row gap-4 mt-5 justify-between mx-16">
           <div className="flex gap-6 relative">
             <Button
-              size="hmd"
-              icon={Clapperboard}
-              onClick={() => setShowPlayVideo(!showPlayVideo)}
-              variant={`${showPlayVideo ? 'secondary' : 'zuno-light'}`}
-            >
-              View video
-            </Button>
-            <Button
-              size="hmd"
               onClick={() => {
                 setShowPlayVideo(false);
               }}
@@ -429,6 +420,13 @@ const ProductFramesPage = () => {
               variant="secondary"
             >
               Images
+            </Button>
+            <Button
+              icon={Clapperboard}
+              onClick={() => setShowPlayVideo(!showPlayVideo)}
+              variant={`${showPlayVideo ? 'secondary' : 'zuno-light'}`}
+            >
+              View video
             </Button>
             {showPlayVideo && (
               <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
