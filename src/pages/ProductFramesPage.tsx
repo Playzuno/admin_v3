@@ -280,6 +280,9 @@ const ProductFramesPage = () => {
       productId
     );
     if (status === 200 && data.success) {
+      if(frames?.length !== 0) {
+        toast.success("Frame extraction from the video has started in the background")
+      }
       getCurrentJobs(branchId, 'extract_frames');
     }
   };
@@ -385,6 +388,9 @@ const ProductFramesPage = () => {
         deleteFrames(branchId, productId, deletedIds);
         setDeletedIds([]);
         toast.success('Deleted unselected images successfully');
+        setTimeout(() => {
+          navigate('/products');
+        }, 3000);
       }
     } catch (error) {
       toast.error('Failed to save changes. Please try again.');
@@ -429,13 +435,15 @@ const ProductFramesPage = () => {
               View video
             </Button>
             {showPlayVideo && (
-              <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
-                <CustomVideoPlayer
-                  product={product || {}}
-                />
+              <div className="absolute p-6 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
+                <CustomVideoPlayer product={product || {}} />
                 {product?.videoURL ? (
                   <div className="flex items-center justify-center mt-2">
-                    <Button variant="secondary" fullWidth={true} onClick={extractFrames}>
+                    <Button
+                      variant="secondary"
+                      fullWidth={true}
+                      onClick={extractFrames}
+                    >
                       Extract frames from video
                     </Button>
                   </div>
@@ -570,9 +578,9 @@ const ProductFramesPage = () => {
         ) : (
           <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6 min-h-[60vh]">
             <div className="text-base mb-4">
-              {currentJobs.status === 'pending' &&
+              {((currentJobs.status === 'pending' &&
                 currentJobs.jobType === 'extract_frames' &&
-                frames.length !== 0 &&
+                frames.length !== 0) || (Object.keys(currentJobs)?.length === 0)) &&
                 'Exclude unqualified images from the training model'}
             </div>
             <div className="flex flex-col gap-4">

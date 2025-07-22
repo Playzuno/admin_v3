@@ -302,8 +302,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                   )}
                 </button> */}
                   <div>
-                    {item.videoURL ? (
-                      <img
+                    {item?.videoURL ? ( item?.trained ? <img
                         src="/assets/icons/svg/tick.svg"
                         alt="tick"
                         className="w-4 h-4 cursor-pointer"
@@ -324,6 +323,10 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                             </div>
                           ));
                         }}
+                      /> : <img
+                        src="/assets/icons/svg/not-trained.svg"
+                        alt="not trained"
+                        className="w-4 h-4 cursor-pointer"
                       />
                     ) : (
                       <img
