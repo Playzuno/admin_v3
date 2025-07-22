@@ -519,7 +519,8 @@ const ProductPage: React.FC = () => {
             onClick={trainModel}
             size="xs"
             bgColor="purple-100"
-            disabled={currentJobs && Object.keys(currentJobs)?.length > 0}
+            disabled={currentJobs?.status === 'pending' &&
+                currentJobs.jobType === 'train_model'}
           >
             Train models
           </Button>
