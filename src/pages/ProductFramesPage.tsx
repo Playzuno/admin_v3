@@ -280,9 +280,6 @@ const ProductFramesPage = () => {
       productId
     );
     if (status === 200 && data.success) {
-      if(frames?.length !== 0) {
-        toast.success("Frame extraction from the video has started in the background")
-      }
       getCurrentJobs(branchId, 'extract_frames');
     }
   };
