@@ -78,7 +78,7 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     let trainedProdsCount  = 0;
     products?.map((product) => {
-      if(product?.videoURL && product?.videoURL != "") {
+      if(product?.videoURL && product?.trained) {
           trainedProdsCount += 1;
         }
     })
