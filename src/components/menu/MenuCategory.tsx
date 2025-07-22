@@ -326,7 +326,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({
                       /> : <img
                         src="/assets/icons/svg/not-trained.svg"
                         alt="not trained"
-                        className="w-4 h-4 cursor-pointer"
+                        className="w-4 h-4"
                       />
                     ) : (
                       <img
