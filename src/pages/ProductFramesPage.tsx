@@ -385,6 +385,9 @@ const ProductFramesPage = () => {
         deleteFrames(branchId, productId, deletedIds);
         setDeletedIds([]);
         toast.success('Deleted unselected images successfully');
+        setTimeout(() => {
+          navigate('/products');
+        }, 3000);
       }
     } catch (error) {
       toast.error('Failed to save changes. Please try again.');
@@ -430,12 +433,14 @@ const ProductFramesPage = () => {
             </Button>
             {showPlayVideo && (
               <div className="absolute p-6 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
-                <CustomVideoPlayer
-                  product={product || {}}
-                />
+                <CustomVideoPlayer product={product || {}} />
                 {product?.videoURL ? (
                   <div className="flex items-center justify-center mt-2">
-                    <Button variant="secondary" fullWidth={true} onClick={extractFrames}>
+                    <Button
+                      variant="secondary"
+                      fullWidth={true}
+                      onClick={extractFrames}
+                    >
                       Extract frames from video
                     </Button>
                   </div>
