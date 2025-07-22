@@ -280,6 +280,9 @@ const ProductFramesPage = () => {
       productId
     );
     if (status === 200 && data.success) {
+      if(frames?.length !== 0) {
+        toast.success("Frame extraction from the video has started in the background")
+      }
       getCurrentJobs(branchId, 'extract_frames');
     }
   };
@@ -575,9 +578,9 @@ const ProductFramesPage = () => {
         ) : (
           <div className="mt-10 border-dashed border-2 zuno-border-dark  bg-[#FBFBFB] rounded-2xl p-6 min-h-[60vh]">
             <div className="text-base mb-4">
-              {currentJobs.status === 'pending' &&
+              {((currentJobs.status === 'pending' &&
                 currentJobs.jobType === 'extract_frames' &&
-                frames.length !== 0 &&
+                frames.length !== 0) || (Object.keys(currentJobs)?.length === 0)) &&
                 'Exclude unqualified images from the training model'}
             </div>
             <div className="flex flex-col gap-4">
