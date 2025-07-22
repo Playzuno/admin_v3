@@ -429,7 +429,7 @@ const ProductFramesPage = () => {
               View video
             </Button>
             {showPlayVideo && (
-              <div className="absolute p-12 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
+              <div className="absolute p-6 top-[68px] -left-16 bg-black/30 backdrop-blur-md rounded-2xl shadow-lg z-10 w-[40vw]">
                 <CustomVideoPlayer
                   product={product || {}}
                 />
