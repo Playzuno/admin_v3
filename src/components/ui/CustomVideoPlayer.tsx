@@ -117,7 +117,7 @@ export default function CustomVideoPlayer({ product }) {
             <video
               ref={videoRef}
               src={product!.videoURL}
-              className="w-full min-h-[32px]"
+              className="w-full min-h-[32px] max-h-[15.5rem]"
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleLoadedMetadata}
               onWaiting={handleWaiting}
@@ -129,7 +129,7 @@ export default function CustomVideoPlayer({ product }) {
             />
 
             {/* Center Play Button (shown when not playing or at end) */}
-            {!isPlaying && (
+            {!isPlaying && !isBuffering && (
               <button
                 type="button"
                 onClick={togglePlay}
