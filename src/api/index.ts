@@ -16,7 +16,7 @@ import {
   SseMenuInternalResponse,
   SseMenuParserData,
 } from '@/types';
-import { ApiClient } from './client';
+import { ApiClient, ApiClientWithoutToken } from './client';
 import { Role } from '@/types/role';
 
 export interface ApiErrorType extends Error {
@@ -46,6 +46,14 @@ const getBearerToken = (): string | null => {
 const baseURL = import.meta.env.VITE_API_URL + '/v1';
 // Create and export the default API client instance
 export const api = new ApiClient({
+  baseURL,
+  timeout: 30000,
+  headers: {
+    Accept: 'application/json',
+  },
+});
+
+export const apiWithoutToken = new ApiClientWithoutToken({
   baseURL,
   timeout: 30000,
   headers: {
@@ -1285,7 +1293,7 @@ export const assetV2Api = {
     data: any
   ): Promise<{  data: any; status: number }> => {
     try {
-      const response = await api.put(`${endPoint}`, data, {headers: {
+      const response = await apiWithoutToken.put(endPoint, data, {headers: {
         'Content-Type': data.type || 'application/octet-stream',
       }});
       return response;

@@ -40,8 +40,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
-  console.log('selectedFile >>>', selectedFile);
-
   return (
     <div className="space-y-4">
       <h2 className="container-title-2 text-center">UPLOAD COUPON IMAGE</h2>
