@@ -139,24 +139,23 @@ const RewardsPage: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     validateField('value', formData.value.toString());
     validateField('zunoValue', formData.zunoValue.toString());
 
-    if (!errors.value && !errors.zunoValue) {
-      setHasChanges(false);
-      setShowNewCouponForm(false);
-    }
+    if (errors.value || errors.zunoValue) return;
+
+    setHasChanges(false);
     setIsEditing(false);
 
-    const coupon = {
+    const coupon: any = {
       ...formData,
       title: formData.name,
       company: formData.company,
       value: Number(formData.value),
       zunoValue: Number(formData.zunoValue),
       theme: {
-        color: formData.color
+        color: formData.color,
       },
       active: formData.status,
     };
@@ -165,74 +164,65 @@ const RewardsPage: React.FC = () => {
     let assetRefId = '';
 
     try {
-      
+      // Upload asset only if all required conditions are met
+      if (branch?.isMain && branch?.active && branch?.id && formData?.image) {
+        const assetRes = await assetV2Api.create({
+          entityId: branch.id,
+          entityType: 'branch',
+          contentType: formData.image.type,
+        });
 
-      if (
-        branch &&
-        branch?.isMain &&
-        branch?.active &&
-        branch?.id &&
-        formData?.image
-      ) {
-        assetV2Api
-          .create({
-            entityId: branch?.id,
-            entityType: 'branch',
-            contentType: formData?.image?.type,
-          })
-          .then(res => {
-            console.log('res asset>>>>>>>>', res);
-            if (res?.data && res?.status === 200) {
-              assetRefId = res?.data?.assetId || '';
-              assetUploadURL = res?.data?.uploadURL || '';
+        if (assetRes?.data && assetRes.status === 200) {
+          assetUploadURL = assetRes.data.uploadURL;
+          assetRefId = assetRes.data.assetId;
 
-              console.log('formData?.image >>>', formData?.image, formData?.image?.type);
-
-              if (assetUploadURL && formData?.image) {
-                assetV2Api
-                  .uploadAsset(assetUploadURL, formData?.image)
-                  .then(res => {
-                    console.log('res asset url >>>>>>>>', res);
-                    if (res?.status === 200) {
-                      console.log('Image uploaded successfully!');
-                    }
-                  })
-                  .catch(err => {
-                    console.log('Got error when uploading asset in url, ', err);
-                  });
-              } else {
-                console.log('Got issues in asset upload!');
-              }
-
-              console.log('coupon >>>>>>', coupon);
+          if (assetUploadURL && formData.image) {
+            const uploadRes = await assetV2Api.uploadAsset(
+              assetUploadURL,
+              formData.image
+            );
+            if (uploadRes?.status === 200) {
+              console.log('Image uploaded successfully!');
+            } else {
+              console.warn('Asset upload failed');
             }
-          });
-      } else {
-        console.log('Got issues in asset upload or image not selected for upload!');
+          }
+        } else {
+          console.warn('Asset creation failed');
+        }
       }
     } catch (e) {
-      console.log('Got issues in asset upload!, ', e);
+      console.error('Asset upload error:', e);
       toast.error('Got issues in asset upload!');
     }
 
-    if (!selectedCouponId) {
-      couponApi.create(coupon).then((res) => {
-        console.log("res >>+", res)
-        if(formData?.image && assetRefId && assetUploadURL && res?.data && res?.data?.id && res.status === 201) {
-        couponApi.update(res?.data?.id, { assetId: assetRefId }).then(() => {
-          console.log("Done adding of asset id in created coupon.")
-      });
+    // Attach assetId if available
+    if (assetRefId) {
+      coupon.assetId = assetRefId;
+    }
+
+    try {
+      if (!selectedCouponId) {
+        const res = await couponApi.create(coupon);
+
+        if (
+          res.status === 201
+        ) {
+          console.log("res of creation >", res);
+          SuccessToast('Coupon created successfully');
         }
-        SuccessToast('Coupon created successfully');
-        setShowNewCouponForm(false);
-        fetchCoupons();
-      });
-    } else {
-      couponApi.update(selectedCouponId, coupon).then(() => {
-        setShowNewCouponForm(false);
+
+        
+      } else {
+        await couponApi.update(selectedCouponId, coupon);
         SuccessToast('Coupon updated successfully');
-        fetchCoupons();
-      });
+      }
+
+      setShowNewCouponForm(false);
+      fetchCoupons();
+    } catch (err) {
+      console.error('Coupon create/update error:', err);
+      toast.error('Failed to save coupon.');
     }
   };
 
@@ -247,7 +237,7 @@ const RewardsPage: React.FC = () => {
       color: coupon.theme.color,
       status: coupon.active,
     });
-    setPreviewImage(coupon.theme.image);
+    setPreviewImage(coupon.assetURL);
   };
 
   const handleUpdateCoupon = (coupon: Coupon) => {
@@ -262,7 +252,7 @@ const RewardsPage: React.FC = () => {
       color: coupon.theme.color,
       status: coupon.active,
     });
-    setPreviewImage(coupon.theme.image);
+    setPreviewImage(coupon.assetURL);
   };
 
   const handleDeleteCoupon = (couponId: string) => {

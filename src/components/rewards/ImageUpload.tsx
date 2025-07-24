@@ -16,6 +16,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onClear,
 }) => {
   const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState({});
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -35,8 +36,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
       onFileSelect(file);
+      setSelectedFile(file);
     }
   };
+
+  console.log('selectedFile >>>', selectedFile);
 
   return (
     <div className="space-y-4">
@@ -72,7 +76,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               input.accept = 'image/*';
               input.onchange = e => {
                 const file = (e.target as HTMLInputElement).files?.[0];
-                if (file) onFileSelect(file);
+                if (file) {
+                  onFileSelect(file);
+                  setSelectedFile(file);
+                }
               };
               input.click();
             }}
@@ -85,14 +92,32 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {previewImage && (
         <div className="mt-6">
           <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4  w-full">
               <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                <span className="text-xs font-medium">PNG</span>
+                <span className="text-xs font-medium">
+                  {(() => {
+                    const mime = selectedFile?.type || '';
+                    const ext = mime.split('/')[1] || '';
+
+                    const map: Record<string, string> = {
+                      jpeg: 'jpeg',
+                      jpg: 'jpeg',
+                      png: 'png',
+                      webp: 'webp',
+                      'svg+xml': 'svg',
+                      gif: 'gif',
+                      bmp: 'bmp',
+                      tiff: 'tif',
+                    };
+
+                    return map[ext] || ext.slice(0, 4);
+                  })()}
+                </span>
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-gray-700">
-                    Amazon coupon.png
+                  <span className="font-medium text-gray-700 inline-block max-w-[200px] truncate">
+                    {selectedFile?.name || ''}
                   </span>
                   <span className="ml-3 text-gray-500">{uploadProgress}%</span>
                 </div>

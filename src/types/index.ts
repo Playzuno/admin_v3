@@ -287,6 +287,8 @@ export interface Coupon {
     image: string;
     link: string;
   };
+  assetId: string;
+  assetURL: string;
   createdAt: string;
   updatedAt: string;
 }
