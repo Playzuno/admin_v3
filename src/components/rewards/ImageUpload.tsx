@@ -95,7 +95,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <span className="text-xs font-medium">
                   {(() => {
                     const mime = selectedFile?.type || '';
-                    const ext = mime.split('/')[1] || '';
+                    const ext = mime.split('/')[1] || 'jpeg';
 
                     const map: Record<string, string> = {
                       jpeg: 'jpeg',
@@ -114,8 +114,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-gray-700 inline-block max-w-[200px] truncate">
-                    {selectedFile?.name || ''}
+                  <span className="font-medium text-gray-700 inline-block max-w-[170px] truncate">
+                    {selectedFile?.name || 'Uploaded Image'}
                   </span>
                   <span className="ml-3 text-gray-500">{uploadProgress}%</span>
                 </div>
