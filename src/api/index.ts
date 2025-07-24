@@ -4,6 +4,7 @@ import {
   BranchMemberResponse,
   BranchStats,
   Coupon,
+  AssetV2,
   EndUserStats,
   FeedbackReport,
   FeedbackSummaryResponse,
@@ -1260,6 +1261,33 @@ export const rewardsAndPlansApi = {
   ): Promise<{ data: any; status: number; headers?: Headers }> => {
     try {
       const response = await api.delete(`/plans/${id}`);
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+};
+
+// Assets V2 APIs
+export const assetV2Api = {
+  create: async (
+    data: AssetV2
+  ): Promise<{  data: any; status: number }> => {
+    try {
+      const response = await api.post<AssetV2>('/assets/getUploadURL', data);
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
+  uploadAsset: async (
+    endPoint: string,
+    data: any
+  ): Promise<{  data: any; status: number }> => {
+    try {
+      const response = await api.put(`${endPoint}`, data, {headers: {
+        'Content-Type': data.type || 'application/octet-stream',
+      }});
       return response;
     } catch (error) {
       throw handleRequestError(error);
