@@ -1272,14 +1272,27 @@ export const rewardsAndPlansApi = {
 export const assetV2Api = {
   create: async (
     data: AssetV2
-  ): Promise<{ data: AssetV2 }> => {
+  ): Promise<{  data: any; status: number }> => {
     try {
       const response = await api.post<AssetV2>('/assets/getUploadURL', data);
       return response;
     } catch (error) {
       throw handleRequestError(error);
     }
-  }
+  },
+  uploadAsset: async (
+    endPoint: string,
+    data: any
+  ): Promise<{  data: any; status: number }> => {
+    try {
+      const response = await api.put(`${endPoint}`, data, {headers: {
+        'Content-Type': data.type || 'application/octet-stream',
+      }});
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  },
 };
 
 // Analytics APIs

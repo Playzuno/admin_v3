@@ -11,6 +11,7 @@ import { Coupon } from '../types';
 import { SuccessToast } from '@/components/ui/toast';
 import Button from '@/components/ui/Button';
 import { useOrg } from '@/context/OrgContext';
+import toast from 'react-hot-toast';
 
 interface CouponFormData {
   company: string;
@@ -162,27 +163,56 @@ const RewardsPage: React.FC = () => {
       active: formData.status,
     };
 
-    let assetUploadURL = "";
+    try {
+      let assetUploadURL = '';
 
-     if(branch && branch?.isMain && branch?.active && branch?.id) {
-       assetV2Api
-      .create({
-        entityId: branch?.id,
-        entityType: 'branch',
-        contentType: 'image/jpg',
-      })
-      .then((res) => {
-        console.log("res asset>>>>>>>>", res);
-        if(res?.data && res?.status === 200) {
-          coupon["assetId"] = res?.data?.assetId || "";
-          assetUploadURL = res?.data?.uploadURL || "";
-        }
-      });
-    } else {
-      console.log("Got issues in asset upload!")
+      if (
+        branch &&
+        branch?.isMain &&
+        branch?.active &&
+        branch?.id &&
+        formData?.image
+      ) {
+        assetV2Api
+          .create({
+            entityId: branch?.id,
+            entityType: 'branch',
+            contentType: formData?.image?.type,
+          })
+          .then(res => {
+            console.log('res asset>>>>>>>>', res);
+            if (res?.data && res?.status === 200) {
+              coupon['assetId'] = res?.data?.assetId || '';
+              assetUploadURL = res?.data?.uploadURL || '';
+
+              console.log('formData?.image >>>', formData?.image, formData?.image?.type);
+
+              if (assetUploadURL && formData?.image) {
+                assetV2Api
+                  .uploadAsset(assetUploadURL, formData?.image)
+                  .then(res => {
+                    console.log('res asset url >>>>>>>>', res);
+                    if (res?.status === 200) {
+                      console.log('Image uploaded successfully!');
+                    }
+                  })
+                  .catch(err => {
+                    console.log('Got error when uploading asset in url, ', err);
+                  });
+              } else {
+                console.log('Got issues in asset upload!');
+              }
+
+              console.log('coupon >>>>>>', coupon);
+            }
+          });
+      } else {
+        console.log('Got issues in asset upload!');
+      }
+    } catch (e) {
+      console.log('Got issues in asset upload!, ', e);
+      toast.error('Got issues in asset upload!');
     }
-
-    console.log("coupon >>>>>>", coupon);
 
     if (!selectedCouponId) {
       couponApi.create(coupon).then(() => {
