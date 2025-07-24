@@ -52,7 +52,7 @@ export function CouponList({
   }, [activeDropdown]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden min-h-[500px]">
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden min-h-[500px] max-w-[63vw] 2xl:max-w-auto">
       <div className="overflow-x-auto min-h-[500px]">
         <table className="w-full">
           <thead>
