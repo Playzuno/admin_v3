@@ -287,8 +287,16 @@ export interface Coupon {
     image: string;
     link: string;
   };
+  assetId: string;
+  assetURL: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AssetV2 {
+  entityId: string;
+  entityType: string;
+  contentType: string;
 }
 
 export interface Organization {
