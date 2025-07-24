@@ -4,6 +4,7 @@ import {
   BranchMemberResponse,
   BranchStats,
   Coupon,
+  AssetV2,
   EndUserStats,
   FeedbackReport,
   FeedbackSummaryResponse,
@@ -1265,6 +1266,20 @@ export const rewardsAndPlansApi = {
       throw handleRequestError(error);
     }
   },
+};
+
+// Assets V2 APIs
+export const assetV2Api = {
+  create: async (
+    data: AssetV2
+  ): Promise<{ data: AssetV2 }> => {
+    try {
+      const response = await api.post<AssetV2>('/assets/getUploadURL', data);
+      return response;
+    } catch (error) {
+      throw handleRequestError(error);
+    }
+  }
 };
 
 // Analytics APIs

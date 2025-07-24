@@ -6,10 +6,11 @@ import CouponPreview from '../components/rewards/CouponPreview';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { CouponList } from '../components/rewards/CouponList';
 import { Plus } from 'lucide-react';
-import { couponApi } from '../api';
+import { couponApi, assetV2Api } from '../api';
 import { Coupon } from '../types';
 import { SuccessToast } from '@/components/ui/toast';
 import Button from '@/components/ui/Button';
+import { useOrg } from '@/context/OrgContext';
 
 interface CouponFormData {
   company: string;
@@ -44,6 +45,7 @@ const RewardsPage: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isEditing, setIsEditing] = useState(false);
+  const { branch } = useOrg();
 
   const fetchCoupons = async () => {
     const response = await couponApi.getAll();
@@ -77,7 +79,10 @@ const RewardsPage: React.FC = () => {
       } else if (num < 0) {
         setErrors(prev => ({ ...prev, [field]: 'Value cannot be negative' }));
       } else if (num > 1000000) {
-        setErrors(prev => ({ ...prev, [field]: 'Value cannot be greater than 1000000' }));
+        setErrors(prev => ({
+          ...prev,
+          [field]: 'Value cannot be greater than 1000000',
+        }));
       }
     }
   };
@@ -136,13 +141,14 @@ const RewardsPage: React.FC = () => {
   const handleSave = () => {
     validateField('value', formData.value.toString());
     validateField('zunoValue', formData.zunoValue.toString());
-    
+
     if (!errors.value && !errors.zunoValue) {
       setHasChanges(false);
       setShowNewCouponForm(false);
     }
     setIsEditing(false);
-    const coupon  = {
+
+    const coupon = {
       ...formData,
       title: formData.name,
       company: formData.company,
@@ -154,7 +160,30 @@ const RewardsPage: React.FC = () => {
         link: previewImage,
       },
       active: formData.status,
+    };
+
+    let assetUploadURL = "";
+
+     if(branch && branch?.isMain && branch?.active && branch?.id) {
+       assetV2Api
+      .create({
+        entityId: branch?.id,
+        entityType: 'branch',
+        contentType: 'image/jpg',
+      })
+      .then((res) => {
+        console.log("res asset>>>>>>>>", res);
+        if(res?.data && res?.status === 200) {
+          coupon["assetId"] = res?.data?.assetId || "";
+          assetUploadURL = res?.data?.uploadURL || "";
+        }
+      });
+    } else {
+      console.log("Got issues in asset upload!")
     }
+
+    console.log("coupon >>>>>>", coupon);
+
     if (!selectedCouponId) {
       couponApi.create(coupon).then(() => {
         SuccessToast('Coupon created successfully');
@@ -227,10 +256,7 @@ const RewardsPage: React.FC = () => {
           <div className="space-y-1">
             <h1 className="container-title">Rewards setup</h1>
           </div>
-          <Button
-            onClick={() => displayNewCouponForm()}
-            variant="primary"
-          >
+          <Button onClick={() => displayNewCouponForm()} variant="primary">
             <Plus className="mr-2 h-4 w-4" />
             New Coupon
           </Button>
@@ -281,9 +307,9 @@ const RewardsPage: React.FC = () => {
       </div>
 
       <div className="w-[350px] flex-shrink-0 ">
-      <div className="space-y-1">
-            <h1 className="container-title">Rewards setup</h1>
-          </div>
+        <div className="space-y-1">
+          <h1 className="container-title">Rewards setup</h1>
+        </div>
         <CouponPreview
           company={formData.company}
           name={formData.name}

@@ -291,6 +291,12 @@ export interface Coupon {
   updatedAt: string;
 }
 
+export interface AssetV2 {
+  entityId: string;
+  entityType: string;
+  contentType: string;
+}
+
 export interface Organization {
   id: string;
   orgId: string;
