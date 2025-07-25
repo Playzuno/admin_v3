@@ -212,11 +212,13 @@ const ProductFramesPage = () => {
       currentJobs?.jobType === 'extract_frames' &&
       currentJobs?.jobInput?.metadata?.product_id === productId &&
       currentJobs?.jobInput?.metadata?.branch_id === branchId &&
-    frames?.length === 0;
+      frames?.length === 0;
 
     if (isValidToRefresh) {
       timeout = setTimeout(() => {
-        navigate(0);
+        console.log("Refresh is working for fetch frames!");
+        fetchTrainingImages(branchId, productId);
+        getProduct(branchId, productId);
       }, 10000);
     }
 
