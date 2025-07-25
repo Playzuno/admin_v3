@@ -201,6 +201,30 @@ const ProductFramesPage = () => {
     }
   }, [branchId]);
 
+  useEffect(() => {
+    let timeout;
+
+    const isValidToRefresh =
+      branchId &&
+      productId &&
+      Object.keys(currentJobs)?.length !== 0 &&
+      currentJobs?.status === 'pending' &&
+      currentJobs?.jobType === 'extract_frames' &&
+      currentJobs?.jobInput?.metadata?.product_id === productId &&
+      currentJobs?.jobInput?.metadata?.branch_id === branchId &&
+    frames?.length === 0;
+
+    if (isValidToRefresh) {
+      timeout = setTimeout(() => {
+        navigate(0);
+      }, 10000);
+    }
+
+    return () => {
+      if (timeout) clearTimeout(timeout); // Reset timer on currentJobs change
+    };
+  }, [branchId, productId, currentJobs]);
+
   const fetchTrainingImages = async (branchId: string, productId: string) => {
     try {
       setIsLoading(true);
@@ -577,7 +601,8 @@ const ProductFramesPage = () => {
             <div className="text-base mb-4">
               {((currentJobs.status === 'pending' &&
                 currentJobs.jobType === 'extract_frames' &&
-                frames.length !== 0) || (Object.keys(currentJobs)?.length === 0)) &&
+                frames.length !== 0) ||
+                Object.keys(currentJobs)?.length === 0) &&
                 'Exclude unqualified images from the training model'}
             </div>
             <div className="flex flex-col gap-4">
