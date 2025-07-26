@@ -22,6 +22,12 @@ const logout = () => {
   }
 };
 
+const unAuthorized = () => {
+  if (window.location.pathname !== '/unauthorized') {
+    window.location.href = '/unauthorized';
+  }
+}
+
 // shared handler
 const handleError = (error: AxiosError): ApiError => {
   if (error.code === 'ECONNABORTED') {
@@ -35,7 +41,7 @@ const handleError = (error: AxiosError): ApiError => {
       case 400:
         return new ValidationError('Invalid request', data);
       case 401:
-        logout();
+        unAuthorized();
         return new NetworkError('Unauthorized', 401);
       case 403:
         return new NetworkError('Forbidden', 403);
