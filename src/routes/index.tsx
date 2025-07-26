@@ -15,6 +15,7 @@ import BrandPage from '../pages/BrandPage';
 import BrandProfilePage from '../pages/BrandProfilePage';
 import ComponentSink from '../pages/ComponentSink';
 import NotFound from '../pages/NotFound';
+import Unauthorized from '../pages/Unauthorized';
 import PrivateRoute from '../components/auth/PrivateRoute';
 import EndUserPage from '../pages/EndUserPage';
 import BrandListPage from '@/pages/BrandListPage';
@@ -153,6 +154,10 @@ export const router = createBrowserRouter([
         element: <ComponentSink />,
       },
     ],
+  },
+  {
+    path: "unauthorized",
+    element: <Unauthorized />
   },
   {
     path: '*',
