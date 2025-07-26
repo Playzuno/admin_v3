@@ -6,7 +6,7 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import ScanProgress from '@/components/ui/ScanProgress';
 import EditDialog from '../components/ui/EditDialog';
 import { toast } from 'react-hot-toast';
-import { ChevronRightIcon, Copy, ExternalLink } from 'lucide-react';
+import { ChevronRightIcon, Copy, ExternalLink, Loader2 } from 'lucide-react';
 import { useOrg } from '@/context/OrgContext';
 import { Product } from '@/types';
 import { organizationApi, productApi } from '@/api';
@@ -521,7 +521,8 @@ const ProductPage: React.FC = () => {
             bgColor="purple-100"
             disabled={currentJobs?.status === 'pending' &&
                 currentJobs.jobType === 'train_model'}
-          >
+          >{ currentJobs?.status === 'pending' &&
+                currentJobs.jobType === 'train_model' && <Loader2 className="w-6 h-6 mr-1 text-white flex-none animate-spin" /> } 
             Train models
           </Button>
           <Button
